@@ -1,0 +1,15 @@
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\bin\Debug\net8.0\Eventos.deps.json
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\bin\Debug\net8.0\Eventos.runtimeconfig.json
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\bin\Debug\net8.0\Eventos.dll
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\bin\Debug\net8.0\Eventos.pdb
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\obj\Debug\net8.0\Eventos.csproj.AssemblyReference.cache
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\obj\Debug\net8.0\Eventos.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\obj\Debug\net8.0\Eventos.AssemblyInfoInputs.cache
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\obj\Debug\net8.0\Eventos.AssemblyInfo.cs
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\obj\Debug\net8.0\Eventos.csproj.CoreCompileInputs.cache
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\obj\Debug\net8.0\Eventos.sourcelink.json
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\obj\Debug\net8.0\Eventos.dll
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\obj\Debug\net8.0\refint\Eventos.dll
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\obj\Debug\net8.0\Eventos.pdb
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\obj\Debug\net8.0\Eventos.genruntimeconfig.cache
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Eventos\obj\Debug\net8.0\ref\Eventos.dll
