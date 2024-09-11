@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\APIController\\APIController.csproj": {}
+    "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\APIController\\APIController.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\APIController\\APIController.csproj": {
+    "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\APIController\\APIController.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\APIController\\APIController.csproj",
+        "projectUniqueName": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\APIController\\APIController.csproj",
         "projectName": "APIController",
-        "projectPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\APIController\\APIController.csproj",
-        "packagesPath": "C:\\Users\\Administrador\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\APIController\\obj\\",
+        "projectPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\APIController\\APIController.csproj",
+        "packagesPath": "C:\\Users\\bruno\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\APIController\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\bruno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -33,14 +29,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Escultores\\Escultores.csproj": {
-                "projectPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Escultores\\Escultores.csproj"
+              "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Escultores\\Escultores.csproj": {
+                "projectPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Escultores\\Escultores.csproj"
               },
-              "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {
-                "projectPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Esculturas\\Esculturas.csproj"
+              "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {
+                "projectPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj"
               },
-              "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Eventos\\Eventos.csproj": {
-                "projectPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Eventos\\Eventos.csproj"
+              "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Eventos\\Eventos.csproj": {
+                "projectPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Eventos\\Eventos.csproj"
               }
             }
           }
@@ -62,7 +58,7 @@
           "dependencies": {
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.4.0, )"
+              "version": "[6.7.3, )"
             }
           },
           "imports": [
@@ -84,25 +80,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Escultores\\Escultores.csproj": {
+    "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Escultores\\Escultores.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Escultores\\Escultores.csproj",
+        "projectUniqueName": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Escultores\\Escultores.csproj",
         "projectName": "Escultores",
-        "projectPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Escultores\\Escultores.csproj",
-        "packagesPath": "C:\\Users\\Administrador\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Escultores\\obj\\",
+        "projectPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Escultores\\Escultores.csproj",
+        "packagesPath": "C:\\Users\\bruno\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Escultores\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\bruno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -169,25 +161,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {
+    "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
+        "projectUniqueName": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
         "projectName": "Esculturas",
-        "projectPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
-        "packagesPath": "C:\\Users\\Administrador\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Esculturas\\obj\\",
+        "projectPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
+        "packagesPath": "C:\\Users\\bruno\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\bruno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -254,25 +242,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Eventos\\Eventos.csproj": {
+    "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Eventos\\Eventos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Eventos\\Eventos.csproj",
+        "projectUniqueName": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Eventos\\Eventos.csproj",
         "projectName": "Eventos",
-        "projectPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Eventos\\Eventos.csproj",
-        "packagesPath": "C:\\Users\\Administrador\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Eventos\\obj\\",
+        "projectPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Eventos\\Eventos.csproj",
+        "packagesPath": "C:\\Users\\bruno\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Eventos\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\bruno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -339,7 +323,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

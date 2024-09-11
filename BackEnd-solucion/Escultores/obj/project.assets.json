@@ -3277,24 +3277,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Administrador\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\bruno\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Escultores\\Escultores.csproj",
+      "projectUniqueName": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Escultores\\Escultores.csproj",
       "projectName": "Escultores",
-      "projectPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Escultores\\Escultores.csproj",
-      "packagesPath": "C:\\Users\\Administrador\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Escultores\\obj\\",
+      "projectPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Escultores\\Escultores.csproj",
+      "packagesPath": "C:\\Users\\bruno\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Escultores\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\bruno\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -3361,7 +3356,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
