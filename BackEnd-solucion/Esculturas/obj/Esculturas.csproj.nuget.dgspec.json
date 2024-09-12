@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {}
+    "C:\\Users\\augus\\OneDrive\\Escritorio\\TPI DESARROLLO\\UTNFRRE\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {
+    "C:\\Users\\augus\\OneDrive\\Escritorio\\TPI DESARROLLO\\UTNFRRE\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
+        "projectUniqueName": "C:\\Users\\augus\\OneDrive\\Escritorio\\TPI DESARROLLO\\UTNFRRE\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
         "projectName": "Esculturas",
-        "projectPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
-        "packagesPath": "C:\\Users\\bruno\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bruno\\Desktop\\Bienal_Back_L\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\obj\\",
+        "projectPath": "C:\\Users\\augus\\OneDrive\\Escritorio\\TPI DESARROLLO\\UTNFRRE\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
+        "packagesPath": "C:\\Users\\augus\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\augus\\OneDrive\\Escritorio\\TPI DESARROLLO\\UTNFRRE\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\bruno\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\augus\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -81,7 +80,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
