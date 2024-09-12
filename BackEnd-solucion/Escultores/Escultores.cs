@@ -3,25 +3,73 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace EscultoresModel
+namespace EscultorModel
 {
-    public class EscultoresContext : DbContext
+    public class BienalDbContext : DbContext
     {
-        // Se espera que esta clase represente el contexto de datos, es la encargada de gestionar el objeto y la conexión a la base de datos.
-        // Aquí se pueden definir las tablas y configuraciones de la base de datos utilizando Entity Framework.
+        public DbSet<Escultor> Escultores { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // InMemoryDatabase para pruebas, despues cambiar a SQL Server
+            optionsBuilder.UseInMemoryDatabase("BienalDB");
+            // optionsBuilder.UseSqlServer(@"Server=.\;Database=BienalDB;Trusted_Connection=True;");
+        }
     }
 
-    public class Escultores
+    public class Escultor
     {
-        // Se espera que esta clase represente un escultor individual.
-        // Acá se definen las propiedades de escultor específico.
+        public int EscultorId { get; set; }
+        public string? Nombre { get; set; }
+        public string? Apellido { get; set; }
+        public string? DNI { get; set; }
+        public string? Email { get; set; }
+        public string? Contraseña { get; set; }
+        public string? Telefono { get; set; }
+        public string? Biografia { get; set; }
     }
 
-    public class EscultoresServices
+
+    public class EscultorService
     {
-        // Se espera que esta clase proporcione servicios relacionados con los escultores, conoce el contexto y es el intermediario entre la clase Escultores y la Base de Datos. 
-        // Aquí se definen los métodos para realizar operaciones CRUD (crear, leer, actualizar, eliminar) en los escultores.
+        private BienalDbContext _context;
+
+        public EscultorService() // Constructor sin parametros de escultor service 
+        {
+            _context = new BienalDbContext();
+        }
+
+        public Escultor Create(Escultor escultor)
+        {
+            _context.Escultores.Add(escultor);
+            _context.SaveChanges();
+            return escultor;
+        }
+
+        public IEnumerable<Escultor> GetAll()
+        {
+            return _context.Escultores.ToList();
+        }
+
+        public Escultor? GetById(int id)
+        {
+            return _context.Escultores.Single(e => e.EscultorId == id);
+        }
+
+        public Escultor Update(Escultor escultor)
+        {
+            _context.Escultores.Update(escultor);
+            _context.SaveChanges();
+            return escultor;
+        }
+
+        public Escultor? Delete(int id)
+        {
+            var escultor = _context.Escultores.Single(e => e.EscultorId == id);
+            _context.Escultores.Remove(escultor);
+            _context.SaveChanges();
+            return escultor;
+        }
     }
-
-
 }
+

@@ -1,44 +1,65 @@
 using Microsoft.AspNetCore.Mvc;
-
+using EscultorModel;
+using Microsoft.EntityFrameworkCore;
+using System.Data.Entity;
 namespace APIBienal.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class EscultoresController : ControllerBase
+     [ApiController]
+    [Route("api/[controller]")]
+    public class EscultorController : ControllerBase // Cambio de Controller a ControllerBase
     {
-        [HttpPost("Create")]
-        public IActionResult Create()
+        private EscultorService _escultorService; // Cambio de BienalDbContext a EscultorService
+
+        public EscultorController()
         {
-            // L?gica para crear una nueva entidad de escultor
-            return Ok();
+            _escultorService =  new EscultorService();
         }
 
-        [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        // GET: api/Escultor
+        [HttpGet]
+        public async Task<Escultor> GetAllEscultores()
         {
-            // L?gica para obtener todos los escultores
-            return Ok();
+            var list_escultores =  _escultorService.GetAll();
+            return list_escultores;
         }
 
-        [HttpGet("GetByID")]
-        public IActionResult GetByID(int id)
+        // GET: api/Escultor/5
+        [HttpGet("{id}")] // Get Escultor by Id
+        public async Task<Escultor> GetEscultorById(int id)
         {
-            // L?gica para obtener un escultor por su ID
-            return Ok();
+            return await _context.Escultores.SingleOrDefaultAsync(e => e.EscultorId == id);
         }
 
-        [HttpPut("Update")]
-        public IActionResult Update(int id)
+        // CREATE: api/Escultor
+        [HttpPost]
+        public async Task<Escultor> CreateEscultor(Escultor escultor)
         {
-            // L?gica para actualizar un escultor
-            return Ok();
+            _context.Escultores.Add(escultor);
+            await _context.SaveChangesAsync();
+            return (escultor);
         }
 
-        [HttpDelete("Delete")]
-        public IActionResult Delete(int id)
+        // Uptdate: api/Escultor/5
+        [HttpPut("{id}")]
+        public async Task<Escultor> UpdateEscultor(int id, Escultor escultor)
         {
-            // L?gica para eliminar un escultor
-            return Ok();
+            _context.Escultores.Update(escultor);
+            await _context.SaveChangesAsync();
+            return (escultor);
+        }
+
+        // DELETE: api/Escultor/5
+        [HttpDelete("{id}")]
+        public async Task<Escultor> DeleteEscultor(int id)
+        {
+            var escultor = await _context.Escultores.SingleOrDefaultAsync(e => e.EscultorId == id); // 
+            if (escultor == null)
+            {
+                return null;
+            }
+            _context.Escultores.Remove(escultor);
+            await _context.SaveChangesAsync();
+            return id;
         }
     }
 }
