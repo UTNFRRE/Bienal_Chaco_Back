@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Esculturas
-build_property.ProjectDir = C:\Users\bruno\Desktop\Bienal_Back_L\Bienal_Chaco_Back\BackEnd-solucion\Esculturas\
+build_property.ProjectDir = C:\Users\joaqu\source\repos\Bienal_Chaco_Back\BackEnd-solucion\Esculturas\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
