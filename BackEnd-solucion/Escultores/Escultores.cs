@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace EscultorModel
 {
@@ -11,7 +12,7 @@ namespace EscultorModel
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // InMemoryDatabase para pruebas, despues cambiar a SQL Server
+            // InMemoryDatabase para pruebas, después cambiar a SQL Server
             optionsBuilder.UseInMemoryDatabase("BienalDB");
             // optionsBuilder.UseSqlServer(@"Server=.\;Database=BienalDB;Trusted_Connection=True;");
         }
@@ -23,53 +24,56 @@ namespace EscultorModel
         public string? Nombre { get; set; }
         public string? Apellido { get; set; }
         public string? DNI { get; set; }
+        public string? Pais { get; set; }
         public string? Email { get; set; }
         public string? Contraseña { get; set; }
         public string? Telefono { get; set; }
         public string? Biografia { get; set; }
     }
 
-
     public class EscultorService
     {
         private BienalDbContext _context;
 
-        public EscultorService() // Constructor sin parametros de escultor service 
+        public EscultorService() // Constructor sin parámetros de escultor service 
         {
             _context = new BienalDbContext();
         }
 
-        public Escultor Create(Escultor escultor)
+        public async Task<Escultor> Create(Escultor escultor) //Service method to create a new escultor
         {
             _context.Escultores.Add(escultor);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return escultor;
         }
 
-        public IEnumerable<Escultor> GetAll()
+        public async Task<IEnumerable<Escultor>> GetAll() //Service method para obtener todos los escultores
         {
-            return _context.Escultores.ToList();
+            var lista = await _context.Escultores.ToListAsync();
+            return lista;
         }
 
-        public Escultor? GetById(int id)
+        public async Task<Escultor?> GetById(int id) //Service method obtener escultor por id
         {
-            return _context.Escultores.Single(e => e.EscultorId == id);
+            return await _context.Escultores.SingleOrDefaultAsync(e => e.EscultorId == id);
         }
 
-        public Escultor Update(Escultor escultor)
+        public async Task<Escultor> Update(Escultor escultor) //service method para actualizar un escultor
         {
             _context.Escultores.Update(escultor);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return escultor;
         }
 
-        public Escultor? Delete(int id)
+        public async Task<Escultor?> Delete(int id) //service method para eliminar un escultor
         {
-            var escultor = _context.Escultores.Single(e => e.EscultorId == id);
-            _context.Escultores.Remove(escultor);
-            _context.SaveChanges();
+            var escultor = await _context.Escultores.SingleOrDefaultAsync(e => e.EscultorId == id);
+            if (escultor != null)
+            {
+                _context.Escultores.Remove(escultor);
+                await _context.SaveChangesAsync();
+            }
             return escultor;
         }
     }
 }
-

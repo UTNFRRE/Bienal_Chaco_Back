@@ -1,65 +1,84 @@
 using Microsoft.AspNetCore.Mvc;
 using EscultorModel;
-using Microsoft.EntityFrameworkCore;
-using System.Data.Entity;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace APIBienal.Controllers
 {
-     [ApiController]
+    [ApiController]
     [Route("api/[controller]")]
-    public class EscultorController : ControllerBase // Cambio de Controller a ControllerBase
+    public class EscultorController : ControllerBase
     {
-        private EscultorService _escultorService; // Cambio de BienalDbContext a EscultorService
+        private EscultorService _escultorService;
 
-        public EscultorController()
+        // Constructor que inicializa el servicio de escultores
+        public EscultorController() 
         {
-            _escultorService =  new EscultorService();
+            _escultorService = new EscultorService();  // La variable local _escultorService se inicializa con el servicio de escultores
         }
 
         // GET: api/Escultor
+        // Método para obtener todos los escultores
         [HttpGet]
-        public async Task<Escultor> GetAllEscultores()
+        public async Task<IEnumerable<Escultor>> GetAllEscultores()
         {
-            var list_escultores =  _escultorService.GetAll();
-            return list_escultores;
+            var lista_escultores = await _escultorService.GetAll();
+            return lista_escultores;
         }
 
         // GET: api/Escultor/5
-        [HttpGet("{id}")] // Get Escultor by Id
-        public async Task<Escultor> GetEscultorById(int id)
+        // Método para obtener un escultor por su ID
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Escultor>> GetEscultorById(int id)
         {
-            return await _context.Escultores.SingleOrDefaultAsync(e => e.EscultorId == id);
+            var escultor = await _escultorService.GetById(id);
+            if (escultor == null)
+            {
+                return NotFound(); // Retorna 404 si no se encuentra el escultor
+            }
+            return escultor;
         }
 
         // CREATE: api/Escultor
+        // Método para crear un nuevo escultor
         [HttpPost]
-        public async Task<Escultor> CreateEscultor(Escultor escultor)
+        public async Task<ActionResult<Escultor>> CreateEscultor(Escultor escultor)
         {
-            _context.Escultores.Add(escultor);
-            await _context.SaveChangesAsync();
-            return (escultor);
+            await _escultorService.Create(escultor);
+            return CreatedAtAction(nameof(GetEscultorById), new { id = escultor.EscultorId }, escultor);
         }
 
-        // Uptdate: api/Escultor/5
+        // UPDATE: api/Escultor/5
+        // Método para actualizar un escultor existente
         [HttpPut("{id}")]
-        public async Task<Escultor> UpdateEscultor(int id, Escultor escultor)
+        public async Task<ActionResult<Escultor>> UpdateEscultor(int id, Escultor escultor)
         {
-            _context.Escultores.Update(escultor);
-            await _context.SaveChangesAsync();
-            return (escultor);
+            if (id != escultor.EscultorId)
+            {
+                return BadRequest(); // Retorna 400 si el ID en la URL no coincide con el ID del escultor
+            }
+
+            var updatedEscultor = await _escultorService.Update(escultor);
+            if (updatedEscultor == null)
+            {
+                return NotFound(); // Retorna 404 si no se encuentra el escultor para actualizar
+            }
+
+            return updatedEscultor;
         }
 
         // DELETE: api/Escultor/5
+        // Método para eliminar un escultor por su ID
         [HttpDelete("{id}")]
-        public async Task<Escultor> DeleteEscultor(int id)
+        public async Task<ActionResult<Escultor>> DeleteEscultor(int id)
         {
-            var escultor = await _context.Escultores.SingleOrDefaultAsync(e => e.EscultorId == id); // 
+            var escultor = await _escultorService.Delete(id);
             if (escultor == null)
             {
-                return null;
+                return NotFound(); // Retorna 404 si no se encuentra el escultor para eliminar
             }
-            _context.Escultores.Remove(escultor);
-            await _context.SaveChangesAsync();
-            return id;
+
+            return escultor;
         }
     }
 }
