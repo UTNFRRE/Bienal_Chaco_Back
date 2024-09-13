@@ -1,43 +1,61 @@
+using Esculturas;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace APIBienal.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class EsculturasController : ControllerBase
     {
-        [HttpPost("Create")]
-        public IActionResult Create()
+        private readonly EsculturasServices _esculturaService;
+        public EsculturasController()
         {
-            // L?gica para crear una nueva entidad de escultura
+            _esculturaService = new EsculturasServices();
+        }
+
+        [HttpPost("Create")]
+        public async Task<IActionResult> CrearEscultura(EsculturasModel escultura)
+        {
+            await _esculturaService.CrearEscultura(escultura);
             return Ok();
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> ObtenerTodasLasEsculturas()
         {
-            // L?gica para obtener todas las esculturas
-            return Ok();
+            var esculturas = await _esculturaService.ObtenerTodasLasEsculturas();
+            if (esculturas == null || esculturas.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(esculturas);
         }
 
         [HttpGet("GetByID")]
-        public IActionResult GetByID(int id)
+        public async Task<IActionResult> ObtenerEscultura(int id)
         {
-            // L?gica para obtener una escultura por su ID
-            return Ok();
+            var escultura = await _esculturaService.ObtenerEscultura(id);
+            if (escultura == null)
+            {
+                return NotFound();
+            }
+            return Ok(escultura);
         }
 
         [HttpPut("Update")]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> ActualizarEscultura(EsculturasModel escultura)
         {
-            // L?gica para actualizar una escultura
+            await _esculturaService.ActualizarEscultura(escultura);
             return Ok();
         }
 
         [HttpDelete("Delete")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> EliminarEscultura(int id)
         {
-            // L?gica para eliminar una escultura
+            await _esculturaService.EliminarEscultura(id);
             return Ok();
         }
     }

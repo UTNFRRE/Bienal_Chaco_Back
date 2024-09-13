@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace EsculturasModel
+namespace Esculturas
 {
     public class EsculturasContext : DbContext
     {
@@ -26,8 +26,8 @@ namespace EsculturasModel
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int EsculturasID { get; set; }
-        [Required]
-        public string Nombre { get; set; }
+
+        public required string Nombre { get; set; }
         public string? Tematica { get; set; }
         public DateTime Fecha { get; set; }
         public int EscultorID { get; set; }
@@ -41,9 +41,9 @@ namespace EsculturasModel
         // Aquí se definen los métodos para realizar operaciones CRUD (crear, leer, actualizar, eliminar) en las esculturas.
         private readonly EsculturasContext _context;
 
-        public EsculturasServices(EsculturasContext context) 
+        public EsculturasServices()
         {
-            _context = context;
+            _context = new EsculturasContext();
         }
 
         // Crear
@@ -59,7 +59,11 @@ namespace EsculturasModel
         {
             return await _context.Esculturas.FindAsync(id) ?? null;
         }
-
+        //leer todo
+        public async Task<List<EsculturasModel>> ObtenerTodasLasEsculturas()
+        {
+            return await _context.Esculturas.ToListAsync();
+        }
         // Actualizar
         public async Task ActualizarEscultura(EsculturasModel escultura)
         {
