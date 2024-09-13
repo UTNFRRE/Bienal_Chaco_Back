@@ -33,17 +33,23 @@ namespace EventosModel
 
     public class EventosContext : DbContext
     {
-        public EventosContext(DbContextOptions<EventosContext> options) : base(options)
-        {
-        }
+        public DbSet<Eventos> Eventos { get; set; }
+        //public EventosContext(DbContextOptions<EventosContext> options) : base(options)
+        //{
+        //}
 
         // Define la tabla de eventos
-        public DbSet<Eventos> Eventos { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+        // Aquí puedes agregar configuraciones adicionales si es necesario
+        //}
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-            // Aquí puedes agregar configuraciones adicionales si es necesario
+            optionsBuilder.UseInMemoryDatabase("TallerMecanicoDB");
+            //optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Taller;Trusted_Connection=True;");
         }
     }
 
@@ -51,9 +57,11 @@ namespace EventosModel
     {
         private readonly EventosContext _context;
 
-        public EventosServices(EventosContext context)
+        public EventosServices()
         {
-            _context = context;
+            //_context = context;
+            //te falto crear la instancia de EventosContext
+            _context = new EventosContext();
         }
 
         // Obtener todos los eventos
@@ -77,40 +85,40 @@ namespace EventosModel
         }
 
         // Actualizar un evento existente
-        public async Task<bool> UpdateEventoAsync(Eventos evento)
+        public async Task<Eventos> UpdateEventoAsync(Eventos evento)
         {
+            await _context.SaveChangesAsync();
+            return evento;
+            
+            /*
             _context.Entry(evento).State = EntityState.Modified;
-
+             Control de Errores que despues va a servir
             try
             {
                 await _context.SaveChangesAsync();
-                return true;
+                return evento;
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!await EventoExists(evento.Id))
                 {
-                    return false;
+                    return evento;
                 }
                 else
                 {
                     throw;
                 }
             }
+            */
         }
 
         // Eliminar un evento
-        public async Task<bool> DeleteEventoAsync(int id)
+        public async Task<Eventos> DeleteEventoAsync(int id)
         {
-            var evento = await _context.Eventos.FindAsync(id);
-            if (evento == null)
-            {
-                return false;
-            }
-
-            _context.Eventos.Remove(evento);
+            var eventoEliminado = await _context.Eventos.FindAsync(id);
+            _context.Eventos.Remove(eventoEliminado);
             await _context.SaveChangesAsync();
-            return true;
+            return eventoEliminado;
         }
 
         // Verificar si un evento existe

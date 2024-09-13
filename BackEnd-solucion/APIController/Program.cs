@@ -3,13 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar la conexión a la base de datos
-builder.Services.AddDbContext<EventosContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0, 23))));
-
-// Registrar el servicio EventosServices
-builder.Services.AddScoped<EventosServices>();
-
 builder.Services.AddControllers();
 
 // Configuración de Swagger/OpenAPI
