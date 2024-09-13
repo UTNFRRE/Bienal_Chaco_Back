@@ -1,44 +1,88 @@
 using Microsoft.AspNetCore.Mvc;
+using EscultorModel;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace APIBienal.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class EscultoresController : ControllerBase
+    [Route("api/[controller]")]
+    public class EscultorController : ControllerBase
     {
+        private EscultorService _escultorService;
+
+        // Constructor que inicializa el servicio de escultores
+        public EscultorController() 
+        {
+            _escultorService = new EscultorService();  // La variable local _escultorService se inicializa con el servicio de escultores
+        }
+
+        // CREATE: api/Escultor
+        // Método para crear un nuevo escultor
         [HttpPost("Create")]
-        public IActionResult Create()
+        public async Task<ActionResult<Escultor>> CreateEscultor(Escultor escultor)
         {
-            // L?gica para crear una nueva entidad de escultor
-            return Ok();
+            await _escultorService.Create(escultor);
+            return CreatedAtAction(nameof(GetEscultorById), new { id = escultor.EscultorId }, escultor);
         }
 
+
+        // GET: api/Escultor
+        // Método para obtener todos los escultores
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public async Task<ActionResult<IEnumerable<Escultor>>> GetAllEscultores()
         {
-            // L?gica para obtener todos los escultores
-            return Ok();
+            var lista_escultores = await _escultorService.GetAll();
+            return Ok(lista_escultores);
         }
 
-        [HttpGet("GetByID")]
-        public IActionResult GetByID(int id)
+        // GET: api/Escultor/5
+        // Método para obtener un escultor por su ID
+        [HttpGet("GetBy")]
+        public async Task<ActionResult<Escultor>> GetEscultorById(int id)
         {
-            // L?gica para obtener un escultor por su ID
-            return Ok();
+            var escultor = await _escultorService.GetById(id);
+            
+            if (escultor == null)
+            {
+                return NotFound(); // Retorna 404 si no se encuentra el escultor
+            } else {
+                return Ok(escultor);
+            }
+            
         }
 
+        // UPDATE: api/Escultor/5
+        // Método para actualizar un escultor existente
         [HttpPut("Update")]
-        public IActionResult Update(int id)
+        public async Task<ActionResult<Escultor>> UpdateEscultor(Escultor escultor)
         {
-            // L?gica para actualizar un escultor
-            return Ok();
+            var updatedEscultor = await _escultorService.Update(escultor);
+
+            if (updatedEscultor == null)
+            {
+                return NotFound(); // Retorna 404 si no se encuentra el escultor para actualizar
+            }
+            else {
+                return Ok(updatedEscultor);
+            }
         }
 
-        [HttpDelete("Delete")]
-        public IActionResult Delete(int id)
+        // DELETE: api/Escultor/5
+        // Método para eliminar un escultor por su ID
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Escultor>> DeleteEscultor(int id)
         {
-            // L?gica para eliminar un escultor
-            return Ok();
+            var escultor = await _escultorService.Delete(id);
+            if (escultor == null)
+            {
+                return NotFound(); // Retorna 404 si no se encuentra el escultor para eliminar
+            }
+            else
+            {
+                return Ok(escultor);
+
+            }
         }
     }
 }
