@@ -58,16 +58,17 @@ namespace APIBienal.Controllers
             await _esculturaService.EliminarEscultura(id);
             return Ok();
         }
-        [HttpPost("GuardarImagen")]
+        
+        [HttpPost("CreateImagen")]
         public async Task<string> GuardarImagen([FromForm] imagenService fichero)
         {
             var ruta = String.Empty;
-            
+
             if (fichero.Archivo != null)
             {
                 var nombreArchivo = Guid.NewGuid().ToString() + ".jpg"; //asigna un nombre único al archivo
                 ruta = $"Imagenes/{nombreArchivo}"; //esto se debería reemplazar, no guardar en disco sino en un object storage
-                
+
                 using (var fileStream = new FileStream(ruta, FileMode.Create)) //crea el archivo en disco
                 {
                     await fichero.Archivo.CopyToAsync(fileStream); //guarda el archivo en disco
@@ -75,5 +76,21 @@ namespace APIBienal.Controllers
             }
             return ruta;
         }
+        [HttpGet("GetAllImagenes")]
+        public async Task<IEnumerable<string>> GetAllImagenes()
+        {
+            var imagenes = new List<string>();
+            var directorioImagenes = "Imagenes"; // El directorio donde se guardan las imágenes
+                // Obtener todos los archivos con extensión .jpg en el directorio
+                var archivos = Directory.GetFiles(directorioImagenes, "*.jpg");
+
+                // Agregar las rutas de los archivos a la lista
+                foreach (var archivo in archivos)
+                {
+                    imagenes.Add(archivo);
+                }
+            return await Task.FromResult(imagenes);
+        }
+
     }
 }
