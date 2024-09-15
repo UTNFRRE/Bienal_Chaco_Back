@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -35,6 +36,10 @@ namespace Esculturas
         public DateTime UltimaModificacion { get; set; }
     }
 
+    public class imagenService
+    {
+        public IFormFile Archivo { get; set; }
+            }
     public class EsculturasServices
     {
         // Se espera que esta clase proporcione servicios relacionados con las esculturas, conoce el contexto y es el intermediario entre la clase Esculturas y la Base de Datos. 

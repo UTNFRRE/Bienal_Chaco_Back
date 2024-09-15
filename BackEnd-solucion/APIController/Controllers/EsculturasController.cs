@@ -58,5 +58,22 @@ namespace APIBienal.Controllers
             await _esculturaService.EliminarEscultura(id);
             return Ok();
         }
+        [HttpPost("GuardarImagen")]
+        public async Task<string> GuardarImagen([FromForm] imagenService fichero)
+        {
+            var ruta = String.Empty;
+            
+            if (fichero.Archivo != null)
+            {
+                var nombreArchivo = Guid.NewGuid().ToString() + ".jpg"; //asigna un nombre único al archivo
+                ruta = $"Imagenes/{nombreArchivo}"; //esto se debería reemplazar, no guardar en disco sino en un object storage
+                
+                using (var fileStream = new FileStream(ruta, FileMode.Create)) //crea el archivo en disco
+                {
+                    await fichero.Archivo.CopyToAsync(fileStream); //guarda el archivo en disco
+                }
+            }
+            return ruta;
+        }
     }
 }
