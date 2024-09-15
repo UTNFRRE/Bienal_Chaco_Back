@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace APIBienal.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class EsculturasController : ControllerBase
     {
         private readonly EsculturasServices _esculturaService;
