@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace APIBienal.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class EscultorController : ControllerBase
     {
         private EscultorService _escultorService;
@@ -70,7 +70,7 @@ namespace APIBienal.Controllers
 
         // DELETE: api/Escultor/5
         // Método para eliminar un escultor por su ID
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete")]
         public async Task<ActionResult<Escultor>> DeleteEscultor(int id)
         {
             var escultor = await _escultorService.Delete(id);

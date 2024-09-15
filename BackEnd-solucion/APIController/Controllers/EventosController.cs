@@ -5,7 +5,7 @@ using EventosModel;
 
 namespace APIController
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
 
     public class EventosController : ControllerBase

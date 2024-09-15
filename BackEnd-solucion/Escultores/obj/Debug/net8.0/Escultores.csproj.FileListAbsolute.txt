@@ -1,0 +1,15 @@
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\bin\Debug\net8.0\Escultores.deps.json
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\bin\Debug\net8.0\Escultores.runtimeconfig.json
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\bin\Debug\net8.0\Escultores.dll
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\bin\Debug\net8.0\Escultores.pdb
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\obj\Debug\net8.0\Escultores.csproj.AssemblyReference.cache
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\obj\Debug\net8.0\Escultores.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\obj\Debug\net8.0\Escultores.AssemblyInfoInputs.cache
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\obj\Debug\net8.0\Escultores.AssemblyInfo.cs
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\obj\Debug\net8.0\Escultores.csproj.CoreCompileInputs.cache
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\obj\Debug\net8.0\Escultores.sourcelink.json
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\obj\Debug\net8.0\Escultores.dll
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\obj\Debug\net8.0\refint\Escultores.dll
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\obj\Debug\net8.0\Escultores.pdb
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\obj\Debug\net8.0\Escultores.genruntimeconfig.cache
+C:\Users\Administrador\Desktop\DesarrolloRepo\BackEnd-solucion\Escultores\obj\Debug\net8.0\ref\Escultores.dll
