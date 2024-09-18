@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Esculturas")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0a2dd0362e22325491461fbb42d395e64e178a61")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+82d53ee5cf69947a7ac30e22c53f1cb9b7457b6d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Esculturas")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Esculturas")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

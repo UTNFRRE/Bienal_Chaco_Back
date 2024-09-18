@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {}
+    "C:\\Users\\augus\\OneDrive\\Escritorio\\TPI DESARROLLO\\UTNFRRE\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {
+    "C:\\Users\\augus\\OneDrive\\Escritorio\\TPI DESARROLLO\\UTNFRRE\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
+        "projectUniqueName": "C:\\Users\\augus\\OneDrive\\Escritorio\\TPI DESARROLLO\\UTNFRRE\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
         "projectName": "Esculturas",
-        "projectPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
-        "packagesPath": "C:\\Users\\Administrador\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrador\\Desktop\\DesarrolloRepo\\BackEnd-solucion\\Esculturas\\obj\\",
+        "projectPath": "C:\\Users\\augus\\OneDrive\\Escritorio\\TPI DESARROLLO\\UTNFRRE\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\Esculturas.csproj",
+        "packagesPath": "C:\\Users\\augus\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\augus\\OneDrive\\Escritorio\\TPI DESARROLLO\\UTNFRRE\\Bienal_Chaco_Back\\BackEnd-solucion\\Esculturas\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\augus\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -53,6 +48,10 @@
             "EntityFramework": {
               "target": "Package",
               "version": "[6.5.1, )"
+            },
+            "Microsoft.AspNetCore.Http.Features": {
+              "target": "Package",
+              "version": "[5.0.17, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -95,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
