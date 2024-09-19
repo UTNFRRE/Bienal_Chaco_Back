@@ -1,8 +1,12 @@
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Esculturas;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace APIBienal.Controllers
 {
@@ -11,11 +15,17 @@ namespace APIBienal.Controllers
     public class EsculturasController : ControllerBase
     {
         private readonly EsculturasServices _esculturaService;
-        public EsculturasController()
+        private readonly BlobServiceClient _blobServiceClient;
+        private readonly BlobContainerClient _blobContainerClient;
+
+        public EsculturasController(BlobServiceClient blobServiceClient, IOptions<AzureBlobOptions> azureBlobOptions)
         {
             _esculturaService = new EsculturasServices();
+            _blobServiceClient = blobServiceClient;
+            _blobContainerClient = _blobServiceClient.GetBlobContainerClient(azureBlobOptions.Value.ContainerName);
         }
 
+        // Crear Escultura (CRUD para esculturas)
         [HttpPost("Create")]
         public async Task<IActionResult> CrearEscultura(EsculturasModel escultura)
         {
@@ -23,6 +33,7 @@ namespace APIBienal.Controllers
             return Ok();
         }
 
+        // Obtener todas las esculturas
         [HttpGet("GetAll")]
         public async Task<IActionResult> ObtenerTodasLasEsculturas()
         {
@@ -34,6 +45,7 @@ namespace APIBienal.Controllers
             return Ok(esculturas);
         }
 
+        // Obtener escultura por ID
         [HttpGet("GetByID")]
         public async Task<IActionResult> ObtenerEscultura(int id)
         {
@@ -45,6 +57,7 @@ namespace APIBienal.Controllers
             return Ok(escultura);
         }
 
+        // Actualizar escultura
         [HttpPut("Update")]
         public async Task<IActionResult> ActualizarEscultura(EsculturasModel escultura)
         {
@@ -52,45 +65,106 @@ namespace APIBienal.Controllers
             return Ok();
         }
 
+        // Eliminar escultura
         [HttpDelete("Delete")]
         public async Task<IActionResult> EliminarEscultura(int id)
         {
             await _esculturaService.EliminarEscultura(id);
             return Ok();
         }
-        
+
+        // ====================================================
+        // CRUD para Imágenes
+        // ====================================================
+
+        // Crear Imagen (subir a Blob Storage)
         [HttpPost("CreateImagen")]
-        public async Task<string> GuardarImagen([FromForm] imagenService fichero)
+        public async Task<IActionResult> GuardarImagen([FromForm] imagenService fichero)
         {
-            var ruta = String.Empty;
-
-            if (fichero.Archivo != null)
+            if (fichero.Archivo == null)
             {
-                var nombreArchivo = Guid.NewGuid().ToString() + ".jpg"; //asigna un nombre único al archivo
-                ruta = $"Imagenes/{nombreArchivo}"; //esto se debería reemplazar, no guardar en disco sino en un object storage
-
-                using (var fileStream = new FileStream(ruta, FileMode.Create)) //crea el archivo en disco
-                {
-                    await fichero.Archivo.CopyToAsync(fileStream); //guarda el archivo en disco
-                }
+                return BadRequest("El archivo es nulo");
             }
-            return ruta;
+
+            var nombreArchivo = Guid.NewGuid().ToString() + ".jpg"; // Nombre único para el archivo
+            var blobClient = _blobContainerClient.GetBlobClient($"Imagenes/{nombreArchivo}");
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await fichero.Archivo.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+                await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = fichero.Archivo.ContentType });
+                return Ok(new { Ruta = blobClient.Uri.AbsoluteUri }); // Devuelve la URL de la imagen en Blob Storage
+            }
         }
+
+        // Obtener todas las imágenes (desde Blob Storage)
         [HttpGet("GetAllImagenes")]
         public async Task<IEnumerable<string>> GetAllImagenes()
         {
             var imagenes = new List<string>();
-            var directorioImagenes = "Imagenes"; // El directorio donde se guardan las imágenes
-                // Obtener todos los archivos con extensión .jpg en el directorio
-                var archivos = Directory.GetFiles(directorioImagenes, "*.jpg");
-
-                // Agregar las rutas de los archivos a la lista
-                foreach (var archivo in archivos)
-                {
-                    imagenes.Add(archivo);
-                }
-            return await Task.FromResult(imagenes);
+            await foreach (var blobItem in _blobContainerClient.GetBlobsAsync(prefix: "Imagenes/"))
+            {
+                imagenes.Add(_blobContainerClient.GetBlobClient(blobItem.Name).Uri.AbsoluteUri);
+            }
+            return imagenes;
         }
 
+        // Obtener una imagen por nombre o ID
+        [HttpGet("GetImagen/{nombreArchivo}")]
+        public async Task<IActionResult> GetImagen(string nombreArchivo)
+        {
+            var blobClient = _blobContainerClient.GetBlobClient($"Imagenes/{nombreArchivo}");
+
+            try
+            {
+                var response = await blobClient.DownloadAsync();
+                return File(response.Value.Content, response.Value.ContentType);
+            }
+            catch (Azure.RequestFailedException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        // Actualizar/Reemplazar una imagen
+        [HttpPut("UpdateImagen/{nombreArchivo}")]
+        public async Task<IActionResult> UpdateImagen(string nombreArchivo, [FromForm] imagenService fichero)
+        {
+            if (fichero.Archivo == null)
+            {
+                return BadRequest("El archivo es nulo");
+            }
+
+            var blobClient = _blobContainerClient.GetBlobClient($"Imagenes/{nombreArchivo}");
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await fichero.Archivo.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+                await blobClient.UploadAsync(
+                    memoryStream,
+                    new BlobHttpHeaders { ContentType = fichero.Archivo.ContentType }
+                );
+                return Ok($"Imagen {nombreArchivo} actualizada correctamente.");
+            }
+        }
+
+        // Eliminar una imagen
+        [HttpDelete("DeleteImagen/{nombreArchivo}")]
+        public async Task<IActionResult> DeleteImagen(string nombreArchivo)
+        {
+            var blobClient = _blobContainerClient.GetBlobClient($"Imagenes/{nombreArchivo}");
+
+            try
+            {
+                await blobClient.DeleteIfExistsAsync();
+                return Ok($"Imagen {nombreArchivo} eliminada correctamente.");
+            }
+            catch (Azure.RequestFailedException ex)
+            {
+                return StatusCode(500, "Error al eliminar la imagen: " + ex.Message);
+            }
+        }
     }
 }

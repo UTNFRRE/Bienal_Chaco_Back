@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Escultores")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+82d53ee5cf69947a7ac30e22c53f1cb9b7457b6d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+de0308fb7b69a716ce0cb50a6b0a46d60d5dc5da")]
 [assembly: System.Reflection.AssemblyProductAttribute("Escultores")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Escultores")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

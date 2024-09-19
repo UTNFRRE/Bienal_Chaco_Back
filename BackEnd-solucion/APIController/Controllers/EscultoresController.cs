@@ -1,6 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using EscultorModel;
+using Esculturas;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace APIBienal.Controllers
@@ -9,16 +13,23 @@ namespace APIBienal.Controllers
     [Route("[controller]")]
     public class EscultorController : ControllerBase
     {
-        private EscultorService _escultorService;
+        private readonly EscultorService _escultorService;
+        private readonly BlobServiceClient _blobServiceClient;
+        private readonly string _containerName;
 
-        // Constructor que inicializa el servicio de escultores
-        public EscultorController() 
+        public EscultorController(BlobServiceClient blobServiceClient, IConfiguration configuration)
         {
-            _escultorService = new EscultorService();  // La variable local _escultorService se inicializa con el servicio de escultores
+            _escultorService = new EscultorService();
+            _blobServiceClient = blobServiceClient;
+            _containerName = configuration.GetValue<string>("AzureBlobStorage:ContainerName")
+                            ?? throw new ArgumentNullException("AzureBlobStorage:ContainerName configuration is missing.");
+
+            // Ensure the container exists
+            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+            containerClient.CreateIfNotExists();
         }
 
         // CREATE: api/Escultor
-        // Método para crear un nuevo escultor
         [HttpPost("Create")]
         public async Task<ActionResult<Escultor>> CreateEscultor(Escultor escultor)
         {
@@ -26,9 +37,7 @@ namespace APIBienal.Controllers
             return CreatedAtAction(nameof(GetEscultorById), new { id = escultor.EscultorId }, escultor);
         }
 
-
         // GET: api/Escultor
-        // Método para obtener todos los escultores
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<Escultor>>> GetAllEscultores()
         {
@@ -37,51 +46,129 @@ namespace APIBienal.Controllers
         }
 
         // GET: api/Escultor/5
-        // Método para obtener un escultor por su ID
-        [HttpGet("GetBy")]
+        [HttpGet("GetBy/{id}")]
         public async Task<ActionResult<Escultor>> GetEscultorById(int id)
         {
             var escultor = await _escultorService.GetById(id);
-            
             if (escultor == null)
             {
-                return NotFound(); // Retorna 404 si no se encuentra el escultor
-            } else {
-                return Ok(escultor);
+                return NotFound();
             }
-            
+            return Ok(escultor);
         }
 
         // UPDATE: api/Escultor/5
-        // Método para actualizar un escultor existente
         [HttpPut("Update")]
         public async Task<ActionResult<Escultor>> UpdateEscultor(Escultor escultor)
         {
             var updatedEscultor = await _escultorService.Update(escultor);
-
             if (updatedEscultor == null)
             {
-                return NotFound(); // Retorna 404 si no se encuentra el escultor para actualizar
+                return NotFound();
             }
-            else {
-                return Ok(updatedEscultor);
-            }
+            return Ok(updatedEscultor);
         }
 
         // DELETE: api/Escultor/5
-        // Método para eliminar un escultor por su ID
-        [HttpDelete("Delete")]
+        [HttpDelete("Delete/{id}")]
         public async Task<ActionResult<Escultor>> DeleteEscultor(int id)
         {
             var escultor = await _escultorService.Delete(id);
             if (escultor == null)
             {
-                return NotFound(); // Retorna 404 si no se encuentra el escultor para eliminar
+                return NotFound();
+            }
+            return Ok(escultor);
+        }
+
+        // Subir una imagen de escultor
+        [HttpPost("UploadImagen")]
+        public async Task<IActionResult> SubirImagenEscultor([FromForm] imagenService fichero)
+        {
+            if (fichero.Archivo == null)
+            {
+                return BadRequest("Archivo no válido.");
+            }
+
+            var nombreArchivo = Guid.NewGuid().ToString() + ".jpg";
+            var blobClient = _blobServiceClient.GetBlobContainerClient(_containerName).GetBlobClient(nombreArchivo);
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await fichero.Archivo.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                var blobHttpHeaders = new BlobHttpHeaders
+                {
+                    ContentType = fichero.Archivo.ContentType
+                };
+
+                // Usa la sobrecarga correcta de UploadAsync
+                await blobClient.UploadAsync(
+                    memoryStream,
+                    new BlobHttpHeaders { ContentType = fichero.Archivo.ContentType } // Aquí no usamos 'overwrite'
+                );
+
+                return Ok(new { Ruta = blobClient.Uri.AbsoluteUri });
+            }
+        }
+
+        // Obtener todas las imágenes de escultores
+        [HttpGet("GetAllImagenes")]
+        public async Task<ActionResult<IEnumerable<string>>> GetAllImagenesEscultores()
+        {
+            var imagenes = new List<string>();
+            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+
+            await foreach (var blobItem in containerClient.GetBlobsAsync())
+            {
+                imagenes.Add(containerClient.GetBlobClient(blobItem.Name).Uri.AbsoluteUri);
+            }
+
+            return Ok(imagenes);
+        }
+
+        // Actualizar/Reemplazar una imagen
+        [HttpPut("UpdateImagen/{nombreArchivo}")]
+        public async Task<IActionResult> UpdateImagen(string nombreArchivo, [FromForm] imagenService fichero)
+        {
+            if (fichero.Archivo == null)
+            {
+                return BadRequest("El archivo es nulo");
+            }
+
+            var blobClient = _blobServiceClient.GetBlobContainerClient(_containerName).GetBlobClient(nombreArchivo);
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await fichero.Archivo.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                // Utiliza la sobrecarga adecuada de UploadAsync
+                await blobClient.UploadAsync(
+                    memoryStream,
+                    new BlobHttpHeaders { ContentType = fichero.Archivo.ContentType }
+                );
+
+                return Ok($"Imagen {nombreArchivo} actualizada correctamente.");
+            }
+        }
+
+        // Eliminar una imagen de escultor
+        [HttpDelete("DeleteImagen/{nombreArchivo}")]
+        public async Task<IActionResult> EliminarImagenEscultor(string nombreArchivo)
+        {
+            var blobClient = _blobServiceClient.GetBlobContainerClient(_containerName).GetBlobClient(nombreArchivo);
+
+            var response = await blobClient.DeleteIfExistsAsync();
+
+            if (response)
+            {
+                return Ok($"Imagen {nombreArchivo} eliminada correctamente.");
             }
             else
             {
-                return Ok(escultor);
-
+                return StatusCode(500, "Error al eliminar la imagen.");
             }
         }
     }
