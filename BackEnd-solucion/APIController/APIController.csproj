@@ -7,17 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.22.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Escultores\Escultores.csproj" />
-    <ProjectReference Include="..\Esculturas\Esculturas.csproj" />
-    <ProjectReference Include="..\Eventos\Eventos.csproj" />
+    <Folder Include="Imagenes\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Imagenes\" />
+    <ProjectReference Include="..\BienalModel\BienalModel.csproj" />
   </ItemGroup>
 
 </Project>

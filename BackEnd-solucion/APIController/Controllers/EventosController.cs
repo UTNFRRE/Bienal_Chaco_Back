@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using EventosModel;
+using BienalModel;
 
 namespace APIController
 {
@@ -49,11 +49,19 @@ namespace APIController
             
         }
         // Actualizar un evento existente
-        [HttpPut("Update")]
-        public async Task<IActionResult> UpdateEvento(Eventos evento)
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> UpdateEvento(Eventos eventoActualizado)
         {
-            var eventoActualizado = await _eventosServices.UpdateEventoAsync(evento);
-            return Ok(eventoActualizado);        
+            var eventoActualizar = await _eventosServices.GetEventoByIdAsync(eventoActualizado.Id);
+            eventoActualizar = eventoActualizado;
+
+            if (eventoActualizar == null)
+            {
+                return NotFound();
+            }
+
+            eventoActualizar = await _eventosServices.UpdateEventoAsync(eventoActualizar);
+            return Ok(eventoActualizar);
         }
 
         // Eliminar un evento

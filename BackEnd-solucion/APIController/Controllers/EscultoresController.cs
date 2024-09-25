@@ -1,7 +1,6 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using EscultorModel;
-using Esculturas;
+using BienalModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IO;

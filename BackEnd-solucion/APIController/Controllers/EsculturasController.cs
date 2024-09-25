@@ -1,12 +1,12 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Esculturas;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using BienalModel;
 
 namespace APIBienal.Controllers
 {
@@ -27,7 +27,7 @@ namespace APIBienal.Controllers
 
         // Crear Escultura (CRUD para esculturas)
         [HttpPost("Create")]
-        public async Task<IActionResult> CrearEscultura(EsculturasModel escultura)
+        public async Task<IActionResult> CrearEscultura(Escultura escultura)
         {
             await _esculturaService.CrearEscultura(escultura);
             return Ok();
@@ -59,7 +59,7 @@ namespace APIBienal.Controllers
 
         // Actualizar escultura
         [HttpPut("Update")]
-        public async Task<IActionResult> ActualizarEscultura(EsculturasModel escultura)
+        public async Task<IActionResult> ActualizarEscultura(Escultura escultura)
         {
             await _esculturaService.ActualizarEscultura(escultura);
             return Ok();
