@@ -102,15 +102,8 @@ namespace BienalModel
         public DateTime Fecha { get; set; }
         public int EscultorID { get; set; }
         public int EventoID { get; set; }
-        public DateTime UltimaModificacion { get; set; }
         [JsonIgnore]
-        public Escultor Escultor { get; set; }
-        public List<string> Imagenes { get; set; }
-    }
-
-    public class imagenService
-    {
-        public IFormFile Archivo { get; set; }
+        public string? Imagenes { get; set; }
     }
 
     public class EsculturasServices
