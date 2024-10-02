@@ -5,99 +5,104 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Core;
-using BienalModel;
+using Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Microsoft.AspNetCore.Http;
+using Requests;
+using Contexts;
 
 namespace Servicios
 {
-    public class EsculturasServices : ICRUDService<Escultura>
+    public class EsculturasServices : ICRUDService
     {
         private BienalDbContext _context;
-        private IAzureStorageService azureStorageService;
+        private IAzureStorageService _azureStorageService;
 
-        public EsculturasServices()
+        public EsculturasServices(BienalDbContext context, IAzureStorageService azureStorageService)
         {
-            _context = new BienalDbContext();
-            azureStorageService = new AzureBlobStorageService();
+            this._context = context;
+            this._azureStorageService = azureStorageService;
         }
 
-        public async Task<Escultura> CreateAsync(Escultura escultura)
+        public async Task<Esculturas> CreateAsync(EsculturaListRequest request) //cambiar por esculturaRequest
         {
-            var newEscultura = new Escultura()
+            var newEscultura = new Esculturas()
             {
-                Nombre = escultura.Nombre,
-                Tematica = escultura.Tematica,
-                Fecha = escultura.Fecha,
-                EscultorID = escultura.EscultorID,
-                EventoID = escultura.EventoID,
+                Nombre = request.Nombre,
+                EscultorID = request.EscultorID,
+                EventoID = request.EventoID,
             };
 
-            if (escultura.Imagenes != null)
+            if (newEscultura.Imagenes != null) //cambiar por lo que viene en el request
             {
-                escultura.Imagenes = await this.azureStorageService.UploadAsync(escultura.Imagenes, car.ImagePath);
+                newEscultura.Imagenes = await this._azureStorageService.UploadAsync(request.Imagen);
             }
-            _context.Esculturas.Add(newEscultura);
-            await _context.SaveChangesAsync();
 
-            return newEscultura();
+            this._context.Esculturas.Add(newEscultura);
+            this._context.SaveChangesAsync();
+
+            return newEscultura;
         }
 
-        public async Task<IEnumerable<Escultura>> GetAllAsync()
+        public async Task<IEnumerable<Esculturas>> GetAllAsync()
         {
-            return _context.Esculturas.ToList();
+            return this._context.Esculturas.ToList();
         }
 
-        public async Task<Escultura> GetByAsync(int id)
+        public async Task<Esculturas> GetByAsync(int id)
         {
-            return _context.Esculturas.Find(id);
+            return this._context.Esculturas.Find(id);
         }
 
-        public async Task<Escultura> UpdateAsync(int id ,Escultura escultura)
+        public async Task<Esculturas> UpdateAsync(int id, EsculturaListRequest request)
         {
-            var esculturaToUpdate = _context.Esculturas.Find(id);
+            var esculturaToUpdate = this._context.Esculturas.Find(id);
             if (esculturaToUpdate != null)
-            
+
             {
-                esculturaToUpdate.Nombre = escultura.Nombre;
-                esculturaToUpdate.Tematica = escultura.Tematica;
-                esculturaToUpdate.Fecha = escultura.Fecha;
-                esculturaToUpdate.EscultorID = escultura.EscultorID;
-                esculturaToUpdate.EventoID = escultura.EventoID;
-            }
-            if (escultura.Imagenes != null)
-            {
-                esculturaToUpdate.Imagenes = await this.azureStorageService.UploadAsync(escultura.Imagenes, car.ImagePath);
+                esculturaToUpdate.Nombre = request.Nombre;
+                esculturaToUpdate.EscultorID = request.EscultorID;
+                esculturaToUpdate.EventoID = request.EventoID;
+
+                if (esculturaToUpdate.Imagenes != null)
+                {
+                    esculturaToUpdate.Imagenes = await this._azureStorageService.UploadAsync(request.Imagen);
+                }
+                
+                this._context.Update(esculturaToUpdate);
+                this._context.SaveChangesAsync();
             }
             
-            await _context.SaveChangesAsync();
             return esculturaToUpdate;
         }
 
         public async Task DeleteAsync(int id)
         {
-            var esculturaToDelete = _context.Esculturas.Find(id);
+            var esculturaToDelete = this._context.Esculturas.Find(id);
 
             if (esculturaToDelete != null)
-                {
+            {
                 if (!string.IsNullOrEmpty(esculturaToDelete.Imagenes)) ;
-                    {
-                        await this.azureStorageService.DeleteAsync(esculturaToDelete.Imagenes);
-                    }
-            _context.Esculturas.Remove(esculturaToDelete);
-            await _context.SaveChangesAsync();
+                {
+                    await this._azureStorageService.DeleteAsync(esculturaToDelete.Imagenes);
+                }
+                this._context.Esculturas.Remove(esculturaToDelete);
+                this._context.SaveChangesAsync();
+            }
         }
-    }
 
     }
 
-    public interface ICRUDService<T>
+    public interface ICRUDService
     { 
-        Task<T> CreateAsync(T request);
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetByAsync(int id);
-        Task<T> UpdateAsync(int id, T request);
+        Task<Esculturas> CreateAsync(EsculturaListRequest request);
+        Task<IEnumerable<Esculturas>> GetAllAsync();
+        Task<Esculturas> GetByAsync(int id); 
+        Task<Esculturas> UpdateAsync(int id, EsculturaListRequest request);
         Task DeleteAsync(int id);
-    }
+    } 
 }

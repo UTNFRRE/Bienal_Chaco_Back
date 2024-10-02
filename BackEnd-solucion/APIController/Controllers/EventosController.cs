@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BienalModel;
+using Entidades;
 
 namespace APIController
 {
+/*    
     [Route("[controller]")]
     [ApiController]
 
@@ -72,4 +73,6 @@ namespace APIController
             return Ok(eventoaEliminar);
         }
     }
+*/
 }
+    

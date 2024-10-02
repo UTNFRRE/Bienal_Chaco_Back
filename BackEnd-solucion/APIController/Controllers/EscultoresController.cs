@@ -1,52 +1,46 @@
+/*
+
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using BienalModel;
+using Entidades;
 using Microsoft.AspNetCore.Mvc;
+using Requests;
+using Servicios;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace APIBienal.Controllers
+namespace APIController.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class EscultorController : ControllerBase
     {
-        private readonly EscultorService _escultorService;
-        private readonly BlobServiceClient _blobServiceClient;
-        private readonly string _containerName;
-
-        public EscultorController(BlobServiceClient blobServiceClient, IConfiguration configuration)
+        private readonly ICRUDService escultorService;
+        public EscultorController(ICRUDService escultorService)
         {
-            _escultorService = new EscultorService();
-            _blobServiceClient = blobServiceClient;
-            _containerName = configuration.GetValue<string>("AzureBlobStorage:ContainerName")
-                            ?? throw new ArgumentNullException("AzureBlobStorage:ContainerName configuration is missing.");
-
-            // Ensure the container exists
-            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-            containerClient.CreateIfNotExists();
+            this.escultorService = escultorService;
         }
 
         // CREATE: api/Escultor
         [HttpPost("Create")]
-        public async Task<ActionResult<Escultor>> CreateEscultor(Escultor escultor)
+        public async Task<ActionResult<Escultores>> CreateEscultor(EsculturaListRequest request)
         {
-            await _escultorService.Create(escultor);
-            return CreatedAtAction(nameof(GetEscultorById), new { id = escultor.EscultorId }, escultor);
+            Escultores escultorCreado = await escultorService.CreateAsync(request);
+            return Ok();
         }
 
         // GET: api/Escultor
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<Escultor>>> GetAllEscultores()
+        public async Task<ActionResult<IEnumerable<Escultores>>> GetAllEscultores()
         {
-            var lista_escultores = await _escultorService.GetAll();
+            var lista_escultores = await escultorService.GetAll();
             return Ok(lista_escultores);
         }
 
         // GET: api/Escultor/5
         [HttpGet("GetBy/{id}")]
-        public async Task<ActionResult<Escultor>> GetEscultorById(int id)
+        public async Task<ActionResult<Escultores>> GetEscultorById(int id)
         {
             var escultor = await _escultorService.GetById(id);
             if (escultor == null)
@@ -58,7 +52,7 @@ namespace APIBienal.Controllers
 
         // UPDATE: api/Escultor/5
         [HttpPut("Update")]
-        public async Task<ActionResult<Escultor>> UpdateEscultor(Escultor escultor)
+        public async Task<ActionResult<Escultores>> UpdateEscultor(Escultores escultor)
         {
             var updatedEscultor = await _escultorService.Update(escultor);
             if (updatedEscultor == null)
@@ -70,7 +64,7 @@ namespace APIBienal.Controllers
 
         // DELETE: api/Escultor/5
         [HttpDelete("Delete/{id}")]
-        public async Task<ActionResult<Escultor>> DeleteEscultor(int id)
+        public async Task<ActionResult<Escultores>> DeleteEscultor(int id)
         {
             var escultor = await _escultorService.Delete(id);
             if (escultor == null)
@@ -172,3 +166,4 @@ namespace APIBienal.Controllers
         }
     }
 }
+*/

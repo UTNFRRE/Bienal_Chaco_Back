@@ -15,7 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BienalModel\BienalModel.csproj" />
+    <ProjectReference Include="..\BienalModel\Entidades.csproj" />
+    <ProjectReference Include="..\Contexts\Contexts.csproj" />
+    <ProjectReference Include="..\Requests\Requests.csproj" />
   </ItemGroup>
 
 </Project>

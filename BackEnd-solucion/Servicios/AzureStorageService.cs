@@ -1,6 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
+using Contexts;
 
 namespace Servicios
 {
@@ -15,7 +16,7 @@ namespace Servicios
             this.containerName = "imagenes";
         }
 
-        public async Task<string> UploadAsync(IFormFile file, string blobFilename = null)
+        public async Task<string> UploadAsync(IFormFile file, string? blobFilename = null)
         {
             if (file.Length == 0) return null;
 
@@ -33,7 +34,6 @@ namespace Servicios
             await using (Stream stream = file.OpenReadStream())
             {
                 await blobCliente.UploadAsync(stream, new BlobUploadOptions { HttpHeaders = blobHttpHeader });
-                    ;
 
             }
 
@@ -53,7 +53,7 @@ namespace Servicios
 
     public interface IAzureStorageService
     {
-        Task<string> UploadAsync(IFormFile file, string blobFilename);
+        Task<string> UploadAsync(IFormFile file, string blobFilename = null);
 
         Task DeleteAsync(string blobFilename);
     }
