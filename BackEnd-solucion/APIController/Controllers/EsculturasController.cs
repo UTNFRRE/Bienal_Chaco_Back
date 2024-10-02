@@ -56,15 +56,15 @@ namespace APIBienal.Controllers
         }
 
         // Actualizar escultura
-        [HttpPut("Update {id}")]
-        public async Task<IActionResult> ActualizarEscultura([FromRoute] int id, [FromForm] EsculturaListRequest request)
+        [HttpPut("Update")]
+        public async Task<IActionResult> ActualizarEscultura(int id, [FromForm] EsculturaListRequest request)
         {
             Esculturas esculturaUpdate = await this.esculturaService.UpdateAsync(id, request);
             return Ok(esculturaUpdate);
         }
 
         // Eliminar escultura
-        [HttpDelete("Delete {id}")]
+        [HttpDelete("Delete")]
         public async Task<IActionResult> EliminarEscultura(int id)
         {
             await this.esculturaService.DeleteAsync(id);

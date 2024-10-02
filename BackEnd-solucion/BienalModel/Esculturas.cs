@@ -10,6 +10,7 @@ namespace Entidades
 {
     public class Esculturas
     {
+        [Key]
         public int EsculturaId { get; set; }
 
         public string Nombre { get; set; }

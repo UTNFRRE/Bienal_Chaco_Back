@@ -37,7 +37,7 @@ namespace Servicios
                 EventoID = request.EventoID,
             };
 
-            if (newEscultura.Imagenes != null) //cambiar por lo que viene en el request
+            if (request.Imagen!= null) //cambiar por lo que viene en el request
             {
                 newEscultura.Imagenes = await this._azureStorageService.UploadAsync(request.Imagen);
             }
@@ -68,9 +68,9 @@ namespace Servicios
                 esculturaToUpdate.EscultorID = request.EscultorID;
                 esculturaToUpdate.EventoID = request.EventoID;
 
-                if (esculturaToUpdate.Imagenes != null)
+                if (request.Imagen != null)
                 {
-                    esculturaToUpdate.Imagenes = await this._azureStorageService.UploadAsync(request.Imagen);
+                    esculturaToUpdate.Imagenes = await this._azureStorageService.UploadAsync(request.Imagen, esculturaToUpdate.Imagenes);
                 }
                 
                 this._context.Update(esculturaToUpdate);

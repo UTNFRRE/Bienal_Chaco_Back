@@ -29,7 +29,9 @@ namespace Contexts
             modelBuilder.Entity<Esculturas>(entity =>
             {
                 //genera solo la id
-                entity.Property(e => e.EsculturaId).ValueGeneratedOnAdd();
+                entity.Property(e => e.EsculturaId)
+                    .ValueGeneratedOnAdd();
+
 
                 entity.Property(e => e.Nombre)
                     .HasMaxLength(20)

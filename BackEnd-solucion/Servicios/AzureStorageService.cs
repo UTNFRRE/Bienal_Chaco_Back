@@ -16,7 +16,7 @@ namespace Servicios
             this.containerName = "imagenes";
         }
 
-        public async Task<string> UploadAsync(IFormFile file, string? blobFilename = null)
+        public async Task<string> UploadAsync(IFormFile file, string blobFilename = null)
         {
             if (file.Length == 0) return null;
 
