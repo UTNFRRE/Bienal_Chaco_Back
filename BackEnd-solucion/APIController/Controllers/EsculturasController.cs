@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Entidades;
 using Servicios;
 using Requests;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace APIBienal.Controllers
 {
@@ -28,7 +29,7 @@ namespace APIBienal.Controllers
         public async Task<IActionResult> CrearEscultura([FromForm] EsculturaListRequest request)
         {
             Esculturas esculturaCreate = await this.esculturaService.CreateAsync(request);
-            return Ok(esculturaCreate);
+            return CreatedAtAction(nameof(ObtenerEscultura), new { id = esculturaCreate.EsculturaId }, esculturaCreate);
         }
 
         // Obtener todas las esculturas
@@ -70,7 +71,7 @@ namespace APIBienal.Controllers
         public async Task<IActionResult> EliminarEscultura(int id)
         {
             await this.esculturaService.DeleteAsync(id);
-            return Ok();
+            return NoContent();
         }
         
     }
