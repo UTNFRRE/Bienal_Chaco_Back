@@ -3,13 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35201.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIController", "APIController\APIController.csproj", "{20641873-B86E-442D-B7C0-0B75443D30C5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventos", "Eventos\Eventos.csproj", "{DA51EB0F-6265-4006-8932-39D7FB25EDA2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Escultores", "Escultores\Escultores.csproj", "{3AC451EE-BCFF-4283-B774-41D1BC0CF9C7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esculturas", "Esculturas\Esculturas.csproj", "{F325BFEB-3D15-48F3-93A0-6C47CB585BE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIController", "APIController\APIController.csproj", "{20641873-B86E-442D-B7C0-0B75443D30C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,18 +15,6 @@ Global
 		{20641873-B86E-442D-B7C0-0B75443D30C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20641873-B86E-442D-B7C0-0B75443D30C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20641873-B86E-442D-B7C0-0B75443D30C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA51EB0F-6265-4006-8932-39D7FB25EDA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA51EB0F-6265-4006-8932-39D7FB25EDA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA51EB0F-6265-4006-8932-39D7FB25EDA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA51EB0F-6265-4006-8932-39D7FB25EDA2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3AC451EE-BCFF-4283-B774-41D1BC0CF9C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3AC451EE-BCFF-4283-B774-41D1BC0CF9C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3AC451EE-BCFF-4283-B774-41D1BC0CF9C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3AC451EE-BCFF-4283-B774-41D1BC0CF9C7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F325BFEB-3D15-48F3-93A0-6C47CB585BE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F325BFEB-3D15-48F3-93A0-6C47CB585BE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F325BFEB-3D15-48F3-93A0-6C47CB585BE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F325BFEB-3D15-48F3-93A0-6C47CB585BE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
