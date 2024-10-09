@@ -11,7 +11,6 @@ namespace Requests
         public int EscultorID { get; set; }
         [Required]
         public int EventoID { get; set; }
-
-        public IFormFile Imagen { get; set; }
+        public IFormFile? Imagen { get; set; }
     }
 }
