@@ -1,8 +1,14 @@
-using Esculturas;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Entidades;
+using Servicios;
+using Requests;
 
 namespace APIBienal.Controllers
 {
@@ -10,34 +16,38 @@ namespace APIBienal.Controllers
     [Route("[controller]")]
     public class EsculturasController : ControllerBase
     {
-        private readonly EsculturasServices _esculturaService;
-        public EsculturasController()
+        private readonly ICRUDService esculturaService;
+    
+        public EsculturasController(ICRUDService esculturasService)
         {
-            _esculturaService = new EsculturasServices();
+            this.esculturaService = esculturasService;
         }
 
+        // Crear Escultura (CRUD para esculturas)
         [HttpPost("Create")]
-        public async Task<IActionResult> CrearEscultura(EsculturasModel escultura)
+        public async Task<IActionResult>CrearEscultura([FromForm] EsculturaListRequest request)
         {
-            await _esculturaService.CrearEscultura(escultura);
-            return Ok();
+            Esculturas esculturaCreate = await this.esculturaService.CreateAsync(request);
+            return Ok(esculturaCreate);
         }
 
+        // Obtener todas las esculturas
         [HttpGet("GetAll")]
         public async Task<IActionResult> ObtenerTodasLasEsculturas()
         {
-            var esculturas = await _esculturaService.ObtenerTodasLasEsculturas();
-            if (esculturas == null || esculturas.Count == 0)
+            var esculturas = await this.esculturaService.GetAllAsync();
+            if (esculturas == null )
             {
                 return NotFound();
             }
             return Ok(esculturas);
         }
 
+        // Obtener escultura por ID
         [HttpGet("GetByID")]
         public async Task<IActionResult> ObtenerEscultura(int id)
         {
-            var escultura = await _esculturaService.ObtenerEscultura(id);
+            var escultura = await this.esculturaService.GetByAsync(id);
             if (escultura == null)
             {
                 return NotFound();
@@ -45,18 +55,21 @@ namespace APIBienal.Controllers
             return Ok(escultura);
         }
 
+        // Actualizar escultura
         [HttpPut("Update")]
-        public async Task<IActionResult> ActualizarEscultura(EsculturasModel escultura)
+        public async Task<IActionResult> ActualizarEscultura(int id, [FromForm] EsculturaListRequest request)
         {
-            await _esculturaService.ActualizarEscultura(escultura);
-            return Ok();
+            Esculturas esculturaUpdate = await this.esculturaService.UpdateAsync(id, request);
+            return Ok(esculturaUpdate);
         }
 
+        // Eliminar escultura
         [HttpDelete("Delete")]
         public async Task<IActionResult> EliminarEscultura(int id)
         {
-            await _esculturaService.EliminarEscultura(id);
+            await this.esculturaService.DeleteAsync(id);
             return Ok();
         }
+        
     }
 }
