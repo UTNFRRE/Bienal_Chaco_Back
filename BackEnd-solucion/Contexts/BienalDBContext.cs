@@ -48,8 +48,6 @@ namespace Contexts
                     .HasMaxLength(100)
                     .IsUnicode(false);
             });
-
- 
         }
 
       

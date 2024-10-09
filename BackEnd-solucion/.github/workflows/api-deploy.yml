@@ -1,0 +1,42 @@
+name: Deploy Api to Azure
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - '*'
+
+env:
+  AZURE_WEBAPP_NAME: BienalAPI # nombre de tu Azure Web App
+  AZURE_WEBAPP_PACKAGE_PATH: '.' # ruta de salida del paquete de la app
+  DOTNET_VERSION: '8.0.x' # versión de .NET
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest   
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore NuGet packages
+        run: dotnet restore
+
+      - name: Build the project
+        run: dotnet build --configuration Release
+
+      - name: Publish the project
+        run: dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }} # nombre de la app en Azure
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE}} # secreto con el perfil de publicación
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp
