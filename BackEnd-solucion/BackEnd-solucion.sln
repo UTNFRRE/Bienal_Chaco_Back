@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35201.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIController", "APIController\APIController.csproj", "{20641873-B86E-442D-B7C0-0B75443D30C5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entidades", "BienalModel\Entidades.csproj", "{E1CF8A25-5DB2-4D59-B0E1-9F3160149B25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "BienalModel\Models.csproj", "{E1CF8A25-5DB2-4D59-B0E1-9F3160149B25}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Servicios", "Servicios\Servicios.csproj", "{AFCA1F17-B674-4C16-9716-DB4B78736DE0}"
 EndProject
