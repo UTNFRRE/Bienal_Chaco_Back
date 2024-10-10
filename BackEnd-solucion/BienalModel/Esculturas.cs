@@ -12,12 +12,15 @@ namespace Entidades
     {
         [Key]
         public int EsculturaId { get; set; }
-
+        [Required]
+        [MaxLength(100)]
         public string Nombre { get; set; }
-      
-        public int EscultorID { get; set; }
         
+        [Required]
+        public int EscultorID { get; set; }
+       
         public int EventoID { get; set; }
+        
         public string Imagenes { get; set; }
     }
 }
