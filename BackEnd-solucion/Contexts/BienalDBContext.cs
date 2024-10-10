@@ -15,14 +15,14 @@ namespace Contexts
             : base(options)
         {
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
             // InMemoryDatabase para pruebas, después cambiar a SQL Server
-            optionsBuilder.UseInMemoryDatabase("BienalDB");
+            //optionsBuilder.UseInMemoryDatabase("BienalDB");
             // optionsBuilder.UseSqlServer(@"Server=.\;Database=BienalDB;Trusted_Connection=True;");
-        }
+        //}
 
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //configuración de restricciones al crear la base de datos
