@@ -11,15 +11,14 @@ using Requests;
 var builder = WebApplication.CreateBuilder(args);
 
 // Cargar las configuraciones de Azure Blob Storage desde appsettings
-
-builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("BienalDB"));
+//crear variable para cadena de conexion
+var connectionString = builder.Configuration.GetConnectionString("Connection");
+builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();
 builder.Services.AddScoped<ICRUDService, EsculturasServices>();
 
 builder.Services.AddControllers();
-
-
 
 // Configuración de Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
