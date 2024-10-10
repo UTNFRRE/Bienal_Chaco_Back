@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("BienalDB"));
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();
-builder.Services.AddScoped<ICRUDService, EsculturasServices>();
+builder.Services.AddScoped<IEsculturaServices, EsculturasServices>();
 
 builder.Services.AddControllers();
 

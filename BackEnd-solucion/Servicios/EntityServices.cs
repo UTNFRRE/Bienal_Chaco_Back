@@ -17,7 +17,7 @@ using Contexts;
 
 namespace Servicios
 {
-    public class EsculturasServices : ICRUDService
+    public class EsculturasServices : IEsculturaServices
     {
         private BienalDbContext _context;
         private IAzureStorageService _azureStorageService;
@@ -48,9 +48,20 @@ namespace Servicios
             return newEscultura;
         }
 
-        public async Task<IEnumerable<Esculturas>> GetAllAsync()
+        public async Task<IEnumerable<Esculturas>> GetAllAsync(Escultor? idEscultorFiltro)
         {
-            return this._context.Esculturas.ToList();
+            var esculturasEncontradas = new List<Esculturas>();
+
+            if (idEscultorFiltro.HasValue)
+            {
+                esculturasEncontradas = this._context.Esculturas.Where(e => e.EscultorID == idEscultorFiltro.Value).ToList();
+            }
+            else
+            {
+                esculturasEncontradas = this._context.Esculturas.ToList();
+            }
+
+            return esculturasEncontradas;
         }
 
         public async Task<Esculturas> GetByAsync(int id)
@@ -97,10 +108,10 @@ namespace Servicios
 
     }
 
-    public interface ICRUDService
+    public interface IEsculturaServices
     { 
         Task<Esculturas> CreateAsync(EsculturaListRequest request);
-        Task<IEnumerable<Esculturas>> GetAllAsync();
+        Task<IEnumerable<Esculturas>> GetAllAsync(Escultor? idEscultorFiltro);
         Task<Esculturas> GetByAsync(int id); 
         Task<Esculturas> UpdateAsync(int id, EsculturaListRequest request);
         Task DeleteAsync(int id);

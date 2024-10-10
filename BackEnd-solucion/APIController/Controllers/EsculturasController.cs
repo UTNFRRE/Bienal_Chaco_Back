@@ -17,9 +17,9 @@ namespace APIBienal.Controllers
     [Route("[controller]")]
     public class EsculturasController : ControllerBase
     {
-        private readonly ICRUDService esculturaService;
+        private readonly IEsculturaServices esculturaService;
 
-        public EsculturasController(ICRUDService esculturasService)
+        public EsculturasController(IEsculturaServices esculturasService)
         {
             this.esculturaService = esculturasService;
         }
@@ -32,11 +32,12 @@ namespace APIBienal.Controllers
             return CreatedAtAction(nameof(ObtenerEscultura), new { id = esculturaCreate.EsculturaId }, esculturaCreate);
         }
 
-        // Obtener todas las esculturas
+        //Obtener todas las esculturas o esculturas por escultor
         [HttpGet]
-        public async Task<IActionResult> ObtenerTodasLasEsculturas()
+        public async Task<IActionResult> ObtenerEsculturasPorEscultor([FromQuery] int? idEscultor)
         {
-            var esculturas = await this.esculturaService.GetAllAsync();
+            var esculturas = await this.esculturaService.GetAllAsync(idEscultor);
+            
             if (esculturas == null)
             {
                 return NotFound();
