@@ -3,10 +3,10 @@ name: Deploy Api to Azure
 on:
   push:
     branches:
-      - dev
+      - release
   pull_request:
     branches:
-      - '*'
+      - 'release'
 
 env:
   AZURE_WEBAPP_NAME: BienalAPI # nombre de tu Azure Web App
