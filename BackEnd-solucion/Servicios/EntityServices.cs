@@ -34,7 +34,9 @@ namespace Servicios
             {
                 Nombre = request.Nombre,
                 EscultorID = request.EscultorID,
-                EventoID = request.EventoID,
+                Descripcion = request.Descripcion,
+                FechaCreacion = request.FechaCreacion,
+                Tematica = request.Tematica,
             };
 
             if (request.Imagen!= null) //cambiar por lo que viene en el request
@@ -66,7 +68,9 @@ namespace Servicios
             {
                 esculturaToUpdate.Nombre = request.Nombre;
                 esculturaToUpdate.EscultorID = request.EscultorID;
-                esculturaToUpdate.EventoID = request.EventoID;
+                esculturaToUpdate.Descripcion = request.Descripcion;
+                esculturaToUpdate.FechaCreacion = request.FechaCreacion;
+                esculturaToUpdate.Tematica = request.Tematica;
 
                 if (request.Imagen != null)
                 {
