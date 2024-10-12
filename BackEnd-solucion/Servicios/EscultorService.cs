@@ -32,6 +32,7 @@ namespace Servicios
                 DNI = request.DNI,
                 Pais = request.Pais,
                 Email = request.Email,
+                Contraseña = request.Contraseña,
                 Telefono = request.Telefono,
                 Biografia = request.Biografia
             };
@@ -40,7 +41,7 @@ namespace Servicios
             if (request.Imagen != null)
             {
                 newEscultor.Foto = await _azureStorageService.UploadAsync(request.Imagen);
-            }
+            } else { newEscultor.Foto = null; }
 
             // Se añade el nuevo escultor a la base de datos a través del contexto de Entity Framework.
             _context.Escultores.Add(newEscultor);

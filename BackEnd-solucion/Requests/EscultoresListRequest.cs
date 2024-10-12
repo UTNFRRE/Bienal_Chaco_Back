@@ -24,6 +24,6 @@ namespace Requests
         public string? Contraseña { get; set; } = string.Empty;
         public string? Telefono { get; set; }
         public string? Biografia { get; set; } = string.Empty;
-        public IFormFile Imagen { get; set; }
+        public IFormFile? Imagen { get; set; }
     }
 }
