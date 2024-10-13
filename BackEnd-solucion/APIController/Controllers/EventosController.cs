@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Entidades;
 using Servicios;
 using Requests;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace APIBienal.Controllers
 {
@@ -20,14 +21,14 @@ namespace APIBienal.Controllers
     {
         private readonly ICRUDServiceEvent eventoService;
 
-        public EventosController( ICRUDServiceEvent  eventosServices)
+        public EventosController(ICRUDServiceEvent eventosServices)
         {
-            this.eventoService  = eventosServices;
+            this.eventoService = eventosServices;
         }
 
         // Crear un nuevo evento
         [HttpPost("Create")]
-        public async Task<ActionResult<Eventos>> CreateEvento([FromForm]EventoListRequest request)
+        public async Task<IActionResult> CreateEvento([FromForm]EventoListRequest request)
         {
             var createdEvento = await this.eventoService.CreateEventoAsync(request);
             return Ok(createdEvento);
@@ -35,7 +36,7 @@ namespace APIBienal.Controllers
 
         // Obtener todos los eventos
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<Eventos>>> GetAllEventos()
+        public async Task<IActionResult> GetAllEventos()
         {
             var listadeeventos = await this.eventoService.GetAllEventosAsync();
             return listadeeventos == null ? NotFound() : Ok (listadeeventos);
@@ -43,7 +44,7 @@ namespace APIBienal.Controllers
 
         // Obtener un evento por ID
         [HttpGet("Getbyid")]
-        public async Task<ActionResult<Eventos>> GetEventoById(int id)
+        public async Task<IActionResult> GetEventoById(int id)
         {
             var eventoObtenido = await this.eventoService.GetEventoByIdAsync(id);
 

@@ -11,7 +11,7 @@ namespace Entidades
 {
         public class Eventos
        {
-        [Key]
+        [Key]   //Para hacer un post pide necesariamente el id, seria interesante que no lo requiera
         public int Id { get; set; }
 
         [Required]

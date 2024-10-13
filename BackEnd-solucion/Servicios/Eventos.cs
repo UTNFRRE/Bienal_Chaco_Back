@@ -53,7 +53,7 @@ namespace Servicios
         // Obtener un evento por su ID
         public async Task<Eventos> GetEventoByIdAsync(int id)
         {
-            return await _context.Eventos.FindAsync(id);
+            return await this._context.Eventos.FindAsync(id);
         }
 
         // Actualizar un evento existente
@@ -99,10 +99,7 @@ namespace Servicios
         Task<IEnumerable<Eventos>> GetAllEventosAsync();
         Task<Eventos> GetEventoByIdAsync(int id);
         Task<Eventos> UpdateEventoAsync(int id,EventoListRequest evento);
-
         Task DeleteEventoAsync(int id);
-
-
     }
 
 
