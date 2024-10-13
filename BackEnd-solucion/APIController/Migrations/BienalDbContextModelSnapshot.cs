@@ -88,26 +88,27 @@ namespace APIController.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EsculturaId"));
 
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<int>("EscultorID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EscultoresEscultorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EventoID")
-                        .HasColumnType("int");
+                     b.Property<DateOnly>("FechaCreacion")
+                        .HasColumnType("date");
 
                     b.Property<string>("Imagenes")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Tematica")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EsculturaId");
 

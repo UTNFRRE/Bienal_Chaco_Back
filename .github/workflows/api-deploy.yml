@@ -3,13 +3,13 @@ name: Deploy Api to Azure
 on:
   push:
     branches:
-      - dev
+      - release
   pull_request:
     branches:
-      - '*'
+      - 'release'
 
 env:
-  AZURE_WEBAPP_NAME: BienalAPI # nombre de tu Azure Web App
+  AZURE_WEBAPP_NAME: BienalChaco # nombre de tu Azure Web App
   AZURE_WEBAPP_PACKAGE_PATH: '.' # ruta de salida del paquete de la app
   DOTNET_VERSION: '8.0.x' # versión de .NET
 
@@ -32,7 +32,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Publish the project
-        run: dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp
+        run: dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH}}/myapp
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
