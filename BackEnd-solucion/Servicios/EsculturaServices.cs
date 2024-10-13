@@ -17,7 +17,7 @@ using Contexts;
 
 namespace Servicios
 {
-    public class EsculturasServices : ICRUDService
+    public class EsculturasServices : ICRUDEsculturaService
     {
         private BienalDbContext _context;
         private IAzureStorageService _azureStorageService;
@@ -44,8 +44,8 @@ namespace Servicios
                 newEscultura.Imagenes = await this._azureStorageService.UploadAsync(request.Imagen);
             }
 
-            this._context.Esculturas.Add(newEscultura);
-            this._context.SaveChangesAsync();
+            await this._context.Esculturas.AddAsync(newEscultura);
+            await this._context.SaveChangesAsync();
 
             return newEscultura;
         }
@@ -101,7 +101,7 @@ namespace Servicios
 
     }
 
-    public interface ICRUDService
+    public interface ICRUDEsculturaService
     { 
         Task<Esculturas> CreateAsync(EsculturaListRequest request);
         Task<IEnumerable<Esculturas>> GetAllAsync();
