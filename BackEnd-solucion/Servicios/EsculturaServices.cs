@@ -28,7 +28,7 @@ namespace Servicios
             this._azureStorageService = azureStorageService;
         }
 
-        public async Task<Esculturas> CreateAsync(EsculturaListRequest request) //cambiar por esculturaRequest
+        public async Task<Esculturas>? CreateAsync(EsculturaListRequest request) //cambiar por esculturaRequest
         {
             var newEscultura = new Esculturas()
             {
@@ -50,17 +50,17 @@ namespace Servicios
             return newEscultura;
         }
 
-        public async Task<IEnumerable<Esculturas>> GetAllAsync()
+        public async Task<IEnumerable<Esculturas>>? GetAllAsync()
         {
             return this._context.Esculturas.ToList();
         }
 
-        public async Task<Esculturas> GetByAsync(int id)
+        public async Task<Esculturas>? GetByAsync(int id)
         {
             return this._context.Esculturas.Find(id);
         }
 
-        public async Task<Esculturas> UpdateAsync(int id, EsculturaListRequest request)
+        public async Task<Esculturas>? UpdateAsync(int id, EsculturaListRequest request)
         {
             var esculturaToUpdate = this._context.Esculturas.Find(id);
             if (esculturaToUpdate != null)
@@ -84,20 +84,25 @@ namespace Servicios
             return esculturaToUpdate;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var esculturaToDelete = this._context.Esculturas.Find(id);
+            var esculturaToDelete = await this._context.Esculturas.FindAsync(id);
 
-            if (esculturaToDelete != null)
+            if (esculturaToDelete == null)
             {
-                if (!string.IsNullOrEmpty(esculturaToDelete.Imagenes)) ;
-                {
-                    await this._azureStorageService.DeleteAsync(esculturaToDelete.Imagenes);
-                }
-                this._context.Esculturas.Remove(esculturaToDelete);
-                this._context.SaveChangesAsync();
+                return false;
             }
+
+            if (!string.IsNullOrEmpty(esculturaToDelete.Imagenes))
+            {
+                await this._azureStorageService.DeleteAsync(esculturaToDelete.Imagenes);
+            }
+            this._context.Esculturas.Remove(esculturaToDelete);
+            await this._context.SaveChangesAsync();
+            return true;
+
         }
+    }
 
     }
 
@@ -107,6 +112,10 @@ namespace Servicios
         Task<IEnumerable<Esculturas>> GetAllAsync();
         Task<Esculturas> GetByAsync(int id); 
         Task<Esculturas> UpdateAsync(int id, EsculturaListRequest request);
-        Task DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id);
+   
+
+
+        
     } 
-}
+

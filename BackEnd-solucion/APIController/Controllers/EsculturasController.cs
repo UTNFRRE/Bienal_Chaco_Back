@@ -39,7 +39,7 @@ namespace APIBienal.Controllers
             var esculturas = await this.esculturaService.GetAllAsync();
             if (esculturas == null)
             {
-                return NotFound();
+                return NotFound("No se encontraron esculturas.");
             }
             return Ok(esculturas);
         }
@@ -51,7 +51,7 @@ namespace APIBienal.Controllers
         var escultura = await this.esculturaService.GetByAsync(id);
         if (escultura == null)
         {
-            return NotFound();
+            return NotFound("No se encontro una escultura con el id proporcionado");
         }
         return Ok(escultura);
     }
@@ -61,7 +61,11 @@ namespace APIBienal.Controllers
     public async Task<IActionResult> ActualizarEscultura(int id, [FromForm] EsculturaListRequest request)
     {
         Esculturas esculturaUpdate = await this.esculturaService.UpdateAsync(id, request);
-        return Ok(esculturaUpdate);
+            if (esculturaUpdate == null)
+            { 
+                return NotFound("No se encontro una escultura con el id proporcionado");
+            }   
+         return Ok(esculturaUpdate);
     }
 
     //implementar patch con imagen para escultura
@@ -70,8 +74,12 @@ namespace APIBienal.Controllers
     [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarEscultura(int id)
         {
-            await this.esculturaService.DeleteAsync(id);
-            return NoContent();
+            var resultadoDelete = await this.esculturaService.DeleteAsync(id);
+            if (resultadoDelete == false)
+            {
+                return NotFound("No se encontro una escultura con el id proporcionado");
+            }
+            return Ok("Se elimino exitosamente la escultura");
         }
         
     }
