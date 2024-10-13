@@ -17,7 +17,7 @@ using Contexts;
 
 namespace Servicios
 {
-    public class EventosServices : ICRUDService
+    public class EventosServices : ICRUDServiceEvent
     {
         private BienalDbContext _context;
 
@@ -26,21 +26,21 @@ namespace Servicios
             this._context = context;
         }
 
-        public async Task<Eventos> CreateEventoAsync(EventosListRequest request)
+        public async Task<Eventos> CreateEventoAsync(EventoListRequest request)
         {
-            var newEvento = new Eventos()
+            var newEvento = new Eventos
             {
                 Nombre = request.Nombre,
                 Fecha = request.Fecha,
                 Lugar = request.Lugar,
                 Descripcion = request.Descripcion,
                 Tematica = request.Tematica
-            }
+            };
             
             
             
-            this._context.Eventos.Add(evento);
-            this._context.SaveChangesAsync();
+            this._context.Eventos.Add(newEvento);
+            await this._context.SaveChangesAsync();
             return newEvento;
         }
 
@@ -53,11 +53,11 @@ namespace Servicios
         // Obtener un evento por su ID
         public async Task<Eventos> GetEventoByIdAsync(int id)
         {
-            return await this._context.Eventos.FindAsync(id);
+            return await _context.Eventos.FindAsync(id);
         }
 
         // Actualizar un evento existente
-        public async Task<Eventos> UpdateEventoAsync(EventosListRequest request)
+        public async Task<Eventos> UpdateEventoAsync(int id,EventoListRequest request)
         {
             var eventoExistente = await this._context.Eventos.FindAsync(id);
             if (eventoExistente != null)
@@ -92,16 +92,17 @@ namespace Servicios
         }
     }
 
-    public interface ICRUDService
+    public interface ICRUDServiceEvent
     {
         
         Task<Eventos> CreateEventoAsync(EventoListRequest request);
         Task<IEnumerable<Eventos>> GetAllEventosAsync();
         Task<Eventos> GetEventoByIdAsync(int id);
-        Task<Eventos> UpdateEventoAsync(EventosListRequest evento);
+        Task<Eventos> UpdateEventoAsync(int id,EventoListRequest evento);
+
+        Task DeleteEventoAsync(int id);
 
 
-        
     }
 
 

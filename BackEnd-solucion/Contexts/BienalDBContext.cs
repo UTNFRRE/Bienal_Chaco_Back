@@ -9,7 +9,7 @@ namespace Contexts
 
         // public DbSet<Escultores> Escultores { get; set; }
         public DbSet<Esculturas> Esculturas { get; set; }
-        // public DbSet<Eventos> Eventos { get; set; }
+        public DbSet<Eventos> Eventos { get; set; }
 
         public BienalDbContext(DbContextOptions<BienalDbContext> options)
             : base(options)

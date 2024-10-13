@@ -18,18 +18,18 @@ namespace APIBienal.Controllers
 
     public class EventosController : ControllerBase
     {
-        private readonly ICRUDService eventosServices;
+        private readonly ICRUDServiceEvent eventoService;
 
-        public EventosController( ICRUDService  eventosServices)
+        public EventosController( ICRUDServiceEvent  eventosServices)
         {
-            this.eventoService  = eventosService;
+            this.eventoService  = eventosServices;
         }
 
         // Crear un nuevo evento
         [HttpPost("Create")]
-        public async Task<ActionResult<Eventos>> CreateEvento([FromForm]EventosListRequest request)
+        public async Task<ActionResult<Eventos>> CreateEvento([FromForm]EventoListRequest request)
         {
-            var createdEvento = await this.eventoServices.CreateEventoAsync(request);
+            var createdEvento = await this.eventoService.CreateEventoAsync(request);
             return Ok(createdEvento);
         }
 
