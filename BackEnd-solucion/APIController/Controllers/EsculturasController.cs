@@ -26,9 +26,13 @@ namespace APIBienal.Controllers
 
         // Crear Escultura (CRUD para esculturas)
         [HttpPost]
-        public async Task<IActionResult> CrearEscultura([FromForm] EsculturaListRequest request)
+        public async Task<IActionResult> CrearEscultura([FromForm] EsculturaPostPut request)
         {
             Esculturas esculturaCreate = await this.esculturaService.CreateAsync(request);
+            if (esculturaCreate == null)
+            {
+                return BadRequest("Ya existe una escultura con nombre asignado");
+            }
             return CreatedAtAction(nameof(ObtenerEscultura), new { id = esculturaCreate.EsculturaId }, esculturaCreate);
         }
 
@@ -58,20 +62,31 @@ namespace APIBienal.Controllers
 
     // Actualizar escultura
     [HttpPut("{id}")]
-    public async Task<IActionResult> ActualizarEscultura(int id, [FromForm] EsculturaListRequest request)
+    public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPostPut request)
     {
-        Esculturas esculturaUpdate = await this.esculturaService.UpdateAsync(id, request);
+        Esculturas? esculturaUpdate = await this.esculturaService.UpdateEsculturaAsync(id, request);
             if (esculturaUpdate == null)
             { 
-                return NotFound("No se encontro una escultura con el id proporcionado");
+                return NotFound("Ocurrio un error al actualizar escultura. Intentelo nuevamente. Verifique si existe la escultura o si ya existe otra escultura con el nombre proporcionado");
             }   
          return Ok(esculturaUpdate);
     }
 
-    //implementar patch con imagen para escultura
+    [HttpPatch("{id}")]
+        public async Task<IActionResult> ActualizarPropiedadEscultura(int id, [FromForm] EsculturaPatch request)
+        {
+            Esculturas? esculturaUpdate = await this.esculturaService.UpdatePatchAsync(id, request);
+            if (esculturaUpdate == null)
+            {
+                return NotFound("Ocurrio un error al actualizar escultura. Intentelo nuevamente. Verifique si existe la escultura o si ya existe otra escultura con el nombre proporcionado");
+            }
+            return Ok(esculturaUpdate);
+        }
 
-    // Eliminar escultura
-    [HttpDelete("{id}")]
+        //implementar patch con imagen para escultura
+
+        // Eliminar escultura
+        [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarEscultura(int id)
         {
             var resultadoDelete = await this.esculturaService.DeleteAsync(id);
