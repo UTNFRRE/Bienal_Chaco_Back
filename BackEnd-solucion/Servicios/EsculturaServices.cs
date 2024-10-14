@@ -67,14 +67,14 @@ namespace Servicios
             return newEscultura;
         }
 
-        public async Task<IEnumerable<Esculturas>>? GetAllAsync()
+        public async Task<IEnumerable<Esculturas>> GetAllAsync()
         {
-            return this._context.Esculturas.ToList();
+            return await this._context.Esculturas.ToListAsync();
         }
 
         public async Task<Esculturas>? GetByAsync(int id)
         {
-            return this._context.Esculturas.Find(id);
+            return await this._context.Esculturas.FindAsync(id);
         }
 
         ///modificar UpdateAsync para sobrecargar con parametro EsculturaPatchRequest
@@ -184,7 +184,7 @@ namespace Servicios
     { 
         Task<Esculturas>? CreateAsync(EsculturaPostPut request);
         Task<IEnumerable<Esculturas>> GetAllAsync();
-        Task<Esculturas> GetByAsync(int id); 
+        Task<Esculturas>? GetByAsync(int id); 
         Task<Esculturas>? UpdateEsculturaAsync(int id, EsculturaPostPut request);
         Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request);
         Task<bool> DeleteAsync(int id);
