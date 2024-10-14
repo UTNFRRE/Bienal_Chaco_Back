@@ -20,6 +20,7 @@ builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();
 
 builder.Services.AddScoped<ICRUDEsculturaService, EsculturasServices>();
 builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();
+builder.Services.AddScoped<ICRUDServicesEscultores, EscultoresServices>();
 
 builder.Services.AddControllers();
 
