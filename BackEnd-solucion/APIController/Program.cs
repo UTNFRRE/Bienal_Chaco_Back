@@ -17,11 +17,13 @@ builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(c
      b => b.MigrationsAssembly("APIController")));
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();
-builder.Services.AddScoped<ICRUDService, EsculturasServices>();
+
+builder.Services.AddScoped<ICRUDEsculturaService, EsculturasServices>();
 builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();
+
 builder.Services.AddControllers();
 
-// Configuración de Swagger/OpenAPI
+// ConfiguraciÃ³n de Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

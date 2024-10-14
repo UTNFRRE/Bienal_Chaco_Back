@@ -4,6 +4,7 @@ using Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIController.Migrations
 {
     [DbContext(typeof(BienalDbContext))]
-    partial class BienalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241012220954_MigracionEscultor")]
+    partial class MigracionEscultor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,27 +91,26 @@ namespace APIController.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EsculturaId"));
 
-                    b.Property<string>("Descripcion")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<int>("EscultorID")
                         .HasColumnType("int");
 
-                     b.Property<DateOnly>("FechaCreacion")
-                        .HasColumnType("date");
+                    b.Property<int?>("EscultoresEscultorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventoID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Imagenes")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Tematica")
-                        .HasColumnType("nvarchar(max)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("EsculturaId");
 
@@ -117,41 +119,6 @@ namespace APIController.Migrations
                     b.ToTable("Esculturas");
                 });
 
-
-            modelBuilder.Entity("Entidades.Eventos", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Lugar")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Tematica")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Eventos");
-                    
             modelBuilder.Entity("Entidades.Esculturas", b =>
                 {
                     b.HasOne("Entidades.Escultores", null)
@@ -162,7 +129,6 @@ namespace APIController.Migrations
             modelBuilder.Entity("Entidades.Escultores", b =>
                 {
                     b.Navigation("Esculturas");
-
                 });
 #pragma warning restore 612, 618
         }

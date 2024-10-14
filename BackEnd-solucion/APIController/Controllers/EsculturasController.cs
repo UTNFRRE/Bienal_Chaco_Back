@@ -17,9 +17,9 @@ namespace APIBienal.Controllers
     [Route("[controller]")]
     public class EsculturasController : ControllerBase
     {
-        private readonly ICRUDService esculturaService;
+        private readonly ICRUDEsculturaService esculturaService;
 
-        public EsculturasController(ICRUDService esculturasService)
+        public EsculturasController(ICRUDEsculturaService esculturasService)
         {
             this.esculturaService = esculturasService;
         }

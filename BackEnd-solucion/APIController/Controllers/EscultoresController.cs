@@ -1,5 +1,3 @@
-/*
-
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Entidades;
@@ -16,33 +14,31 @@ namespace APIController.Controllers
     [Route("[controller]")]
     public class EscultorController : ControllerBase
     {
-        private readonly ICRUDService escultorService;
-        public EscultorController(ICRUDService escultorService)
+        private readonly ICRUDServicesEscultores escultorService;
+        public EscultorController(ICRUDServicesEscultores escultoresService)
         {
-            this.escultorService = escultorService;
+            this.escultorService = escultoresService;
         }
 
         // CREATE: api/Escultor
-        [HttpPost("Create")]
-        public async Task<ActionResult<Escultores>> CreateEscultor(EsculturaListRequest request)
+        [HttpPost]
+        public async Task<IActionResult> CreateEscultor([FromForm] EscultoresListRequest request)
         {
-            Escultores escultorCreado = await escultorService.CreateAsync(request);
-            return Ok();
+            Escultores escultorCreado = await this.escultorService.CreateAsync(request);
+            return CreatedAtAction(nameof(GetEscultorById), new { id = escultorCreado.EscultorId }, escultorCreado);
         }
 
-        // GET: api/Escultor
-        [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<Escultores>>> GetAllEscultores()
+        [HttpGet]
+        public async Task<ActionResult> GetAllEscultores()
         {
-            var lista_escultores = await escultorService.GetAll();
+            var lista_escultores = await this.escultorService.GetAllAsync();
             return Ok(lista_escultores);
         }
 
-        // GET: api/Escultor/5
-        [HttpGet("GetBy/{id}")]
-        public async Task<ActionResult<Escultores>> GetEscultorById(int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetEscultorById(int id)
         {
-            var escultor = await _escultorService.GetById(id);
+            var escultor = await this.escultorService.GetByAsync(id);
             if (escultor == null)
             {
                 return NotFound();
@@ -50,11 +46,10 @@ namespace APIController.Controllers
             return Ok(escultor);
         }
 
-        // UPDATE: api/Escultor/5
-        [HttpPut("Update")]
-        public async Task<ActionResult<Escultores>> UpdateEscultor(Escultores escultor)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEscultor(int id,[FromForm] EscultoresListRequest request)
         {
-            var updatedEscultor = await _escultorService.Update(escultor);
+            var updatedEscultor = await this.escultorService.UpdateAsync(id, request);
             if (updatedEscultor == null)
             {
                 return NotFound();
@@ -63,17 +58,13 @@ namespace APIController.Controllers
         }
 
         // DELETE: api/Escultor/5
-        [HttpDelete("Delete/{id}")]
-        public async Task<ActionResult<Escultores>> DeleteEscultor(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEscultor(int id)
         {
-            var escultor = await _escultorService.Delete(id);
-            if (escultor == null)
-            {
-                return NotFound();
-            }
-            return Ok(escultor);
+            await this.escultorService.DeleteAsync(id);
+            return NoContent();
         }
-
+        /*
         // Subir una imagen de escultor
         [HttpPost("UploadImagen")]
         public async Task<IActionResult> SubirImagenEscultor([FromForm] imagenService fichero)
@@ -163,7 +154,6 @@ namespace APIController.Controllers
             {
                 return StatusCode(500, "Error al eliminar la imagen.");
             }
-        }
+        }*/
     }
 }
-*/
