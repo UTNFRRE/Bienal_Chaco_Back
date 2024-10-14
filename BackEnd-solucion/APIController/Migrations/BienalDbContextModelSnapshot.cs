@@ -151,7 +151,7 @@ namespace APIController.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Eventos");
-                    
+                });
             modelBuilder.Entity("Entidades.Esculturas", b =>
                 {
                     b.HasOne("Entidades.Escultores", null)
