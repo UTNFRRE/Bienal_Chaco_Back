@@ -1,44 +1,52 @@
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Entidades;
+using Servicios;
+using Requests;
+using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace APIController
+namespace APIBienal.Controllers
 {
-/*    
+    
     [Route("[controller]")]
     [ApiController]
 
     public class EventosController : ControllerBase
     {
-        private readonly EventosServices _eventosServices;
+        private readonly ICRUDServiceEvent eventoService;
 
-        public EventosController()
+        public EventosController(ICRUDServiceEvent eventosServices)
         {
-            _eventosServices = new EventosServices();
+            this.eventoService = eventosServices;
         }
 
         // Crear un nuevo evento
         [HttpPost("Create")]
-        public async Task<ActionResult<Eventos>> CreateEvento(Eventos evento)
+        public async Task<IActionResult> CreateEvento([FromForm]EventoListRequest request)
         {
-            var createdEvento = await _eventosServices.CreateEventoAsync(evento);
+            var createdEvento = await this.eventoService.CreateEventoAsync(request);
             return Ok(createdEvento);
         }
 
         // Obtener todos los eventos
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<Eventos>>> GetAllEventos()
+        public async Task<IActionResult> GetAllEventos()
         {
-            var listadeeventos = await _eventosServices.GetAllEventosAsync();
+            var listadeeventos = await this.eventoService.GetAllEventosAsync();
             return listadeeventos == null ? NotFound() : Ok (listadeeventos);
         }
 
         // Obtener un evento por ID
         [HttpGet("Getbyid")]
-        public async Task<ActionResult<Eventos>> GetEventoById(int id)
+        public async Task<IActionResult> GetEventoById(int id)
         {
-            var eventoObtenido = await _eventosServices.GetEventoByIdAsync(id);
+            var eventoObtenido = await this.eventoService.GetEventoByIdAsync(id);
 
             if (eventoObtenido == null)
             {
@@ -50,29 +58,20 @@ namespace APIController
             
         }
         // Actualizar un evento existente
-        [HttpPut("Update/{id}")]
-        public async Task<IActionResult> UpdateEvento(Eventos eventoActualizado)
+        [HttpPut("Update")]
+        public async Task<IActionResult> UpdateEvento(int id,[FromForm] EventoListRequest request)
         {
-            var eventoActualizar = await _eventosServices.GetEventoByIdAsync(eventoActualizado.Id);
-            eventoActualizar = eventoActualizado;
-
-            if (eventoActualizar == null)
-            {
-                return NotFound();
-            }
-
-            eventoActualizar = await _eventosServices.UpdateEventoAsync(eventoActualizar);
-            return Ok(eventoActualizar);
+           Eventos eventoActualizado = await this.eventoService.UpdateEventoAsync(id, request);
+           return Ok(eventoActualizado);
         }
 
         // Eliminar un evento
         [HttpDelete("Delete")]
         public async Task<IActionResult> DeleteEvento(int id)
         {
-            var eventoaEliminar = await _eventosServices.DeleteEventoAsync(id);
-            return Ok(eventoaEliminar);
+            await this.eventoService.DeleteEventoAsync(id);
+            return Ok();
         }
     }
-*/
 }
     

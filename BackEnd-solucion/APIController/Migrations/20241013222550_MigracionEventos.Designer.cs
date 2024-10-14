@@ -4,6 +4,7 @@ using Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIController.Migrations
 {
     [DbContext(typeof(BienalDbContext))]
-    partial class BienalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241013222550_MigracionEventos")]
+    partial class MigracionEventos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,64 +24,6 @@ namespace APIController.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Entidades.Escultores", b =>
-                {
-                    b.Property<int>("EscultorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EscultorId"));
-
-                    b.Property<string>("Apellido")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(30)");
-
-                    b.Property<string>("Biografia")
-                        .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Contraseña")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
-
-                    b.Property<string>("DNI")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
-
-                    b.Property<string>("Foto")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(30)");
-
-                    b.Property<string>("Pais")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Telefono")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
-
-                    b.HasKey("EscultorId");
-
-                    b.ToTable("Escultores");
-                });
 
             modelBuilder.Entity("Entidades.Esculturas", b =>
                 {
@@ -95,7 +40,7 @@ namespace APIController.Migrations
                     b.Property<int>("EscultorID")
                         .HasColumnType("int");
 
-                     b.Property<DateOnly>("FechaCreacion")
+                    b.Property<DateOnly>("FechaCreacion")
                         .HasColumnType("date");
 
                     b.Property<string>("Imagenes")
@@ -112,11 +57,8 @@ namespace APIController.Migrations
 
                     b.HasKey("EsculturaId");
 
-                    b.HasIndex("EscultoresEscultorId");
-
                     b.ToTable("Esculturas");
                 });
-
 
             modelBuilder.Entity("Entidades.Eventos", b =>
                 {
@@ -151,18 +93,6 @@ namespace APIController.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Eventos");
-                    
-            modelBuilder.Entity("Entidades.Esculturas", b =>
-                {
-                    b.HasOne("Entidades.Escultores", null)
-                        .WithMany("Esculturas")
-                        .HasForeignKey("EscultoresEscultorId");
-                });
-
-            modelBuilder.Entity("Entidades.Escultores", b =>
-                {
-                    b.Navigation("Esculturas");
-
                 });
 #pragma warning restore 612, 618
         }
