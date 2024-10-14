@@ -18,7 +18,7 @@ namespace Entidades
         [MaxLength(200)]
         public string? Descripcion { get; set; }
         [Required]
-        public string Imagenes { get; set; }
+        public string Imagenes { get; set; } = "";
         //primero sin control de que exista ese escultor
         [Required]
         public int EscultorID { get; set; }

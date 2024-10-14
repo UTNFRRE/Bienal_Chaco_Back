@@ -28,8 +28,24 @@ namespace Servicios
             this._azureStorageService = azureStorageService;
         }
 
-        public async Task<Esculturas> CreateAsync(EsculturaListRequest request) //cambiar por esculturaRequest
+        public async Task<Esculturas>? CreateAsync(EsculturaPostPut request) //cambiar por esculturaRequest
         {
+            //validación si exise otra escultora con el mismo nombre
+            var esculturaExistente = this._context.Esculturas.FirstOrDefault(e => e.Nombre == request.Nombre);
+            
+            if (esculturaExistente != null)
+            {
+                return null;
+            }
+
+            //validación si existe id del escultor
+            
+            /*var escultorExistente = this._context.Escultores.FirstOrDefault(e => e.EscultorId == request.EscultorID);
+            if (esculturaExistente == null)
+            {
+                return null;
+            }*/
+
             var newEscultura = new Esculturas()
             {
                 Nombre = request.Nombre,
@@ -38,6 +54,7 @@ namespace Servicios
                 FechaCreacion = request.FechaCreacion,
                 Tematica = request.Tematica,
             };
+
 
             if (request.Imagen!= null) //cambiar por lo que viene en el request
             {
@@ -52,19 +69,32 @@ namespace Servicios
 
         public async Task<IEnumerable<Esculturas>> GetAllAsync()
         {
-            return this._context.Esculturas.ToList();
+            return await this._context.Esculturas.ToListAsync();
         }
 
-        public async Task<Esculturas> GetByAsync(int id)
+        public async Task<Esculturas>? GetByAsync(int id)
         {
-            return this._context.Esculturas.Find(id);
+            return await this._context.Esculturas.FindAsync(id);
         }
 
-        public async Task<Esculturas> UpdateAsync(int id, EsculturaListRequest request)
+        ///modificar UpdateAsync para sobrecargar con parametro EsculturaPatchRequest
+        public async Task<Esculturas>? UpdateEsculturaAsync(int id, EsculturaPostPut request)
         {
+            var esculturaExistente = this._context.Esculturas.FirstOrDefault(e => e.Nombre == request.Nombre);
+            if (esculturaExistente != null)
+            {
+                return null;
+            }
+            //validación si existe id del escultor
+
+            /*var escultorExistente = this._context.Escultores.FirstOrDefault(e => e.EscultorId == request.EscultorID);
+            if (esculturaExistente == null)
+            {
+                return null;
+            }*/
+
             var esculturaToUpdate = this._context.Esculturas.Find(id);
             if (esculturaToUpdate != null)
-
             {
                 esculturaToUpdate.Nombre = request.Nombre;
                 esculturaToUpdate.EscultorID = request.EscultorID;
@@ -72,41 +102,95 @@ namespace Servicios
                 esculturaToUpdate.FechaCreacion = request.FechaCreacion;
                 esculturaToUpdate.Tematica = request.Tematica;
 
+                //control de errores nuevo nombre de escultura no existe
+               
                 if (request.Imagen != null)
                 {
                     esculturaToUpdate.Imagenes = await this._azureStorageService.UploadAsync(request.Imagen, esculturaToUpdate.Imagenes);
                 }
                 
                 this._context.Update(esculturaToUpdate);
-                this._context.SaveChangesAsync();
+                await this._context.SaveChangesAsync();
             }
             
             return esculturaToUpdate;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request)
         {
-            var esculturaToDelete = this._context.Esculturas.Find(id);
+            var esculturaToUpdate = await this._context.Esculturas.FindAsync(id);
 
-            if (esculturaToDelete != null)
+            if (esculturaToUpdate == null)
             {
-                if (!string.IsNullOrEmpty(esculturaToDelete.Imagenes)) ;
-                {
-                    await this._azureStorageService.DeleteAsync(esculturaToDelete.Imagenes);
-                }
-                this._context.Esculturas.Remove(esculturaToDelete);
-                this._context.SaveChangesAsync();
+                return null;
             }
+
+            if (!string.IsNullOrEmpty(request.Nombre))
+            {
+                esculturaToUpdate.Nombre = request.Nombre;
+            }
+
+
+            if (!string.IsNullOrEmpty(request.Descripcion))
+            {
+                esculturaToUpdate.Nombre = request.Descripcion;
+            }
+
+            if (request.Imagen != null)
+            {
+                esculturaToUpdate.Imagenes = await this._azureStorageService.UploadAsync(request.Imagen, esculturaToUpdate.Imagenes);
+            }
+
+            if (request.EscultorID != null)
+            {
+                //conversión implicita de int? a int
+                esculturaToUpdate.EscultorID = (int)request.EscultorID;
+            }
+
+            if (request.FechaCreacion != null)
+            {
+                esculturaToUpdate.FechaCreacion = (DateOnly)request.FechaCreacion;
+            }
+
+            this._context.Update(esculturaToUpdate);
+
+            await this._context.SaveChangesAsync();
+            return esculturaToUpdate;
         }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var esculturaToDelete = await this._context.Esculturas.FindAsync(id);
+
+            if (esculturaToDelete == null)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(esculturaToDelete.Imagenes))
+            {
+                await this._azureStorageService.DeleteAsync(esculturaToDelete.Imagenes);
+            }
+            this._context.Esculturas.Remove(esculturaToDelete);
+            await this._context.SaveChangesAsync();
+            return true;
+
+        }
+    }
 
     }
 
     public interface ICRUDEsculturaService
     { 
-        Task<Esculturas> CreateAsync(EsculturaListRequest request);
+        Task<Esculturas>? CreateAsync(EsculturaPostPut request);
         Task<IEnumerable<Esculturas>> GetAllAsync();
-        Task<Esculturas> GetByAsync(int id); 
-        Task<Esculturas> UpdateAsync(int id, EsculturaListRequest request);
-        Task DeleteAsync(int id);
+        Task<Esculturas>? GetByAsync(int id); 
+        Task<Esculturas>? UpdateEsculturaAsync(int id, EsculturaPostPut request);
+        Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request);
+        Task<bool> DeleteAsync(int id);
+   
+
+
+        
     } 
-}
+

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Requests
 {
-    public class EsculturaListRequest
+    public class EsculturaPostPut
     {
         [Required]
         [MaxLength(20)]
@@ -19,6 +19,18 @@ namespace Requests
         //desde aca va el GetAll
         public DateOnly FechaCreacion { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
+        public string? Tematica { get; set; }
+    }
+
+    public class EsculturaPatch
+    {  
+        [MaxLength(20)]
+        public string? Nombre { get; set; }
+        [MaxLength(200)]
+        public string? Descripcion { get; set; }
+        public IFormFile? Imagen { get; set; }
+        public int? EscultorID { get; set; }
+        public DateOnly? FechaCreacion { get; set; }
         public string? Tematica { get; set; }
     }
 }
