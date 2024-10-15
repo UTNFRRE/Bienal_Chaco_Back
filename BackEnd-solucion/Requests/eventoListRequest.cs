@@ -5,8 +5,8 @@ namespace Requests
 {
     public class EventoListRequest
     {
-        [Required]
-        public int Id { get; set; }
+        // No es necesario el Id para el POST (se genera automáticamente)
+        public int? Id { get; set; }
 
         [Required]
         public string Nombre { get; set; }
