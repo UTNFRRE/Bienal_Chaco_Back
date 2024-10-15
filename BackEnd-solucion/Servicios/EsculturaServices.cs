@@ -39,7 +39,7 @@ namespace Servicios
             }
 
             //validación si existe id del escultor
-            
+
             /*var escultorExistente = this._context.Escultores.FirstOrDefault(e => e.EscultorId == request.EscultorID);
             if (esculturaExistente == null)
             {
@@ -53,18 +53,29 @@ namespace Servicios
                 Descripcion = request.Descripcion,
                 FechaCreacion = request.FechaCreacion,
                 Tematica = request.Tematica,
-            };
-
+            };  
 
             if (request.Imagen!= null) //cambiar por lo que viene en el request
             {
                 newEscultura.Imagenes = await this._azureStorageService.UploadAsync(request.Imagen);
             }
 
-            await this._context.Esculturas.AddAsync(newEscultura);
+           await this._context.Esculturas.AddAsync(newEscultura);
+           await this._context.SaveChangesAsync();
+
+            //guardar relacion de Escultor con Escultura, esto hay que pasar a EscultorService
+            var escultorAsignado = await this._context.Escultores.FindAsync(request.EscultorID);
+
+            if (escultorAsignado != null)
+            {
+                escultorAsignado.Esculturas.Add(newEscultura);
+                this._context.Update(escultorAsignado);
+            }
+
             await this._context.SaveChangesAsync();
 
             return newEscultura;
+
         }
 
         public async Task<IEnumerable<Esculturas>> GetAllAsync()
