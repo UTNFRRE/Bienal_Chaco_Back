@@ -64,10 +64,10 @@ namespace APIBienal.Controllers
     [HttpPut("{id}")]
     public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPostPut request)
     {
-        Esculturas? esculturaUpdate = await this.esculturaService.UpdateEsculturaAsync(id, request);
+        Esculturas? esculturaUpdate = await this.esculturaService.UpdatePutEsculturaAsync(id, request);
             if (esculturaUpdate == null)
             { 
-                return NotFound("Ocurrio un error al actualizar escultura. Intentelo nuevamente. Verifique si existe la escultura o si ya existe otra escultura con el nombre proporcionado");
+                return NotFound("Ocurrio un error al actualizar escultura. Intentelo nuevamente. Verifique si existe la escultura");
             }   
          return Ok(esculturaUpdate);
     }

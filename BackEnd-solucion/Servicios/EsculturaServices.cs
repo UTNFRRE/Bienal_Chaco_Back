@@ -78,13 +78,8 @@ namespace Servicios
         }
 
         ///modificar UpdateAsync para sobrecargar con parametro EsculturaPatchRequest
-        public async Task<Esculturas>? UpdateEsculturaAsync(int id, EsculturaPostPut request)
+        public async Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request)
         {
-            var esculturaExistente = this._context.Esculturas.FirstOrDefault(e => e.Nombre == request.Nombre);
-            if (esculturaExistente != null)
-            {
-                return null;
-            }
             //validación si existe id del escultor
 
             /*var escultorExistente = this._context.Escultores.FirstOrDefault(e => e.EscultorId == request.EscultorID);
@@ -185,7 +180,7 @@ namespace Servicios
         Task<Esculturas>? CreateAsync(EsculturaPostPut request);
         Task<IEnumerable<Esculturas>> GetAllAsync();
         Task<Esculturas>? GetByAsync(int id); 
-        Task<Esculturas>? UpdateEsculturaAsync(int id, EsculturaPostPut request);
+        Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request);
         Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request);
         Task<bool> DeleteAsync(int id);
    
