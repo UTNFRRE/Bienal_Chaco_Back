@@ -94,7 +94,7 @@ namespace APIController.Controllers
             }
             foreach(var escultura in esc)
             {
-                escultura.Imagenes = this.url + escultura.Imagenes;
+                escultura.imagenes = this.url + escultura.imagenes;
             }
             return Ok(esc);
         }

@@ -141,9 +141,17 @@ namespace Servicios
         }
 
         //get esculturas
-        public async Task<IEnumerable<Esculturas>> getEsculturas(int id)
+        public async Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id)
         {
-            var esc= await _context.Esculturas.Where(e => e.EscultorID == id).ToListAsync();
+            var esc= await _context.Esculturas
+                .Select(e=> new EsculturasEscultorDTO
+                {
+                    id=e.EscultorID,
+                    nombre = e.Nombre,
+                    descripcion=e.Descripcion,
+                    imagenes = e.Imagenes,
+                })
+                .Where(e => e.id == id).ToListAsync();
             return esc;
         }
 
@@ -170,7 +178,17 @@ namespace Servicios
         Task<Escultores>? UpdatePatchAsync(int id, EscultoresPatchRequest request);
         Task DeleteAsync(int id);
 
-        Task<IEnumerable<Esculturas>> getEsculturas(int id);
+        Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id);
         Task<IEnumerable<object>> getEscultoresPublic();
+    }
+
+    //dto
+    public class EsculturasEscultorDTO
+    {
+        public int id { get; set; }
+        public string? nombre { get; set; }
+        public string? descripcion { get; set; }
+        public string? imagenes { get; set; }
+
     }
 }
