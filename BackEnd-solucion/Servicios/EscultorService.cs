@@ -5,6 +5,7 @@ using Entidades;                   // Para el modelo de entidad 'Escultores'.
 using Microsoft.EntityFrameworkCore; // Para usar Entity Framework Core, especialmente consultas y manipulación de datos.
 using Requests;                
 using Contexts;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace Servicios
 {
@@ -145,6 +146,19 @@ namespace Servicios
             var esc= await _context.Esculturas.Where(e => e.EscultorID == id).ToListAsync();
             return esc;
         }
+
+        //get public
+        public async Task<IEnumerable<object>> getEscultoresPublic()
+        {
+            var escultores = await _context.Escultores.Select(e => new
+            {
+                id = e.EscultorId,
+                nombre = e.Nombre + ' ' + e.Apellido,
+                pais = e.Pais,
+                foto = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + e.Foto
+            }).ToListAsync();
+            return escultores;
+        }
     }
     // Interfaz genérica para las operaciones CRUD.
     public interface ICRUDServicesEscultores
@@ -157,5 +171,6 @@ namespace Servicios
         Task DeleteAsync(int id);
 
         Task<IEnumerable<Esculturas>> getEsculturas(int id);
+        Task<IEnumerable<object>> getEscultoresPublic();
     }
 }

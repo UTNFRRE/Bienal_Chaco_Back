@@ -98,6 +98,16 @@ namespace APIController.Controllers
             }
             return Ok(esc);
         }
-
+        //get public escultores
+        [HttpGet("api/escultoresPublic")]
+        public async Task<IActionResult> getEscultoresPublic()
+        {
+            var esc = await escultorService.getEscultoresPublic();
+            if (esc == null)
+            {
+                return NoContent();
+            }
+            return Ok(esc);
+        }
     }
 }

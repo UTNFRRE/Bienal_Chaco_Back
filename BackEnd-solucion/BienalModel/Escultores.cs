@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Entidades
@@ -31,7 +32,7 @@ namespace Entidades
         [MaxLength(255)]
         public string? Biografia { get; set; }
         public string? Foto { get; set; }
-
+        [JsonIgnore]
         public ICollection<Esculturas>? Esculturas { get; set; }
     }
 }
