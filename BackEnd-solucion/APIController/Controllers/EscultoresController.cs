@@ -15,6 +15,7 @@ namespace APIController.Controllers
     public class EscultorController : ControllerBase
     {
         private readonly ICRUDServicesEscultores escultorService;
+        private string url = "https://bienalobjectstorage.blob.core.windows.net/imagenes/";
         public EscultorController(ICRUDServicesEscultores escultoresService)
         {
             this.escultorService = escultoresService;
@@ -32,6 +33,10 @@ namespace APIController.Controllers
         public async Task<ActionResult> GetAllEscultores()
         {
             var lista_escultores = await this.escultorService.GetAllAsync();
+            foreach (var escultor in lista_escultores)
+            {
+                escultor.Foto = this.url + escultor.Foto;
+            }
             return Ok(lista_escultores);
         }
 
@@ -43,6 +48,7 @@ namespace APIController.Controllers
             {
                 return NotFound();
             }
+            escultor.Foto = this.url + escultor.Foto;
             return Ok(escultor);
         }
 
