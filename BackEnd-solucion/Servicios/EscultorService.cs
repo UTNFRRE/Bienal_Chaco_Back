@@ -138,6 +138,13 @@ namespace Servicios
                 await _context.SaveChangesAsync();
             }
         }
+
+        //get esculturas
+        public async Task<IEnumerable<Esculturas>> getEsculturas(int id)
+        {
+            var esc= await _context.Esculturas.Where(e => e.EscultorID == id).ToListAsync();
+            return esc;
+        }
     }
     // Interfaz genérica para las operaciones CRUD.
     public interface ICRUDServicesEscultores
@@ -149,6 +156,6 @@ namespace Servicios
         Task<Escultores>? UpdatePatchAsync(int id, EscultoresPatchRequest request);
         Task DeleteAsync(int id);
 
-        
+        Task<IEnumerable<Esculturas>> getEsculturas(int id);
     }
 }

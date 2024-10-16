@@ -82,6 +82,22 @@ namespace APIController.Controllers
             await this.escultorService.DeleteAsync(id);
             return NoContent();
         }
-        
+
+        //Devolver todas las esculturas de un escultor
+        [HttpGet("{id}/esculturas")]
+        public async Task<IActionResult> getEsculturas(int id)
+        {
+            var esc= await escultorService.getEsculturas(id);
+            if (esc == null)
+            {
+                return NoContent();
+            }
+            foreach(var escultura in esc)
+            {
+                escultura.Imagenes = this.url + escultura.Imagenes;
+            }
+            return Ok(esc);
+        }
+
     }
 }
