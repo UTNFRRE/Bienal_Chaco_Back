@@ -26,7 +26,7 @@ namespace Servicios
             this._context = context;
         }
 
-        public async Task<Eventos> CreateEventoAsync(EventoListRequest request)
+        public async Task<Eventos> CreateEventoAsync(EventoCreateRequest request)
         {
             var newEvento = new Eventos
             {
@@ -57,7 +57,7 @@ namespace Servicios
         }
 
         // Actualizar un evento existente
-        public async Task<Eventos> UpdateEventoAsync(int id,EventoListRequest request)
+        public async Task<Eventos> UpdateEventoAsync(int id, EventoUpdateRequest request)
         {
             var eventoExistente = await this._context.Eventos.FindAsync(id);
             if (eventoExistente != null)
@@ -95,10 +95,10 @@ namespace Servicios
     public interface ICRUDServiceEvent
     {
         
-        Task<Eventos> CreateEventoAsync(EventoListRequest request);
+        Task<Eventos> CreateEventoAsync(EventoCreateRequest request);
         Task<IEnumerable<Eventos>> GetAllEventosAsync();
         Task<Eventos> GetEventoByIdAsync(int id);
-        Task<Eventos> UpdateEventoAsync(int id,EventoListRequest evento);
+        Task<Eventos> UpdateEventoAsync(int id,EventoUpdateRequest request);
         Task DeleteEventoAsync(int id);
     }
 

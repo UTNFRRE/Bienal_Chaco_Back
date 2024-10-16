@@ -28,7 +28,7 @@ namespace APIBienal.Controllers
 
         // Crear un nuevo evento
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateEvento([FromForm]EventoListRequest request)
+        public async Task<IActionResult> CreateEvento([FromForm]EventoCreateRequest request)
         {
             var createdEvento = await this.eventoService.CreateEventoAsync(request);
             return Ok(createdEvento);
@@ -59,7 +59,7 @@ namespace APIBienal.Controllers
         }
         // Actualizar un evento existente
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateEvento(int id,[FromForm] EventoListRequest request)
+        public async Task<IActionResult> UpdateEvento(int id,[FromForm] EventoUpdateRequest request)
         {
            Eventos eventoActualizado = await this.eventoService.UpdateEventoAsync(id, request);
            return Ok(eventoActualizado);
