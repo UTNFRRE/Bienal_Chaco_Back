@@ -6,8 +6,6 @@ namespace Requests
 {
     public class EventoCreateRequest
     {
-        // No es necesario el Id para el POST (se genera automáticamente)
-        public int? Id { get; set; }
 
         [Required]
         public string Nombre { get; set; }
@@ -28,9 +26,6 @@ namespace Requests
     public class EventoUpdateRequest
     {
         [Required]
-        public int Id { get; set; } // Ahora es requerido para el UPDATE
-
-        [Required]
         public string Nombre { get; set; }
 
         [Required]
@@ -45,5 +40,19 @@ namespace Requests
         [Required]
         public string Tematica { get; set; }
     }
+
+    public class EventoPatchRequest
+    {
+        public string? Nombre { get; set; }
+
+        public DateTime Fecha { get; set; }
+
+        public string? Lugar { get; set; }
+     
+        public string? Descripcion { get; set; }
+
+        public string? Tematica { get; set; }
+    }
+
 }
 

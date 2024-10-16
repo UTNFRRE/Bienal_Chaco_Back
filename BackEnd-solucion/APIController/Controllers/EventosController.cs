@@ -27,7 +27,7 @@ namespace APIBienal.Controllers
         }
 
         // Crear un nuevo evento
-        [HttpPost("Create")]
+        [HttpPost]
         public async Task<IActionResult> CreateEvento([FromForm]EventoCreateRequest request)
         {
             var createdEvento = await this.eventoService.CreateEventoAsync(request);
@@ -35,7 +35,7 @@ namespace APIBienal.Controllers
         }
 
         // Obtener todos los eventos
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<IActionResult> GetAllEventos()
         {
             var listadeeventos = await this.eventoService.GetAllEventosAsync();
@@ -43,7 +43,7 @@ namespace APIBienal.Controllers
         }
 
         // Obtener un evento por ID
-        [HttpGet("Getbyid")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetEventoById(int id)
         {
             var eventoObtenido = await this.eventoService.GetEventoByIdAsync(id);
@@ -58,15 +58,24 @@ namespace APIBienal.Controllers
             
         }
         // Actualizar un evento existente
-        [HttpPut("Update")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEvento(int id,[FromForm] EventoUpdateRequest request)
         {
            Eventos eventoActualizado = await this.eventoService.UpdateEventoAsync(id, request);
            return Ok(eventoActualizado);
         }
 
+        // Actualizar un evento existente
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdatePatchEvento(int id,[FromForm] EventoPatchRequest request)
+        {
+           Eventos eventoActualizado = await this.eventoService.UpdatePatchEventoAsync(id, request);
+           return Ok(eventoActualizado);
+        }
+
+
         // Eliminar un evento
-        [HttpDelete("Delete")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvento(int id)
         {
             await this.eventoService.DeleteEventoAsync(id);
