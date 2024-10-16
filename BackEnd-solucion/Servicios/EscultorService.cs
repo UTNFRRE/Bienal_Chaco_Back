@@ -91,7 +91,34 @@ namespace Servicios
             }
             return escultorToUpdate;
         }
+        public async Task<Escultores> UpdatePatchAsync(int id, EscultoresPatchRequest request)
+        {
+            // Se busca el escultor en la base de datos por su ID.
+            var escultorToUpdate = await _context.Escultores.FindAsync(id);
 
+            // Si se encuentra el escultor, se actualizan sus propiedades con los datos del request.
+            if (escultorToUpdate != null)
+            {
+                escultorToUpdate.Nombre = request.Nombre ?? escultorToUpdate.Nombre;
+                escultorToUpdate.Apellido = request.Apellido ?? escultorToUpdate.Apellido;
+                escultorToUpdate.DNI = request.DNI ?? escultorToUpdate.DNI;
+                escultorToUpdate.Pais = request.Pais ?? escultorToUpdate.Pais;
+                escultorToUpdate.Email = request.Email ?? escultorToUpdate.Email;
+                escultorToUpdate.Telefono = request.Telefono ?? escultorToUpdate.Telefono;
+                escultorToUpdate.Biografia = request.Biografia ?? escultorToUpdate.Biografia;
+
+                // Si hay una nueva foto, se sube a Azure y se actualiza la URL de la foto del escultor.
+                if (request.Imagen != null)
+                {
+                    escultorToUpdate.Foto = await _azureStorageService.UploadAsync(request.Imagen, escultorToUpdate.Foto);
+                }
+
+                // Se actualiza el registro del escultor en la base de datos.
+                _context.Escultores.Update(escultorToUpdate);
+                await _context.SaveChangesAsync();
+            }
+            return escultorToUpdate;
+        }
         // Método asíncrono para eliminar un escultor por su ID.
         public async Task DeleteAsync(int id)
         {
@@ -119,6 +146,9 @@ namespace Servicios
         Task<IEnumerable<Escultores>> GetAllAsync();
         Task<Escultores> GetByAsync(int id);
         Task<Escultores> UpdateAsync(int id, EscultoresListRequest request);
+        Task<Escultores>? UpdatePatchAsync(int id, EscultoresPatchRequest request);
         Task DeleteAsync(int id);
+
+        
     }
 }
