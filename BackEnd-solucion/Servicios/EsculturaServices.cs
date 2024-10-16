@@ -39,7 +39,7 @@ namespace Servicios
             }
 
             //validación si existe id del escultor
-            
+
             /*var escultorExistente = this._context.Escultores.FirstOrDefault(e => e.EscultorId == request.EscultorID);
             if (esculturaExistente == null)
             {
@@ -53,18 +53,29 @@ namespace Servicios
                 Descripcion = request.Descripcion,
                 FechaCreacion = request.FechaCreacion,
                 Tematica = request.Tematica,
-            };
-
+            };  
 
             if (request.Imagen!= null) //cambiar por lo que viene en el request
             {
                 newEscultura.Imagenes = await this._azureStorageService.UploadAsync(request.Imagen);
             }
 
-            await this._context.Esculturas.AddAsync(newEscultura);
+           await this._context.Esculturas.AddAsync(newEscultura);
+           await this._context.SaveChangesAsync();
+
+            //guardar relacion de Escultor con Escultura, esto hay que pasar a EscultorService
+            var escultorAsignado = await this._context.Escultores.FindAsync(request.EscultorID);
+
+            if (escultorAsignado != null)
+            {
+                escultorAsignado.Esculturas.Add(newEscultura);
+                this._context.Update(escultorAsignado);
+            }
+
             await this._context.SaveChangesAsync();
 
             return newEscultura;
+
         }
 
         public async Task<IEnumerable<Esculturas>> GetAllAsync()
@@ -78,13 +89,8 @@ namespace Servicios
         }
 
         ///modificar UpdateAsync para sobrecargar con parametro EsculturaPatchRequest
-        public async Task<Esculturas>? UpdateEsculturaAsync(int id, EsculturaPostPut request)
+        public async Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request)
         {
-            var esculturaExistente = this._context.Esculturas.FirstOrDefault(e => e.Nombre == request.Nombre);
-            if (esculturaExistente != null)
-            {
-                return null;
-            }
             //validación si existe id del escultor
 
             /*var escultorExistente = this._context.Escultores.FirstOrDefault(e => e.EscultorId == request.EscultorID);
@@ -185,7 +191,7 @@ namespace Servicios
         Task<Esculturas>? CreateAsync(EsculturaPostPut request);
         Task<IEnumerable<Esculturas>> GetAllAsync();
         Task<Esculturas>? GetByAsync(int id); 
-        Task<Esculturas>? UpdateEsculturaAsync(int id, EsculturaPostPut request);
+        Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request);
         Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request);
         Task<bool> DeleteAsync(int id);
    

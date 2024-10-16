@@ -1,6 +1,7 @@
 ﻿using Entidades;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -31,7 +32,6 @@ namespace Entidades
         [MaxLength(255)]
         public string? Biografia { get; set; }
         public string? Foto { get; set; }
-
-        public ICollection<Esculturas>? Esculturas { get; set; }
+        public IList<Esculturas> Esculturas { get; set; } = new List<Esculturas>();
     }
 }
