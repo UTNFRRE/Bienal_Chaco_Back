@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore; // Para usar Entity Framework Core, especia
 using Requests;                
 using Contexts;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using System.Text.Json.Serialization;
 
 namespace Servicios
 {
@@ -146,12 +147,13 @@ namespace Servicios
             var esc= await _context.Esculturas
                 .Select(e=> new EsculturasEscultorDTO
                 {
-                    id=e.EscultorID,
+                    id=e.EsculturaId,
+                    escultorid=e.EscultorID,
                     nombre = e.Nombre,
                     descripcion=e.Descripcion,
                     imagenes = e.Imagenes,
                 })
-                .Where(e => e.id == id).ToListAsync();
+                .Where(e => e.escultorid == id).ToListAsync();
             return esc;
         }
 
@@ -167,6 +169,30 @@ namespace Servicios
             }).ToListAsync();
             return escultores;
         }
+        //
+        public async Task<EscultorDetailDTO> GetEscultorDetailAsync(int id)
+        {
+            IEnumerable<string> esculturas = await _context.Esculturas
+                .Where(e => e.EscultorID == id)
+                .Select(e =>e.Nombre)
+                .ToListAsync();
+            
+            var escultor = await _context.Escultores
+                .Where(e => e.EscultorId == id)
+                .Select(e => new EscultorDetailDTO
+                {
+                    id = e.EscultorId,
+                    nombre = e.Nombre + " " + e.Apellido,
+                    fechaNacimiento = null,
+                    lugarNacimiento = null,
+                    premios =null,
+                    obras = esculturas,
+                    foto = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + e.Foto
+                })
+                .FirstOrDefaultAsync();
+
+            return escultor;
+        }
     }
     // Interfaz genérica para las operaciones CRUD.
     public interface ICRUDServicesEscultores
@@ -180,15 +206,29 @@ namespace Servicios
 
         Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id);
         Task<IEnumerable<object>> getEscultoresPublic();
+        Task<EscultorDetailDTO> GetEscultorDetailAsync(int id);
     }
 
-    //dto
+    //dto para esculturas de un escultor
     public class EsculturasEscultorDTO
     {
         public int id { get; set; }
         public string? nombre { get; set; }
         public string? descripcion { get; set; }
         public string? imagenes { get; set; }
+        [JsonIgnore]
+        public int escultorid { get; set; }
 
+    }
+
+    public class EscultorDetailDTO
+    {
+        public int id { get; set; }
+        public string nombre { get; set; }
+        public string? fechaNacimiento { get; set; }
+        public string? lugarNacimiento { get; set; }
+        public List<string>? premios { get; set; }
+        public IEnumerable<string> obras { get; set; }
+        public string foto { get; set; }
     }
 }
