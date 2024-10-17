@@ -18,10 +18,6 @@ namespace Requests
         public string? DNI { get; set; } = string.Empty;
         [Required]
         public string? Pais { get; set; } = string.Empty;
-        [Required]
-        public string? Email { get; set; }
-        [Required]
-        public string? Contraseña { get; set; } = string.Empty;
         public string? Telefono { get; set; }
         public string? Biografia { get; set; } = string.Empty;
         public IFormFile? Imagen { get; set; }
@@ -35,8 +31,6 @@ namespace Requests
         [MaxLength(8)]
         public string? DNI { get; set; } = string.Empty;
         public string? Pais { get; set; } = string.Empty;
-        public string? Email { get; set; }
-        public string? Contraseña { get; set; } = string.Empty;
         public string? Telefono { get; set; }
         public string? Biografia { get; set; } = string.Empty;
         public IFormFile? Imagen { get; set; }
