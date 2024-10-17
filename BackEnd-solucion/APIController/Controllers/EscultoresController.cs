@@ -52,10 +52,10 @@ namespace APIController.Controllers
             return Ok(escultor);
         }
         //get escultor detail
-        [HttpGet("{id}/detail")]
-        public async Task<IActionResult> GetDetail(int id)
+        [HttpGet("/escultoresAdmin")]
+        public async Task<IActionResult> GetDetail()
         {
-            var esc = await escultorService.GetEscultorDetailAsync(id);
+            var esc = await escultorService.GetEscultorDetailAsync();
             if (esc == null)
             {
                 return NotFound();

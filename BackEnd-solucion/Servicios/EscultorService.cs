@@ -170,15 +170,9 @@ namespace Servicios
             return escultores;
         }
         //
-        public async Task<EscultorDetailDTO> GetEscultorDetailAsync(int id)
+        public async Task<IEnumerable<EscultorDetailDTO>>GetEscultorDetailAsync()
         {
-            IEnumerable<string> esculturas = await _context.Esculturas
-                .Where(e => e.EscultorID == id)
-                .Select(e =>e.Nombre)
-                .ToListAsync();
-            
             var escultor = await _context.Escultores
-                .Where(e => e.EscultorId == id)
                 .Select(e => new EscultorDetailDTO
                 {
                     id = e.EscultorId,
@@ -186,10 +180,10 @@ namespace Servicios
                     fechaNacimiento = null,
                     lugarNacimiento = null,
                     premios =null,
-                    obras = esculturas,
+                    contacto = e.Telefono,
                     foto = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + e.Foto
                 })
-                .FirstOrDefaultAsync();
+                .ToListAsync();
 
             return escultor;
         }
@@ -206,7 +200,7 @@ namespace Servicios
 
         Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id);
         Task<IEnumerable<object>> getEscultoresPublic();
-        Task<EscultorDetailDTO> GetEscultorDetailAsync(int id);
+        Task<IEnumerable<EscultorDetailDTO>> GetEscultorDetailAsync();
     }
 
     //dto para esculturas de un escultor
@@ -228,7 +222,7 @@ namespace Servicios
         public string? fechaNacimiento { get; set; }
         public string? lugarNacimiento { get; set; }
         public List<string>? premios { get; set; }
-        public IEnumerable<string> obras { get; set; }
         public string foto { get; set; }
+        public string? contacto { get; set; }
     }
 }
