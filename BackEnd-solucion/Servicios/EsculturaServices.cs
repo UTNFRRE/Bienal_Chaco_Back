@@ -14,6 +14,7 @@ using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 using Requests;
 using Contexts;
+using Models; 
 
 namespace Servicios
 {
@@ -86,6 +87,21 @@ namespace Servicios
         public async Task<Esculturas>? GetByAsync(int id)
         {
             return await this._context.Esculturas.FindAsync(id);
+        }
+
+        public async Task<EsculturasDetailDTO>? GetDetail(int id)
+        {
+            var escultura = await this._context.Esculturas.FindAsync(id);
+            
+            if (escultura == null)
+            {
+                return null;
+            }
+            
+            var escultor = await this._context.Escultores.FindAsync(escultura.EscultorID);
+            EsculturasDetailDTO EsculturaDetalle = new EsculturasDetailDTO(escultura, escultor);
+            return EsculturaDetalle;
+            
         }
 
         ///modificar UpdateAsync para sobrecargar con parametro EsculturaPatchRequest
@@ -190,13 +206,11 @@ namespace Servicios
     { 
         Task<Esculturas>? CreateAsync(EsculturaPostPut request);
         Task<IEnumerable<Esculturas>> GetAllAsync();
+        Task<EsculturasDetailDTO>? GetDetail(int idEscultura);
         Task<Esculturas>? GetByAsync(int id); 
         Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request);
         Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request);
         Task<bool> DeleteAsync(int id);
-   
-
-
         
     } 
 
