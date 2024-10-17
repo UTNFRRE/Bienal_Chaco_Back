@@ -1,32 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Entidades
+namespace Requests
 {
-    public class Esculturas
+    public class EsculturaPostPut
     {
-        [Key]
-        public int EsculturaId { get; set; }
         [Required]
         [MaxLength(50)]
         public string Nombre { get; set; } = "";
         [MaxLength(200)]
         public string? Descripcion { get; set; }
         [Required]
-        public string Imagenes { get; set; } = "";
+        public IFormFile? Imagen { get; set; }
         //primero sin control de que exista ese escultor
         [Required]
         public int EscultorID { get; set; }
-        
+
         //desde aca va el GetAll
         public DateOnly FechaCreacion { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
         public string? Tematica { get; set; }
-   
+    }
+
+    public class EsculturaPatch
+    {  
+        [MaxLength(50)]
+        public string? Nombre { get; set; }
+        [MaxLength(200)]
+        public string? Descripcion { get; set; }
+        public IFormFile? Imagen { get; set; }
+        public int? EscultorID { get; set; }
+        public DateOnly? FechaCreacion { get; set; }
+        public string? Tematica { get; set; }
     }
 }

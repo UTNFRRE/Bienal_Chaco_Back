@@ -13,22 +13,6 @@ namespace Entidades
 { }
     /* ESCULTORES */
 /*
-public class Escultores
-{ 
-    public int EscultorId { get; set; }
-    public string? Nombre { get; set; }
-    public string? Apellido { get; set; }
-    public string? DNI { get; set; }
-    public string? Pais { get; set; }
-    public string? Email { get; set; }
-    public string? Contraseña { get; set; }
-    public string? Telefono { get; set; }
-    public string? Biografia { get; set; }
-    public string? Foto { get; set; }
-
-    public ICollection<Esculturas>? Esculturas { get; set; }
-}
-
 public class EscultorService
 {
     private BienalDbContext _contextEscultor;
