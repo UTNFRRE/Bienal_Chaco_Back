@@ -33,8 +33,6 @@ namespace Servicios
                 Apellido = request.Apellido,
                 DNI = request.DNI,
                 Pais = request.Pais,
-                Email = request.Email,
-                Contraseña = request.Contraseña,
                 Telefono = request.Telefono,
                 Biografia = request.Biografia
             };
@@ -77,7 +75,6 @@ namespace Servicios
                 escultorToUpdate.Apellido = request.Apellido;
                 escultorToUpdate.DNI = request.DNI;
                 escultorToUpdate.Pais = request.Pais;
-                escultorToUpdate.Email = request.Email;
                 escultorToUpdate.Telefono = request.Telefono;
                 escultorToUpdate.Biografia = request.Biografia;
 
@@ -105,7 +102,6 @@ namespace Servicios
                 escultorToUpdate.Apellido = request.Apellido ?? escultorToUpdate.Apellido;
                 escultorToUpdate.DNI = request.DNI ?? escultorToUpdate.DNI;
                 escultorToUpdate.Pais = request.Pais ?? escultorToUpdate.Pais;
-                escultorToUpdate.Email = request.Email ?? escultorToUpdate.Email;
                 escultorToUpdate.Telefono = request.Telefono ?? escultorToUpdate.Telefono;
                 escultorToUpdate.Biografia = request.Biografia ?? escultorToUpdate.Biografia;
 

@@ -34,7 +34,9 @@ namespace Servicios
                 Fecha = request.Fecha,
                 Lugar = request.Lugar,
                 Descripcion = request.Descripcion,
-                Tematica = request.Tematica
+                Tematica = request.Tematica,
+                latitud = request.latitud,
+                longitud = request.longitud
             };
             
             
@@ -47,7 +49,8 @@ namespace Servicios
         // Obtener todos los eventos
         public async Task<IEnumerable<Eventos>> GetAllEventosAsync()
         {
-            return await this._context.Eventos.ToListAsync();
+            var listaEventos = await this._context.Eventos.ToListAsync();
+            return listaEventos;
         }
 
         // Obtener un evento por su ID
@@ -67,6 +70,8 @@ namespace Servicios
                 eventoExistente.Lugar = request.Lugar;
                 eventoExistente.Descripcion = request.Descripcion;
                 eventoExistente.Tematica = request.Tematica;
+                eventoExistente.latitud = request.latitud;
+                eventoExistente.longitud = request.longitud;
 
                 await this._context.SaveChangesAsync();
             }
@@ -78,11 +83,13 @@ namespace Servicios
             var eventoExistente = await this._context.Eventos.FindAsync(id);
             if (eventoExistente != null)
             {
-                eventoExistente.Nombre = request.Nombre;
-                eventoExistente.Fecha = request.Fecha;
-                eventoExistente.Lugar = request.Lugar;
-                eventoExistente.Descripcion = request.Descripcion;
-                eventoExistente.Tematica = request.Tematica;
+                eventoExistente.Nombre = request.Nombre ?? eventoExistente.Nombre;
+                eventoExistente.Fecha = request.Fecha ?? eventoExistente.Fecha ;
+                eventoExistente.Lugar = request.Lugar ?? eventoExistente.Lugar;
+                eventoExistente.Descripcion = request.Descripcion ?? eventoExistente.Descripcion;
+                eventoExistente.Tematica = request.Tematica ?? eventoExistente.Tematica;
+                eventoExistente.latitud = request.latitud ?? eventoExistente.latitud;
+                eventoExistente.longitud = request.longitud ?? eventoExistente.longitud;
 
                 await this._context.SaveChangesAsync();
             }

@@ -51,12 +51,6 @@ namespace Contexts
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Email)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Contraseña)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.Telefono)
                     .IsUnicode(false);
 
