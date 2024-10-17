@@ -31,6 +31,9 @@ namespace Entidades
         [Required]
         [StringLength(100)]
         public string Tematica { get; set; }
+
+        public double? latitud { get; set; }
+        public double? longitud {get; set; }
     }
 }
 

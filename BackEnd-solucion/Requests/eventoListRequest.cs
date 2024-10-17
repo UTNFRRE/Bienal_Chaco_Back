@@ -21,6 +21,8 @@ namespace Requests
 
         [Required]
         public string Tematica { get; set; }
+        public double? longitud { get; set; }
+        public double? latitud { get; set; }
     }
 
     public class EventoUpdateRequest
@@ -39,19 +41,25 @@ namespace Requests
 
         [Required]
         public string Tematica { get; set; }
+        [Required]
+        public double longitud { get; set; }
+        [Required]
+        public double latitud { get; set; }
     }
 
     public class EventoPatchRequest
     {
         public string? Nombre { get; set; }
 
-        public DateTime Fecha { get; set; }
+        public DateTime? Fecha { get; set; }
 
         public string? Lugar { get; set; }
      
         public string? Descripcion { get; set; }
 
         public string? Tematica { get; set; }
+        public double? longitud { get; set; }
+        public double? latitud { get; set; }
     }
 
 }
