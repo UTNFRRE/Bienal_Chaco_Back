@@ -181,6 +181,7 @@ namespace Servicios
                     lugarNacimiento = null,
                     premios =null,
                     contacto = e.Telefono,
+                    pais = e.Pais,
                     foto = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + e.Foto
                 })
                 .ToListAsync();
@@ -223,6 +224,7 @@ namespace Servicios
         public string? lugarNacimiento { get; set; }
         public List<string>? premios { get; set; }
         public string foto { get; set; }
+        public string? pais { get; set; }
         public string? contacto { get; set; }
     }
 }
