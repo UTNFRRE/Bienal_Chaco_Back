@@ -41,8 +41,36 @@ namespace Models
             EscultorPais = Escultor.Pais;
   
               }
+    }
 
-   
+    public class EsculturasListLiteDTO
+    {
+        public int EsculturaId { get; set; }
+        public string Nombre { get; set; }
+        public string? Tematica { get; set; }
+        public string? Descripcion { get; set; }
+        public string? EscultorNombre { get; set; }
+
+        public string? EscultorPais { get; set; }
+        [JsonIgnore]
+        public string urlImagen { get; set; } = "https://bienalobjectstorage.blob.core.windows.net/imagenes/";
+
+        public string Imagenes { get; set; }
+
+        //constructor de Esculturas
+        public EsculturasListLiteDTO(Esculturas escultura, Escultores escultor)
+        {
+            
+            EsculturaId = escultura.EsculturaId;
+            Nombre = escultura.Nombre;
+            Tematica = escultura.Tematica;
+            Descripcion = escultura.Descripcion;
+            EscultorNombre = escultor.Nombre + escultor.Apellido;
+            EscultorPais = escultor.Pais;
+            Imagenes = urlImagen + escultura.Imagenes;
+        }
+
+
 
     }
 }

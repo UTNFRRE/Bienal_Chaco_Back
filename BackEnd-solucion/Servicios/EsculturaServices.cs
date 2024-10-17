@@ -39,14 +39,6 @@ namespace Servicios
                 return null;
             }
 
-            //validación si existe id del escultor
-
-            /*var escultorExistente = this._context.Escultores.FirstOrDefault(e => e.EscultorId == request.EscultorID);
-            if (esculturaExistente == null)
-            {
-                return null;
-            }*/
-
             var newEscultura = new Esculturas()
             {
                 Nombre = request.Nombre,
@@ -64,17 +56,6 @@ namespace Servicios
            await this._context.Esculturas.AddAsync(newEscultura);
            await this._context.SaveChangesAsync();
 
-            //guardar relacion de Escultor con Escultura, esto hay que pasar a EscultorService
-            var escultorAsignado = await this._context.Escultores.FindAsync(request.EscultorID);
-
-            if (escultorAsignado != null)
-            {
-                escultorAsignado.Esculturas.Add(newEscultura);
-                this._context.Update(escultorAsignado);
-            }
-
-            await this._context.SaveChangesAsync();
-
             return newEscultura;
 
         }
@@ -82,6 +63,20 @@ namespace Servicios
         public async Task<IEnumerable<Esculturas>> GetAllAsync()
         {
             return await this._context.Esculturas.ToListAsync();
+        }
+
+        public async Task<IEnumerable<EsculturasListLiteDTO>> GetAllList()
+        {
+            var listescultura = await this._context.Esculturas.ToListAsync();
+            var listesculturaDTO = new List<EsculturasListLiteDTO>();
+
+            foreach (Esculturas esculturas in listescultura)
+                {
+                var escultor = await this._context.Escultores.FindAsync(esculturas.EscultorID);
+                listesculturaDTO.Add(new EsculturasListLiteDTO(esculturas, escultor));
+                }
+            
+            return listesculturaDTO;
         }
 
         public async Task<Esculturas>? GetByAsync(int id)
@@ -115,7 +110,7 @@ namespace Servicios
                 return null;
             }*/
 
-            var esculturaToUpdate = this._context.Esculturas.Find(id);
+        var esculturaToUpdate = this._context.Esculturas.Find(id);
             if (esculturaToUpdate != null)
             {
                 esculturaToUpdate.Nombre = request.Nombre;
@@ -206,6 +201,7 @@ namespace Servicios
     { 
         Task<Esculturas>? CreateAsync(EsculturaPostPut request);
         Task<IEnumerable<Esculturas>> GetAllAsync();
+        Task<IEnumerable<EsculturasListLiteDTO>> GetAllList();
         Task<EsculturasDetailDTO>? GetDetail(int idEscultura);
         Task<Esculturas>? GetByAsync(int id); 
         Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request);

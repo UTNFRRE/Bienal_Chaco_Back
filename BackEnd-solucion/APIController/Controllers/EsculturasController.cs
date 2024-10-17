@@ -83,6 +83,18 @@ namespace APIBienal.Controllers
             return Ok(esculturaDetail);
         }
 
+        [HttpGet("GetAllLite")]
+        public async Task<IActionResult> ObtenerListaEsculturas()
+        {
+            var esculturaDetail = await this.esculturaService.GetAllList();
+            if (esculturaDetail == null)
+            {
+                return NotFound("No se encontro ninguna escultura");
+            }
+
+            return Ok(esculturaDetail);
+        }
+
         // Actualizar escultura
         [HttpPut("{id}")]
     public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPostPut request)
