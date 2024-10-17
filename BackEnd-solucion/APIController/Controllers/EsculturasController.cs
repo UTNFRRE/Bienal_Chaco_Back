@@ -10,6 +10,7 @@ using Entidades;
 using Servicios;
 using Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
+using static System.Net.WebRequestMethods;
 
 namespace APIBienal.Controllers
 {
@@ -41,6 +42,12 @@ namespace APIBienal.Controllers
         public async Task<IActionResult> ObtenerTodasLasEsculturas()
         {
             var esculturas = await this.esculturaService.GetAllAsync();
+            //agregar link de imagen hardcodeo url de azure a cada imagen
+            foreach (var escultura in esculturas)
+            {
+                escultura.Imagenes = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + escultura.Imagenes;
+            }
+
             if (esculturas == null)
             {
                 return NotFound("No se encontraron esculturas.");
@@ -57,6 +64,10 @@ namespace APIBienal.Controllers
         {
             return NotFound("No se encontro una escultura con el id proporcionado");
         }
+
+            //devolver link de imagen hardcodeo url de azure
+        escultura.Imagenes = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + escultura.Imagenes;
+
         return Ok(escultura);
     }
 
@@ -64,10 +75,10 @@ namespace APIBienal.Controllers
     [HttpPut("{id}")]
     public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPostPut request)
     {
-        Esculturas? esculturaUpdate = await this.esculturaService.UpdateEsculturaAsync(id, request);
+        Esculturas? esculturaUpdate = await this.esculturaService.UpdatePutEsculturaAsync(id, request);
             if (esculturaUpdate == null)
             { 
-                return NotFound("Ocurrio un error al actualizar escultura. Intentelo nuevamente. Verifique si existe la escultura o si ya existe otra escultura con el nombre proporcionado");
+                return NotFound("Ocurrio un error al actualizar escultura. Intentelo nuevamente. Verifique si existe la escultura");
             }   
          return Ok(esculturaUpdate);
     }
