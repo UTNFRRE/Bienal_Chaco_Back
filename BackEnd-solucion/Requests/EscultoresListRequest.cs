@@ -26,4 +26,19 @@ namespace Requests
         public string? Biografia { get; set; } = string.Empty;
         public IFormFile? Imagen { get; set; }
     }
+    public class EscultoresPatchRequest
+    {
+        [MaxLength(20)]
+        public string? Nombre { get; set; } = string.Empty;
+        [MaxLength(20)]
+        public string? Apellido { get; set; } = string.Empty;
+        [MaxLength(8)]
+        public string? DNI { get; set; } = string.Empty;
+        public string? Pais { get; set; } = string.Empty;
+        public string? Email { get; set; }
+        public string? Contraseña { get; set; } = string.Empty;
+        public string? Telefono { get; set; }
+        public string? Biografia { get; set; } = string.Empty;
+        public IFormFile? Imagen { get; set; }
+    }
 }

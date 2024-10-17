@@ -5,6 +5,8 @@ using Entidades;                   // Para el modelo de entidad 'Escultores'.
 using Microsoft.EntityFrameworkCore; // Para usar Entity Framework Core, especialmente consultas y manipulación de datos.
 using Requests;                
 using Contexts;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using System.Text.Json.Serialization;
 
 namespace Servicios
 {
@@ -91,7 +93,34 @@ namespace Servicios
             }
             return escultorToUpdate;
         }
+        public async Task<Escultores> UpdatePatchAsync(int id, EscultoresPatchRequest request)
+        {
+            // Se busca el escultor en la base de datos por su ID.
+            var escultorToUpdate = await _context.Escultores.FindAsync(id);
 
+            // Si se encuentra el escultor, se actualizan sus propiedades con los datos del request.
+            if (escultorToUpdate != null)
+            {
+                escultorToUpdate.Nombre = request.Nombre ?? escultorToUpdate.Nombre;
+                escultorToUpdate.Apellido = request.Apellido ?? escultorToUpdate.Apellido;
+                escultorToUpdate.DNI = request.DNI ?? escultorToUpdate.DNI;
+                escultorToUpdate.Pais = request.Pais ?? escultorToUpdate.Pais;
+                escultorToUpdate.Email = request.Email ?? escultorToUpdate.Email;
+                escultorToUpdate.Telefono = request.Telefono ?? escultorToUpdate.Telefono;
+                escultorToUpdate.Biografia = request.Biografia ?? escultorToUpdate.Biografia;
+
+                // Si hay una nueva foto, se sube a Azure y se actualiza la URL de la foto del escultor.
+                if (request.Imagen != null)
+                {
+                    escultorToUpdate.Foto = await _azureStorageService.UploadAsync(request.Imagen, escultorToUpdate.Foto);
+                }
+
+                // Se actualiza el registro del escultor en la base de datos.
+                _context.Escultores.Update(escultorToUpdate);
+                await _context.SaveChangesAsync();
+            }
+            return escultorToUpdate;
+        }
         // Método asíncrono para eliminar un escultor por su ID.
         public async Task DeleteAsync(int id)
         {
@@ -111,6 +140,59 @@ namespace Servicios
                 await _context.SaveChangesAsync();
             }
         }
+
+        //get esculturas
+        public async Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id)
+        {
+            var esc= await _context.Esculturas
+                .Select(e=> new EsculturasEscultorDTO
+                {
+                    id=e.EsculturaId,
+                    escultorid=e.EscultorID,
+                    nombre = e.Nombre,
+                    descripcion=e.Descripcion,
+                    imagenes = e.Imagenes,
+                })
+                .Where(e => e.escultorid == id).ToListAsync();
+            return esc;
+        }
+
+        //get public
+        public async Task<IEnumerable<object>> getEscultoresPublic()
+        {
+            var escultores = await _context.Escultores.Select(e => new
+            {
+                id = e.EscultorId,
+                nombre = e.Nombre + ' ' + e.Apellido,
+                pais = e.Pais,
+                foto = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + e.Foto
+            }).ToListAsync();
+            return escultores;
+        }
+        //
+        public async Task<EscultorDetailDTO> GetEscultorDetailAsync(int id)
+        {
+            IEnumerable<string> esculturas = await _context.Esculturas
+                .Where(e => e.EscultorID == id)
+                .Select(e =>e.Nombre)
+                .ToListAsync();
+            
+            var escultor = await _context.Escultores
+                .Where(e => e.EscultorId == id)
+                .Select(e => new EscultorDetailDTO
+                {
+                    id = e.EscultorId,
+                    nombre = e.Nombre + " " + e.Apellido,
+                    fechaNacimiento = null,
+                    lugarNacimiento = null,
+                    premios =null,
+                    obras = esculturas,
+                    foto = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + e.Foto
+                })
+                .FirstOrDefaultAsync();
+
+            return escultor;
+        }
     }
     // Interfaz genérica para las operaciones CRUD.
     public interface ICRUDServicesEscultores
@@ -119,6 +201,34 @@ namespace Servicios
         Task<IEnumerable<Escultores>> GetAllAsync();
         Task<Escultores> GetByAsync(int id);
         Task<Escultores> UpdateAsync(int id, EscultoresListRequest request);
+        Task<Escultores>? UpdatePatchAsync(int id, EscultoresPatchRequest request);
         Task DeleteAsync(int id);
+
+        Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id);
+        Task<IEnumerable<object>> getEscultoresPublic();
+        Task<EscultorDetailDTO> GetEscultorDetailAsync(int id);
+    }
+
+    //dto para esculturas de un escultor
+    public class EsculturasEscultorDTO
+    {
+        public int id { get; set; }
+        public string? nombre { get; set; }
+        public string? descripcion { get; set; }
+        public string? imagenes { get; set; }
+        [JsonIgnore]
+        public int escultorid { get; set; }
+
+    }
+
+    public class EscultorDetailDTO
+    {
+        public int id { get; set; }
+        public string nombre { get; set; }
+        public string? fechaNacimiento { get; set; }
+        public string? lugarNacimiento { get; set; }
+        public List<string>? premios { get; set; }
+        public IEnumerable<string> obras { get; set; }
+        public string foto { get; set; }
     }
 }

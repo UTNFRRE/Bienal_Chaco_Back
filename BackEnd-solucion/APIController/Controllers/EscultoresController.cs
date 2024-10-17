@@ -15,6 +15,7 @@ namespace APIController.Controllers
     public class EscultorController : ControllerBase
     {
         private readonly ICRUDServicesEscultores escultorService;
+        private string url = "https://bienalobjectstorage.blob.core.windows.net/imagenes/";
         public EscultorController(ICRUDServicesEscultores escultoresService)
         {
             this.escultorService = escultoresService;
@@ -32,6 +33,10 @@ namespace APIController.Controllers
         public async Task<ActionResult> GetAllEscultores()
         {
             var lista_escultores = await this.escultorService.GetAllAsync();
+            foreach (var escultor in lista_escultores)
+            {
+                escultor.Foto = this.url + escultor.Foto;
+            }
             return Ok(lista_escultores);
         }
 
@@ -43,7 +48,19 @@ namespace APIController.Controllers
             {
                 return NotFound();
             }
+            escultor.Foto = this.url + escultor.Foto;
             return Ok(escultor);
+        }
+        //get escultor detail
+        [HttpGet("{id}/detail")]
+        public async Task<IActionResult> GetDetail(int id)
+        {
+            var esc = await escultorService.GetEscultorDetailAsync(id);
+            if (esc == null)
+            {
+                return NotFound();
+            }
+            return Ok(esc);
         }
 
         [HttpPut("{id}")]
@@ -57,6 +74,18 @@ namespace APIController.Controllers
             return Ok(updatedEscultor);
         }
 
+        //patch
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchEscultor(int id, [FromForm] EscultoresPatchRequest request)
+        {
+            var patchedEscultor = await this.escultorService.UpdatePatchAsync(id, request);
+            if (patchedEscultor == null)
+            {
+                return NotFound();
+            }
+            return Ok(patchedEscultor);
+        }
+
         // DELETE: api/Escultor/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEscultor(int id)
@@ -64,96 +93,32 @@ namespace APIController.Controllers
             await this.escultorService.DeleteAsync(id);
             return NoContent();
         }
-        /*
-        // Subir una imagen de escultor
-        [HttpPost("UploadImagen")]
-        public async Task<IActionResult> SubirImagenEscultor([FromForm] imagenService fichero)
+
+        //Devolver todas las esculturas de un escultor
+        [HttpGet("{id}/esculturas")]
+        public async Task<IActionResult> getEsculturas(int id)
         {
-            if (fichero.Archivo == null)
+            var esc= await escultorService.getEsculturas(id);
+            if (esc == null)
             {
-                return BadRequest("Archivo no válido.");
+                return NoContent();
             }
-
-            var nombreArchivo = Guid.NewGuid().ToString() + ".jpg";
-            var blobClient = _blobServiceClient.GetBlobContainerClient(_containerName).GetBlobClient(nombreArchivo);
-
-            using (var memoryStream = new MemoryStream())
+            foreach(var escultura in esc)
             {
-                await fichero.Archivo.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-
-                var blobHttpHeaders = new BlobHttpHeaders
-                {
-                    ContentType = fichero.Archivo.ContentType
-                };
-
-                // Usa la sobrecarga correcta de UploadAsync
-                await blobClient.UploadAsync(
-                    memoryStream,
-                    new BlobHttpHeaders { ContentType = fichero.Archivo.ContentType } // Aquí no usamos 'overwrite'
-                );
-
-                return Ok(new { Ruta = blobClient.Uri.AbsoluteUri });
+                escultura.imagenes = this.url + escultura.imagenes;
             }
+            return Ok(esc);
         }
-
-        // Obtener todas las imágenes de escultores
-        [HttpGet("GetAllImagenes")]
-        public async Task<ActionResult<IEnumerable<string>>> GetAllImagenesEscultores()
+        //get public escultores
+        [HttpGet("api/escultoresPublic")]
+        public async Task<IActionResult> getEscultoresPublic()
         {
-            var imagenes = new List<string>();
-            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-
-            await foreach (var blobItem in containerClient.GetBlobsAsync())
+            var esc = await escultorService.getEscultoresPublic();
+            if (esc == null)
             {
-                imagenes.Add(containerClient.GetBlobClient(blobItem.Name).Uri.AbsoluteUri);
+                return NoContent();
             }
-
-            return Ok(imagenes);
+            return Ok(esc);
         }
-
-        // Actualizar/Reemplazar una imagen
-        [HttpPut("UpdateImagen/{nombreArchivo}")]
-        public async Task<IActionResult> UpdateImagen(string nombreArchivo, [FromForm] imagenService fichero)
-        {
-            if (fichero.Archivo == null)
-            {
-                return BadRequest("El archivo es nulo");
-            }
-
-            var blobClient = _blobServiceClient.GetBlobContainerClient(_containerName).GetBlobClient(nombreArchivo);
-
-            using (var memoryStream = new MemoryStream())
-            {
-                await fichero.Archivo.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-
-                // Utiliza la sobrecarga adecuada de UploadAsync
-                await blobClient.UploadAsync(
-                    memoryStream,
-                    new BlobHttpHeaders { ContentType = fichero.Archivo.ContentType }
-                );
-
-                return Ok($"Imagen {nombreArchivo} actualizada correctamente.");
-            }
-        }
-
-        // Eliminar una imagen de escultor
-        [HttpDelete("DeleteImagen/{nombreArchivo}")]
-        public async Task<IActionResult> EliminarImagenEscultor(string nombreArchivo)
-        {
-            var blobClient = _blobServiceClient.GetBlobContainerClient(_containerName).GetBlobClient(nombreArchivo);
-
-            var response = await blobClient.DeleteIfExistsAsync();
-
-            if (response)
-            {
-                return Ok($"Imagen {nombreArchivo} eliminada correctamente.");
-            }
-            else
-            {
-                return StatusCode(500, "Error al eliminar la imagen.");
-            }
-        }*/
     }
 }
