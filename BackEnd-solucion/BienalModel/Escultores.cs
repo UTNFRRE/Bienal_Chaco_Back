@@ -25,10 +25,6 @@ namespace Entidades
         public string? DNI { get; set; }
         [MaxLength(50)]
         public string? Pais { get; set; }
-        [Required]
-
-        public string? Email { get; set; }
-        public string? Contraseña { get; set; }
         public string? Telefono { get; set; }
         [MaxLength(255)]
         public string? Biografia { get; set; }
