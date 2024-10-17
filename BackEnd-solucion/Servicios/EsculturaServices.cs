@@ -139,7 +139,7 @@ namespace Servicios
 
             if (!string.IsNullOrEmpty(request.Descripcion))
             {
-                esculturaToUpdate.Nombre = request.Descripcion;
+                esculturaToUpdate.Descripcion = request.Descripcion;
             }
 
             if (request.Imagen != null)

@@ -13,7 +13,7 @@ namespace Entidades
         [Key]
         public int EsculturaId { get; set; }
         [Required]
-        [MaxLength(20)]
+        [MaxLength(50)]
         public string Nombre { get; set; } = "";
         [MaxLength(200)]
         public string? Descripcion { get; set; }
