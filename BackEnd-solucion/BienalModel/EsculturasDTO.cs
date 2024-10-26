@@ -57,7 +57,8 @@ namespace Models
 
         
         public int EscultorID { get; set;}
-        
+
+        public DateOnly FechaCreacion { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
         public string? EscultorNombre { get; set; }
 
@@ -77,6 +78,8 @@ namespace Models
             Descripcion = escultura.Descripcion;
 
             EscultorID = escultura.EscultorID;
+            FechaCreacion = escultura.FechaCreacion;
+
 
             EscultorNombre = escultor.Nombre + escultor.Apellido;
             EscultorPais = escultor.Pais;
