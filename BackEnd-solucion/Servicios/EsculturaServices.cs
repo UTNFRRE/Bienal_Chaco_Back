@@ -65,9 +65,9 @@ namespace Servicios
             return await this._context.Esculturas.ToListAsync();
         }
 
-        public async Task<IEnumerable<EsculturasListLiteDTO>> GetAllList()
+        public async Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize)
         {
-            var listescultura = await this._context.Esculturas.ToListAsync();
+            var listescultura = await this._context.Esculturas.Skip((pageNumber -1) * pageSize).Take(pageSize).ToListAsync();
             var listesculturaDTO = new List<EsculturasListLiteDTO>();
 
             foreach (Esculturas esculturas in listescultura)
@@ -201,7 +201,7 @@ namespace Servicios
     { 
         Task<Esculturas>? CreateAsync(EsculturaPostPut request);
         Task<IEnumerable<Esculturas>> GetAllAsync();
-        Task<IEnumerable<EsculturasListLiteDTO>> GetAllList();
+        Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize);
         Task<EsculturasDetailDTO>? GetDetail(int idEscultura);
         Task<Esculturas>? GetByAsync(int id); 
         Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request);

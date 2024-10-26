@@ -84,13 +84,15 @@ namespace APIBienal.Controllers
         }
 
         [HttpGet("GetAllLite")]
-        public async Task<IActionResult> ObtenerListaEsculturas()
+        public async Task<IActionResult> ObtenerListaEsculturas( int pageNumber = 1, int pageSize = 10)
         {
-            var esculturaDetail = await this.esculturaService.GetAllList();
+            var esculturaDetail = await this.esculturaService.GetAllList(pageNumber, pageSize);
             if (esculturaDetail == null)
             {
                 return NotFound("No se encontro ninguna escultura");
             }
+
+            
 
             return Ok(esculturaDetail);
         }

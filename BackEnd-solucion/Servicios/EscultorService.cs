@@ -51,9 +51,12 @@ namespace Servicios
         }
 
         // Método asíncrono para obtener todos los escultores de la base de datos.
-        public async Task<IEnumerable<Escultores>> GetAllAsync()
+        public async Task<IEnumerable<Escultores>> GetAllAsync(int pageNumber , int pageSize)
         {
-            return await _context.Escultores.ToListAsync();
+            return await _context.Escultores
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         // Método asíncrono para obtener un escultor por su ID.
@@ -189,7 +192,7 @@ namespace Servicios
     public interface ICRUDServicesEscultores
     {
         Task <Escultores> CreateAsync(EscultoresListRequest request);
-        Task<IEnumerable<Escultores>> GetAllAsync();
+        Task<IEnumerable<Escultores>> GetAllAsync( int pageNumber, int pageSize);
         Task<Escultores> GetByAsync(int id);
         Task<Escultores> UpdateAsync(int id, EscultoresListRequest request);
         Task<Escultores>? UpdatePatchAsync(int id, EscultoresPatchRequest request);
