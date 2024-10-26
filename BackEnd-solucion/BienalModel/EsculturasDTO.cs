@@ -16,6 +16,9 @@ namespace Models
         public string? Tematica { get; set; }
         public string? Descripcion { get; set; }
         public DateOnly? FechaCreacion { get; set; }
+
+
+
         public string? EscultorNombre { get; set; }
 
         public string? EscultorPais { get; set; }
@@ -36,6 +39,8 @@ namespace Models
             FechaCreacion = escultura.FechaCreacion;
             Imagenes = urlImagen + escultura.Imagenes;
             
+
+
             EscultorNombre = Escultor.Nombre;
             EscultorImagen = urlImagen + Escultor.Foto;
             EscultorPais = Escultor.Pais;
@@ -49,6 +54,11 @@ namespace Models
         public string Nombre { get; set; }
         public string? Tematica { get; set; }
         public string? Descripcion { get; set; }
+
+        
+        public int EscultorID { get; set;}
+        
+
         public string? EscultorNombre { get; set; }
 
         public string? EscultorPais { get; set; }
@@ -65,6 +75,9 @@ namespace Models
             Nombre = escultura.Nombre;
             Tematica = escultura.Tematica;
             Descripcion = escultura.Descripcion;
+
+            EscultorID = escultura.EscultorID;
+
             EscultorNombre = escultor.Nombre + escultor.Apellido;
             EscultorPais = escultor.Pais;
             Imagenes = urlImagen + escultura.Imagenes;
