@@ -58,6 +58,23 @@ namespace Servicios
         {
             return await this._context.Eventos.FindAsync(id);
         }
+        
+        //Obtener los events de una Fecha
+        public  async Task<IEnumerable<Eventos>> GetEventosByFechaAsync(DateTime parameter)
+        {
+            var listaEventosFecha = await this._context.Eventos.Where(e => e.Fecha.Date == parameter.Date).ToListAsync();
+            return listaEventosFecha;
+        }
+
+        public async Task<IEnumerable<Eventos>> GetEventosNextAsync()
+        {
+            var now = DateTime.Now;
+
+            var listaEventosNext = await this._context.Eventos.Where(e => e.Fecha>= now).OrderBy(e => e.Fecha).Take(6).ToListAsync();
+            return listaEventosNext ;
+        }
+
+
 
         // Actualizar un evento existente
         public async Task<Eventos> UpdateEventoAsync(int id, EventoUpdateRequest request)
@@ -124,6 +141,8 @@ namespace Servicios
         Task<Eventos> CreateEventoAsync(EventoCreateRequest request);
         Task<IEnumerable<Eventos>> GetAllEventosAsync();
         Task<Eventos> GetEventoByIdAsync(int id);
+        Task<IEnumerable<Eventos>> GetEventosByFechaAsync(DateTime parameter);
+        Task<IEnumerable<Eventos>> GetEventosNextAsync();
         Task<Eventos> UpdateEventoAsync(int id,EventoUpdateRequest request);
         Task<Eventos> UpdatePatchEventoAsync(int id,EventoPatchRequest request);
         Task DeleteEventoAsync(int id);
