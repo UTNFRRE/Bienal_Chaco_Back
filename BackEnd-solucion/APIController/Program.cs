@@ -16,7 +16,7 @@ var connectionString = builder.Configuration.GetConnectionString("Connection");
 builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(connectionString,
      b => b.MigrationsAssembly("APIController")));
 
-builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();
+builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
 
 builder.Services.AddScoped<ICRUDEsculturaService, EsculturasServices>();
 builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();

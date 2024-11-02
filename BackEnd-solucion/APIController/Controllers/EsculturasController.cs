@@ -109,7 +109,7 @@ namespace APIBienal.Controllers
          return Ok(esculturaUpdate);
     }
 
-    [HttpPatch("{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> ActualizarPropiedadEscultura(int id, [FromForm] EsculturaPatch request)
         {
             Esculturas? esculturaUpdate = await this.esculturaService.UpdatePatchAsync(id, request);
@@ -119,6 +119,18 @@ namespace APIBienal.Controllers
             }
             return Ok(esculturaUpdate);
         }
+        //Voto de Escultura
+        [HttpPatch("{id}/Votar")]
+        public async Task<IActionResult> Votacion(int id, [FromForm] EsculturaVoto request)
+        {
+            Esculturas? esculturaUpdate = await this.esculturaService.VoteEscultura(id, request);
+            if (esculturaUpdate == null)
+            {
+                return NotFound("Ocurrio un error al votar la escultura. Intentelo nuevamente. Verifique si existe la escultura");
+            }
+            return Ok(esculturaUpdate);
+        }
+
 
         //implementar patch con imagen para escultura
 

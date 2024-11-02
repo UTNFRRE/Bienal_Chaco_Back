@@ -33,4 +33,9 @@ namespace Requests
         public DateOnly? FechaCreacion { get; set; }
         public string? Tematica { get; set; }
     }
+
+    public class EsculturaVoto
+    {
+        public int Voto { get; set; }
+    }
 }
