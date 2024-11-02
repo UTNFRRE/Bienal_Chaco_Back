@@ -77,7 +77,7 @@ namespace Models
             Tematica = escultura.Tematica;
             Descripcion = escultura.Descripcion;
 
-            EscultorID = escultura.EscultorID;
+            EscultorID = escultura.EscultoresID;
             FechaCreacion = escultura.FechaCreacion;
 
 

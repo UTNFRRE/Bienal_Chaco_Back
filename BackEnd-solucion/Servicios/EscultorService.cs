@@ -147,7 +147,7 @@ namespace Servicios
                 .Select(e=> new EsculturasEscultorDTO
                 {
                     id=e.EsculturaId,
-                    escultorid=e.EscultorID,
+                    escultorid=e.EscultoresID,
                     nombre = e.Nombre,
                     descripcion=e.Descripcion,
                     imagenes = e.Imagenes,

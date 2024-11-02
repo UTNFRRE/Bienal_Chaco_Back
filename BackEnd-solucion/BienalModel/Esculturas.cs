@@ -21,7 +21,7 @@ namespace Entidades
         public string Imagenes { get; set; } = "";
         //primero sin control de que exista ese escultor
         [Required]
-        public int EscultorID { get; set; }
+        public int EscultoresID { get; set; }
         
         //desde aca va el GetAll
         public DateOnly FechaCreacion { get; set; } = DateOnly.FromDateTime(DateTime.Now);

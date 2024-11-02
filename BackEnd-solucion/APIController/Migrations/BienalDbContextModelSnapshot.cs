@@ -41,20 +41,11 @@ namespace APIController.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Contraseña")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
-
                     b.Property<string>("DNI")
                         .IsRequired()
                         .HasMaxLength(10)
                         .IsUnicode(false)
                         .HasColumnType("varchar(10)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
 
                     b.Property<string>("Foto")
                         .IsUnicode(false)
@@ -92,10 +83,10 @@ namespace APIController.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("EscultorID")
+                    b.Property<int>("EscultoresID")
                         .HasColumnType("int");
 
-                     b.Property<DateOnly>("FechaCreacion")
+                    b.Property<DateOnly>("FechaCreacion")
                         .HasColumnType("date");
 
                     b.Property<string>("Imagenes")
@@ -104,19 +95,18 @@ namespace APIController.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Tematica")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EsculturaId");
 
-                    b.HasIndex("EscultoresEscultorId");
+                    b.HasIndex("EscultoresID");
 
                     b.ToTable("Esculturas");
                 });
-
 
             modelBuilder.Entity("Entidades.Eventos", b =>
                 {
@@ -148,21 +138,29 @@ namespace APIController.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<double?>("latitud")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("longitud")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.ToTable("Eventos");
                 });
+
             modelBuilder.Entity("Entidades.Esculturas", b =>
                 {
                     b.HasOne("Entidades.Escultores", null)
                         .WithMany("Esculturas")
-                        .HasForeignKey("EscultoresEscultorId");
+                        .HasForeignKey("EscultoresID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Entidades.Escultores", b =>
                 {
                     b.Navigation("Esculturas");
-
                 });
 #pragma warning restore 612, 618
         }

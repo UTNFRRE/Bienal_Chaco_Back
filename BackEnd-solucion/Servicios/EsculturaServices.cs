@@ -42,7 +42,7 @@ namespace Servicios
             var newEscultura = new Esculturas()
             {
                 Nombre = request.Nombre,
-                EscultorID = request.EscultorID,
+                EscultoresID = request.EscultorID,
                 Descripcion = request.Descripcion,
                 FechaCreacion = request.FechaCreacion,
                 Tematica = request.Tematica,
@@ -72,7 +72,7 @@ namespace Servicios
 
             foreach (Esculturas esculturas in listescultura)
                 {
-                var escultor = await this._context.Escultores.FindAsync(esculturas.EscultorID);
+                var escultor = await this._context.Escultores.FindAsync(esculturas.EscultoresID);
                 listesculturaDTO.Add(new EsculturasListLiteDTO(esculturas, escultor));
                 }
             
@@ -93,7 +93,7 @@ namespace Servicios
                 return null;
             }
             
-            var escultor = await this._context.Escultores.FindAsync(escultura.EscultorID);
+            var escultor = await this._context.Escultores.FindAsync(escultura.EscultoresID);
             EsculturasDetailDTO EsculturaDetalle = new EsculturasDetailDTO(escultura, escultor);
             return EsculturaDetalle;
             
@@ -114,7 +114,7 @@ namespace Servicios
             if (esculturaToUpdate != null)
             {
                 esculturaToUpdate.Nombre = request.Nombre;
-                esculturaToUpdate.EscultorID = request.EscultorID;
+                esculturaToUpdate.EscultoresID = request.EscultorID;
                 esculturaToUpdate.Descripcion = request.Descripcion;
                 esculturaToUpdate.FechaCreacion = request.FechaCreacion;
                 esculturaToUpdate.Tematica = request.Tematica;
@@ -161,7 +161,7 @@ namespace Servicios
             if (request.EscultorID != null)
             {
                 //conversión implicita de int? a int
-                esculturaToUpdate.EscultorID = (int)request.EscultorID;
+                esculturaToUpdate.EscultoresID = (int)request.EscultorID;
             }
 
             if (request.FechaCreacion != null)
