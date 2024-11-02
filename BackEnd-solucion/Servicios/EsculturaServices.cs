@@ -133,6 +133,24 @@ namespace Servicios
             return esculturaToUpdate;
         }
 
+        public async Task<Esculturas> VoteEscultura(int id, EsculturaVoto request)
+            {
+                var escultura = await this._context.Esculturas.FindAsync(id);
+                
+                if (escultura == null)
+                {
+                    throw new Exception("Escultura no encontrada");
+                }
+
+                escultura.Votos += request.Voto;
+                escultura.CantVotaciones++;
+                escultura.PromedioVotos = escultura.Votos / escultura.CantVotaciones;
+
+                this._context.Update(escultura);
+                await this._context.SaveChangesAsync();
+                return escultura;
+        }
+
         public async Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request)
         {
             var esculturaToUpdate = await this._context.Esculturas.FindAsync(id);
@@ -206,6 +224,7 @@ namespace Servicios
         Task<Esculturas>? GetByAsync(int id); 
         Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request);
         Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request);
+        Task<Esculturas> VoteEscultura(int id, EsculturaVoto request);
         Task<bool> DeleteAsync(int id);
         
     } 
