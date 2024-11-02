@@ -42,6 +42,7 @@ namespace APIBienal.Controllers
             return listadeeventos == null ? NotFound() : Ok (listadeeventos);
         }
 
+
         // Obtener un evento por ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEventoById(int id)
@@ -57,6 +58,26 @@ namespace APIBienal.Controllers
             }
             
         }
+        
+        // obtener de una fecha
+        [HttpGet("fecha/{fecha}")]
+        public async Task<IActionResult> GetEventosByFecha( DateTime fecha)
+        {
+            var listadeeventos = await this.eventoService.GetEventosByFechaAsync(fecha);
+            return listadeeventos == null ? NotFound() : Ok (listadeeventos);
+        }
+
+        // obtener eventos proximos
+        [HttpGet("next")]
+        public async Task<IActionResult> GetEventosNext()
+        {
+            var listadeeventos = await this.eventoService.GetEventosNextAsync();
+            return listadeeventos == null ? NotFound() : Ok (listadeeventos);
+
+        }
+
+
+
         // Actualizar un evento existente
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEvento(int id,[FromForm] EventoUpdateRequest request)
