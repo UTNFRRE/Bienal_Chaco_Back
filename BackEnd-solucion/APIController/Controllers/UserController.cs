@@ -33,7 +33,7 @@ namespace APIBienal.Controllers
 
         // Crear un nuevo Usuario
         [HttpPost("create")]
-        public async Task<IActionResult> CreateUsuario([FromBody] UsuarioCreateRequest request)
+        public async Task<IActionResult> CreateUsuario([FromForm] UsuarioCreateRequest request)
         {
             var user = new MyUser { UserName = request.Email, Email = request.Email, FullName = request.FullName, DateOfBirth = request.DateOfBirth };
             var result = await _userManager.CreateAsync(user, request.Password);
@@ -48,7 +48,7 @@ namespace APIBienal.Controllers
 
         // Login de usuario
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromForm] LoginRequest request)
         {
             var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
 
