@@ -51,9 +51,21 @@ namespace Servicios
         }
 
         // Método asíncrono para obtener todos los escultores de la base de datos.
-        public async Task<IEnumerable<Escultores>> GetAllAsync(int pageNumber , int pageSize)
+        public async Task<IEnumerable<Escultores>> GetAllAsync(int pageNumber , int pageSize, string? busqueda = null)
         {
+            if (busqueda != null) //Depende de si hay un parametro busqueda, llama al metodo GetAllFilter
+            {
+                return await GetAllFilter(pageNumber, pageSize, busqueda);
+            }
+
             return await _context.Escultores
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Escultores>> GetAllFilter(int pageNumber, int pageSize, string busqueda)
+        {
+            return await _context.Escultores.Where(u => u.Nombre.Contains(busqueda) || u.Apellido.Contains(busqueda) || u.DNI.Contains(busqueda) || u.Pais.Contains(busqueda) || u.Telefono.Contains(busqueda))
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -192,7 +204,7 @@ namespace Servicios
     public interface ICRUDServicesEscultores
     {
         Task <Escultores> CreateAsync(EscultoresListRequest request);
-        Task<IEnumerable<Escultores>> GetAllAsync( int pageNumber, int pageSize);
+        Task<IEnumerable<Escultores>> GetAllAsync( int pageNumber, int pageSize, string? busqueda);
         Task<Escultores> GetByAsync(int id);
         Task<Escultores> UpdateAsync(int id, EscultoresListRequest request);
         Task<Escultores>? UpdatePatchAsync(int id, EscultoresPatchRequest request);
@@ -201,6 +213,7 @@ namespace Servicios
         Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id);
         Task<IEnumerable<object>> getEscultoresPublic();
         Task<IEnumerable<EscultorDetailDTO>> GetEscultorDetailAsync();
+        Task<IEnumerable<Escultores>> GetAllFilter(int pageNumber, int pageSize, string busqueda);
     }
 
     //dto para esculturas de un escultor

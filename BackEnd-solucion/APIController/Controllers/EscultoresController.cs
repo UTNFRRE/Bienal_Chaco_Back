@@ -30,9 +30,9 @@ namespace APIController.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAllEscultores(int pageNumber = 1  , int pageSize = 10)
+        public async Task<ActionResult> GetAllEscultores(int pageNumber = 1  , int pageSize = 10, string? busqueda = null)
         {
-            var lista_escultores = await this.escultorService.GetAllAsync( pageNumber, pageSize);
+            var lista_escultores = await this.escultorService.GetAllAsync( pageNumber, pageSize, busqueda);
             foreach (var escultor in lista_escultores)
             {
                 escultor.Foto = this.url + escultor.Foto;
