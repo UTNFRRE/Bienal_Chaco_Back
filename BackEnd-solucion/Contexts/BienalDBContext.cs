@@ -11,10 +11,13 @@ namespace Contexts
         public DbSet<Esculturas> Esculturas { get; set; }
         public DbSet<Eventos> Eventos { get; set; }
 
+        public DbSet<MyUser> Users { get; set; }
+
         public BienalDbContext(DbContextOptions<BienalDbContext> options)
             : base(options)
         {
         }
+        
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         // InMemoryDatabase para pruebas, después cambiar a SQL Server
@@ -22,7 +25,7 @@ namespace Contexts
         // optionsBuilder.UseSqlServer(@"Server=.\;Database=BienalDB;Trusted_Connection=True;");
         //}
 
-
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
