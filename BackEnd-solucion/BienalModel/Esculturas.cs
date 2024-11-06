@@ -32,7 +32,7 @@ namespace Entidades
         public int CantVotaciones { get; set; }
         //navegabilidad para relacion muchos a muchos con votos
         [JsonIgnore]
-        public ICollection<Votos>? Votos { get; set; }
+        public virtual ICollection<Votos>? Votos { get; set; }
         //atributo cal ulado Votos/CantVotaciones
         public double PromedioVotos { get; set; }
    

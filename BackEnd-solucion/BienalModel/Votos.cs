@@ -13,17 +13,17 @@ namespace Entidades
     {
         [Key]
         public int VotoId { get; set; }
-        [ForeignKey("usuario")]
+        [ForeignKey("MyUser")]
         [Required]
         public int UrserId { get; set; }
         [JsonIgnore]
-        public MyUser usuario { get; set; }
+        public virtual MyUser usuario { get; set; }
 
-        [ForeignKey("Escultura")]
+        [ForeignKey("Esculturas")]
         [Required]
         public int EsculturaId { get; set; }
         [JsonIgnore]
-        public string Escultura { get; set; }
+        public virtual Esculturas Escultura { get; set; }
 
         [Required]
         public float Puntuacion { get; set; }

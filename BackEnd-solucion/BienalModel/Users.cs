@@ -17,6 +17,6 @@ namespace Entidades
         public DateTime DateOfBirth { get; set; }
         //navegabilidad para relacion muchos a muchos con votos
         [JsonIgnore]
-        public ICollection<Votos>? Votos { get; set; }
+        public virtual ICollection<Votos>? Votos { get; set; }
     }
 }
