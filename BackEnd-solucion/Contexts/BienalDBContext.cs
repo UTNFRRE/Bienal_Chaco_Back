@@ -11,7 +11,6 @@ namespace Contexts
         public DbSet<Esculturas> Esculturas { get; set; }
         public DbSet<Eventos> Eventos { get; set; }
 
-        public DbSet<MyUser> Users { get; set; }
 
         public BienalDbContext(DbContextOptions<BienalDbContext> options)
             : base(options)

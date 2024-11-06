@@ -25,7 +25,7 @@ builder.Services.AddScoped<ICRUDServicesEscultores, EscultoresServices>();
 
 // 
 // Add Identity services
-builder.Services.AddIdentity<MyUser, IdentityRole>(options =>
+builder.Services.AddIdentity<MyUser, MyRol>(options =>
 {
     // Password settings
     options.Password.RequireDigit = true;
@@ -41,7 +41,7 @@ builder.Services.AddIdentity<MyUser, IdentityRole>(options =>
     options.Lockout.AllowedForNewUsers = false;
     options.Lockout.MaxFailedAccessAttempts = 12;
 })
-.AddEntityFrameworkStores<BienalDbContext>()
+.AddEntityFrameworkStores<MyIdentityDBContext>()
 .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<ICRUDServiceUsers, UsersServices>();
