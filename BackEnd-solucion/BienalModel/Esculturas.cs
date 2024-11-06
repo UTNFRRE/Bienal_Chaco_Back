@@ -30,8 +30,9 @@ namespace Entidades
         public string? Tematica { get; set; }
 
         public int CantVotaciones { get; set; }
+        //navegabilidad para relacion muchos a muchos con votos
         [JsonIgnore]
-        public int Votos { get; set; }
+        public ICollection<Votos>? Votos { get; set; }
         //atributo cal ulado Votos/CantVotaciones
         public double PromedioVotos { get; set; }
    
