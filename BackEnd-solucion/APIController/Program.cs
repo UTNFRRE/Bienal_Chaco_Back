@@ -65,14 +65,11 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 // Configurar el pipeline HTTP
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bienal API V1.1");
     });
-}
 
 app.UseHttpsRedirection();
 app.UseCors(options => { 
