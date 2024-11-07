@@ -14,8 +14,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Cargar las configuraciones de Azure Blob Storage desde appsettings
 //crear variable para cadena de conexion
 var connectionString = builder.Configuration.GetConnectionString("Connection");
-builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(connectionString,
-     b => b.MigrationsAssembly("APIController")));
+
+// Configurar la conexión a la base de datos inMemory
+builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("PruebaBD"));
+//builder.Services.AddDbContext<BienalDbContext>(options => options.UseMySql(connectionString,
+     //b => b.MigrationsAssembly("APIController"));
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
 
