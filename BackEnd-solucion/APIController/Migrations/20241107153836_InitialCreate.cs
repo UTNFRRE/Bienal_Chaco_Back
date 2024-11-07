@@ -50,6 +50,33 @@ namespace APIController.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Esculturas",
                 columns: table => new
                 {
@@ -60,7 +87,10 @@ namespace APIController.Migrations
                     Imagenes = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EscultoresID = table.Column<int>(type: "int", nullable: false),
                     FechaCreacion = table.Column<DateOnly>(type: "date", nullable: false),
-                    Tematica = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Tematica = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CantVotaciones = table.Column<int>(type: "int", nullable: false),
+                    Votos = table.Column<int>(type: "int", nullable: false),
+                    PromedioVotos = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,6 +117,9 @@ namespace APIController.Migrations
 
             migrationBuilder.DropTable(
                 name: "Eventos");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Escultores");
