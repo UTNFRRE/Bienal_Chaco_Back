@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Requests
 {
-    public class EsculturaListRequest
+    public class EsculturaPostPut
     {
         [Required]
-        [MaxLength(20)]
+        [MaxLength(50)]
         public string Nombre { get; set; } = "";
         [MaxLength(200)]
         public string? Descripcion { get; set; }
@@ -20,5 +20,22 @@ namespace Requests
         public DateOnly FechaCreacion { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
         public string? Tematica { get; set; }
+    }
+
+    public class EsculturaPatch
+    {  
+        [MaxLength(50)]
+        public string? Nombre { get; set; }
+        [MaxLength(200)]
+        public string? Descripcion { get; set; }
+        public IFormFile? Imagen { get; set; }
+        public int? EscultorID { get; set; }
+        public DateOnly? FechaCreacion { get; set; }
+        public string? Tematica { get; set; }
+    }
+
+    public class EsculturaVoto
+    {
+        public int Voto { get; set; }
     }
 }

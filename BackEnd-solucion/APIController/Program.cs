@@ -7,21 +7,51 @@ using Contexts;
 using Servicios;
 using Entidades;
 using Requests;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Cargar las configuraciones de Azure Blob Storage desde appsettings
 //crear variable para cadena de conexion
 var connectionString = builder.Configuration.GetConnectionString("Connection");
-builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(connectionString,
-     b => b.MigrationsAssembly("APIController")));
 
-builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();
-builder.Services.AddScoped<ICRUDService, EsculturasServices>();
+// Configurar la conexión a la base de datos inMemory
+builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("PruebaBD"));
+//builder.Services.AddDbContext<BienalDbContext>(options => options.UseMySql(connectionString,
+     //b => b.MigrationsAssembly("APIController"));
+
+builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
+
+builder.Services.AddScoped<ICRUDEsculturaService, EsculturasServices>();
+builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();
+builder.Services.AddScoped<ICRUDServicesEscultores, EscultoresServices>();
+
+// 
+// Add Identity services
+builder.Services.AddIdentity<MyUser, IdentityRole>(options =>
+{
+    // Password settings
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 4;
+
+    // Email settings
+    options.SignIn.RequireConfirmedEmail = false;
+
+    // Lockout settings
+    options.Lockout.AllowedForNewUsers = false;
+    options.Lockout.MaxFailedAccessAttempts = 12;
+})
+.AddEntityFrameworkStores<BienalDbContext>()
+.AddDefaultTokenProviders();
+
+builder.Services.AddScoped<ICRUDServiceUsers, UsersServices>();
 
 builder.Services.AddControllers();
 
-// Configuraci�n de Swagger/OpenAPI
+// Configuración de Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

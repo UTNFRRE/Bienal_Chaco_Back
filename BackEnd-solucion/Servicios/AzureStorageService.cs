@@ -2,6 +2,7 @@
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 using Contexts;
+using Microsoft.Extensions.Configuration;
 
 namespace Servicios
 {
@@ -10,9 +11,9 @@ namespace Servicios
         private readonly string azureStorageConnectionString;
         private readonly string containerName;
 
-        public AzureBlobStorageService()
+        public AzureBlobStorageService(IConfiguration configuration)
         {
-            this.azureStorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=bienalobjectstorage;AccountKey=HNvY3gIDOrAU13taKy1SIYJ0JXntAomzUzHQYfD8BQULlxaz+n1dUkSdxQ8n9RsaI48s/f11Mjrm+ASt/6tBCA==;EndpointSuffix=core.windows.net";
+            this.azureStorageConnectionString = configuration["AzureStorageConnectionString:ConnectionString"];
             this.containerName = "imagenes";
         }
 
@@ -38,8 +39,6 @@ namespace Servicios
             }
 
             return blobFilename;
-
-
         }
 
         public async Task DeleteAsync(string blobFilename)
