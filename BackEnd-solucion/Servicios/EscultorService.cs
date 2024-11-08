@@ -63,9 +63,10 @@ namespace Servicios
                 .Take(pageSize)
                 .ToListAsync();
         }
+        // Metodo asinc de filtrado donde filtramos por campos de la tabla escultores. 
         public async Task<IEnumerable<Escultores>> GetAllFilter(int pageNumber, int pageSize, string busqueda)
         {
-            return await _context.Escultores.Where(u => u.Nombre.Contains(busqueda) || u.Apellido.Contains(busqueda) || u.DNI.Contains(busqueda) || u.Pais.Contains(busqueda) || u.Telefono.Contains(busqueda))
+            return await _context.Escultores.Where(u => (u.Nombre + " " + u.Apellido).Contains(busqueda) || u.DNI.Contains(busqueda) || u.Pais.Contains(busqueda))
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
