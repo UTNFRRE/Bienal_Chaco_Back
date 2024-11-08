@@ -16,14 +16,10 @@ namespace Entidades
         [ForeignKey("MyUser")]
         [Required]
         public int UrserId { get; set; }
-        [JsonIgnore]
-        public virtual MyUser usuario { get; set; }
 
         [ForeignKey("Esculturas")]
         [Required]
         public int EsculturaId { get; set; }
-        [JsonIgnore]
-        public virtual Esculturas Escultura { get; set; }
 
         [Required]
         public float Puntuacion { get; set; }

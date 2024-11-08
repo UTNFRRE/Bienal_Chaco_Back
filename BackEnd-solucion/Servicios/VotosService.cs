@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Contexts;
 using Entidades;
+using Microsoft.EntityFrameworkCore; // Para usar Entity Framework Core, especialmente consultas y manipulación de datos.
 
 namespace Servicios
 {
@@ -29,9 +30,17 @@ namespace Servicios
             await _context.SaveChangesAsync();
             return votos;
         }
+
+        //Metodo asincrono para obtener todos los votos (pruebas)
+        public async Task<IEnumerable<Votos>> GetAllAsync()
+        {
+            return await _context.Votos.ToListAsync();
+        }
     }
     public interface ICRUDServicesVotos
     {
         Task <Votos> CreateAsync(Votos votos);
+        
+        Task<IEnumerable<Votos>> GetAllAsync();
     }
 }
