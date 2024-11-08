@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Contexts;
 using Entidades;
-using Microsoft.EntityFrameworkCore; // Para usar Entity Framework Core, especialmente consultas y manipulación de datos.
+using Microsoft.EntityFrameworkCore;
+using Requests; // Para usar Entity Framework Core, especialmente consultas y manipulación de datos.
 
 namespace Servicios
 {
@@ -18,17 +19,17 @@ namespace Servicios
         }
 
         //metodo asincrono para crear un nuevo voto
-        public async Task<Votos> CreateAsync(Votos votos)
+        public async Task<Votos> CreateAsync(VotosListRequest request)
         {
             Votos newVoto = new Votos
             {
-                UrserId = votos.UrserId,
-                EsculturaId = votos.EsculturaId,
-                Puntuacion = votos.Puntuacion
+                UrserId = request.UrserId,
+                EsculturaId = request.EsculturaId,
+                Puntuacion = request.Puntuacion
             };
             _context.Votos.Add(newVoto);
             await _context.SaveChangesAsync();
-            return votos;
+            return newVoto;
         }
 
         //Metodo asincrono para obtener todos los votos (pruebas)
@@ -39,7 +40,7 @@ namespace Servicios
     }
     public interface ICRUDServicesVotos
     {
-        Task <Votos> CreateAsync(Votos votos);
+        Task <Votos> CreateAsync(VotosListRequest votos);
         
         Task<IEnumerable<Votos>> GetAllAsync();
     }

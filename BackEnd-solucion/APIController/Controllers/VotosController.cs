@@ -24,7 +24,7 @@ namespace APIController.Controllers
 
         //Create: api/Votos
         [HttpPost]
-        public async Task<IActionResult> CreateVoto([FromBody] Votos votos)
+        public async Task<IActionResult> CreateVoto([FromBody] VotosListRequest votos)
         {
             Votos votoCreado = await this.votosService.CreateAsync(votos);
             return Ok(votoCreado);
