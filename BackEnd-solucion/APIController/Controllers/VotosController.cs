@@ -36,5 +36,15 @@ namespace APIController.Controllers
             var lista_votos = await this.votosService.GetAllAsync();
             return Ok(lista_votos);
         }
+
+        [HttpHead]
+        public async Task<ActionResult> ExistVoto(int userid, int esculturaid)
+        {
+            var existe = await this.votosService.ExistAsync(userid, esculturaid);
+            if (existe == false) {
+                return NotFound();
+            }
+            return Ok(existe);
+        }
     }
 }

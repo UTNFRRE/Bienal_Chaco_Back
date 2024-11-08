@@ -37,11 +37,18 @@ namespace Servicios
         {
             return await _context.Votos.ToListAsync();
         }
+
+        //Metodo asincrono para saber si un usuario voto una escultura
+        public async Task<Boolean> ExistAsync(int userid, int esculturaid)
+        {
+            return await _context.Votos.AnyAsync(x => x.UrserId == userid && x.EsculturaId == esculturaid);
+        }
     }
     public interface ICRUDServicesVotos
     {
         Task <Votos> CreateAsync(VotosListRequest votos);
         
         Task<IEnumerable<Votos>> GetAllAsync();
+        Task<Boolean> ExistAsync(int userid, int esculturaid);
     }
 }
