@@ -8,14 +8,18 @@ using Servicios;
 using Entidades;
 using Requests;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Cargar las configuraciones de Azure Blob Storage desde appsettings
 //crear variable para cadena de conexion
 var connectionString = builder.Configuration.GetConnectionString("Connection");
-builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(connectionString,
-     b => b.MigrationsAssembly("APIController")));
+
+// Configurar la conexión a la base de datos inMemory
+builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("PruebaBD"));
+//builder.Services.AddDbContext<BienalDbContext>(options => options.UseMySql(connectionString,
+     //b => b.MigrationsAssembly("APIController"));
 
 // Configurar MyIdentityDBContext
 builder.Services.AddDbContext<MyIdentityDBContext>(options => options.UseSqlServer(connectionString,
@@ -54,7 +58,11 @@ builder.Services.AddControllers();
 
 // Configuración de Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bienal API", Version = "V1.1" });
+});
 
 builder.Services.AddCors();
 
@@ -64,7 +72,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bienal API V1.1");
+    });
 }
 
 app.UseHttpsRedirection();

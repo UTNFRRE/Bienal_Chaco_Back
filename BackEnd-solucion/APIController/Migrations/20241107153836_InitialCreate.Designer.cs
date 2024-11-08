@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIController.Migrations
 {
     [DbContext(typeof(BienalDbContext))]
-    [Migration("20241105223908_agregadoLogin")]
-    partial class agregadoLogin
+    [Migration("20241107153836_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -176,7 +176,6 @@ namespace APIController.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("EmailConfirmed")
