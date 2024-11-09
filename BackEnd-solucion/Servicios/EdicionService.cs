@@ -13,11 +13,11 @@ namespace Servicios
 {
     public class Ediciones
     {
-        public class EventosServices : ICRUDServiceEdicion
+        public class EdicionServices : ICRUDServiceEdicion
         {
             private BienalDbContext _context;
 
-            public EventosServices(BienalDbContext context)
+            public EdicionServices(BienalDbContext context)
             {
                 this._context = context;
             }
@@ -65,7 +65,7 @@ namespace Servicios
                 return edicionExistente;
             }
 
-            public async Task<Edicion> UpdatePatchEdicionAsync(int año, EdicionUpdateRequest request)
+            public async Task<Edicion> UpdatePatchEdicionAsync(int año, EdicionPatchEdicion request)
             {
                 var edicionExistente = await this._context.Edicion.FindAsync(año);
                 if (edicionExistente != null)
@@ -123,9 +123,9 @@ namespace Servicios
 
             Task<Edicion> UpdateEdicionAsync(int año, EdicionUpdateRequest request);
 
-            Task<Edicion> UpdatePatchEdicionAsync(int año, EdicionUpdateRequest request);
+            Task<Edicion> UpdatePatchEdicionAsync(int año, EdicionPatchEdicion request);
 
-
+            Task<bool> DeleteEdicionAsync(int año);
 
         }
     }

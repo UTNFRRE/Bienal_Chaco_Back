@@ -28,7 +28,7 @@ namespace Requests
     }
     public class EdicionPatchEdicion
     {
-        public int? Año { get; set; }
+        public int Año { get; set; }
 
         public DateOnly? FechaInicio { get; set; }
 
