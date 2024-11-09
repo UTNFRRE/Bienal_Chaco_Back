@@ -23,6 +23,13 @@ namespace Entidades
         [Required]
         [MaxLength(10)]
         public string? DNI { get; set; }
+
+        public DateOnly FechaNacimiento { get; set; }
+        [MaxLength(60)]
+        public string? LugarNacimiento { get; set; }
+
+        public string Premios { get; set; }
+
         [MaxLength(50)]
         public string? Pais { get; set; }
         public string? Telefono { get; set; }

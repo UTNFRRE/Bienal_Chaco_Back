@@ -32,6 +32,9 @@ namespace Servicios
                 Nombre = request.Nombre,
                 Apellido = request.Apellido,
                 DNI = request.DNI,
+                FechaNacimiento = request.FechaNacimiento,
+                LugarNacimiento = request.LugarNacimiento,
+                Premios = request.Premios,
                 Pais = request.Pais,
                 Telefono = request.Telefono,
                 Biografia = request.Biografia
@@ -63,9 +66,10 @@ namespace Servicios
                 .Take(pageSize)
                 .ToListAsync();
         }
+        // Metodo asinc de filtrado con opcion a filtrado por campos de la tabla escultores. 
         public async Task<IEnumerable<Escultores>> GetAllFilter(int pageNumber, int pageSize, string busqueda)
         {
-            return await _context.Escultores.Where(u => u.Nombre.Contains(busqueda) || u.Apellido.Contains(busqueda) || u.DNI.Contains(busqueda) || u.Pais.Contains(busqueda) || u.Telefono.Contains(busqueda))
+            return await _context.Escultores.Where(u => (u.Nombre + " " + u.Apellido).Contains(busqueda) || u.DNI.Contains(busqueda) || u.Pais.Contains(busqueda))
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -77,7 +81,7 @@ namespace Servicios
             return await _context.Escultores.FindAsync(id);
         }
 
-        // Método asíncrono para actualizar un escultor existente.
+        // Método asíncrono para actualizar un escultor existente. Usamos patch igual
         public async Task<Escultores> UpdateAsync(int id, EscultoresListRequest request)
         {
             // Se busca el escultor en la base de datos por su ID.
@@ -116,6 +120,9 @@ namespace Servicios
                 escultorToUpdate.Nombre = request.Nombre ?? escultorToUpdate.Nombre;
                 escultorToUpdate.Apellido = request.Apellido ?? escultorToUpdate.Apellido;
                 escultorToUpdate.DNI = request.DNI ?? escultorToUpdate.DNI;
+                escultorToUpdate.LugarNacimiento = request.LugarNacimiento ?? escultorToUpdate.LugarNacimiento;
+                escultorToUpdate.Premios = request.Premios ?? escultorToUpdate.Premios;
+                escultorToUpdate.FechaNacimiento = request.FechaNacimiento;
                 escultorToUpdate.Pais = request.Pais ?? escultorToUpdate.Pais;
                 escultorToUpdate.Telefono = request.Telefono ?? escultorToUpdate.Telefono;
                 escultorToUpdate.Biografia = request.Biografia ?? escultorToUpdate.Biografia;
@@ -152,7 +159,7 @@ namespace Servicios
             }
         }
 
-        //get esculturas
+        //get esculturas por id de escultor
         public async Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id)
         {
             var esc= await _context.Esculturas
@@ -169,7 +176,7 @@ namespace Servicios
         }
 
         //get public
-        public async Task<IEnumerable<object>> getEscultoresPublic()
+        public async Task<IEnumerable<object>> getEscultoresPublic() //NO tocar
         {
             var escultores = await _context.Escultores.Select(e => new
             {
@@ -181,7 +188,7 @@ namespace Servicios
             return escultores;
         }
         //
-        public async Task<IEnumerable<EscultorDetailDTO>>GetEscultorDetailAsync()
+        public async Task<IEnumerable<EscultorDetailDTO>>GetEscultorDetailAsync() //No usamomos ma
         {
             var escultor = await _context.Escultores
                 .Select(e => new EscultorDetailDTO

@@ -29,8 +29,7 @@ namespace Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //configuración de restricciones al crear la base de datos
-
+            //configuración de restricciones al crear la base de datos 
             modelBuilder.Entity<Escultores>(entity =>
             {
                 entity.Property(e => e.EscultorId)
@@ -68,3 +67,4 @@ namespace Contexts
         }
     }
 }
+
