@@ -15,9 +15,9 @@ namespace Models
         [Key]
         public int Año { get; set; }
 
-        public DateOnly FechaInicio { get; set; }
+        public DateOnly? FechaInicio { get; set; }
 
-        public DateOnly FechaFin { get; set; }
+        public DateOnly? FechaFin { get; set; }
 
         public ICollection<Eventos>? Eventos { get; set; }
 

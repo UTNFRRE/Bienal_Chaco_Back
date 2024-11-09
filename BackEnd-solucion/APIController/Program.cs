@@ -9,6 +9,7 @@ using Entidades;
 using Requests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using static Servicios.Ediciones;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,16 +18,22 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Connection");
 
 // Configurar la conexión a la base de datos inMemory
-builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("PruebaBD"));
-//builder.Services.AddDbContext<BienalDbContext>(options => options.UseMySql(connectionString,
-     //b => b.MigrationsAssembly("APIController"));
+//builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("PruebaBD"));
+builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(connectionString,
+     b => b.MigrationsAssembly("APIController")));
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
 
 builder.Services.AddScoped<ICRUDEsculturaService, EsculturasServices>();
 builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();
 builder.Services.AddScoped<ICRUDServicesEscultores, EscultoresServices>();
+<<<<<<< HEAD
 builder.Services.AddScoped<ICRUDServicesVotos, VotosService>();
+=======
+
+builder.Services.AddScoped<ICRUDServiceEdicion, EdicionServices>();
+
+>>>>>>> 994464b08cc112a8d856afa430d6103ba0eecfd3
 // 
 // Add Identity services
 builder.Services.AddIdentity<MyUser, IdentityRole>(options =>
