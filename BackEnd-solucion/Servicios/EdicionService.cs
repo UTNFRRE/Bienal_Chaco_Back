@@ -24,7 +24,7 @@ namespace Servicios
 
             public async Task<Edicion> CreateEdicionAsync(EdicionPostRequests request)
             {
-                var newEdicion = new Edicion
+                var newEdicion = new Edicion()
                 {
                     Año = request.Año,
                     FechaInicio = request.FechaInicio,

@@ -27,14 +27,11 @@ builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();
 builder.Services.AddScoped<ICRUDEsculturaService, EsculturasServices>();
 builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();
 builder.Services.AddScoped<ICRUDServicesEscultores, EscultoresServices>();
-<<<<<<< HEAD
+
 builder.Services.AddScoped<ICRUDServicesVotos, VotosService>();
-=======
 
 builder.Services.AddScoped<ICRUDServiceEdicion, EdicionServices>();
 
->>>>>>> 994464b08cc112a8d856afa430d6103ba0eecfd3
-// 
 // Add Identity services
 builder.Services.AddIdentity<MyUser, IdentityRole>(options =>
 {
