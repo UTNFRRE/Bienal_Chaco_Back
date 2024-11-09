@@ -20,7 +20,7 @@ var connectionString = builder.Configuration.GetConnectionString("Connection");
 // Configurar la conexión a la base de datos inMemory
 //builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("PruebaBD"));
 builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(connectionString,
-     b => b.MigrationsAssembly("APIController"));
+     b => b.MigrationsAssembly("APIController")));
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
 
