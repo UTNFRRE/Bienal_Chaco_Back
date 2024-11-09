@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -31,6 +32,7 @@ namespace Entidades
         public string? Foto { get; set; }
         [JsonIgnore]
         public ICollection<Esculturas>? Esculturas { get; set; }
-
+        [ForeignKey("Edicion")]
+        public int EdicionAño { get; set;}
     }
 }
