@@ -43,9 +43,9 @@ namespace Servicios
             }
 
             // Obtener un evento por su ID
-            public async Task<Edicion> GetEdicionByAño(int año)
+            public async Task<Edicion> GetEdicionByAño(int Año)
             {
-                return await this._context.Edicion.FindAsync(año);
+                return await this._context.Edicion.FindAsync(Año);
             }
         
             // Actualizar un evento existente
