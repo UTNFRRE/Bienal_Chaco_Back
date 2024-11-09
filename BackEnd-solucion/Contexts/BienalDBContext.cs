@@ -13,6 +13,8 @@ namespace Contexts
 
         public DbSet<MyUser> Users { get; set; }
 
+        public DbSet<MyUser> Edicion { get; set; }
+
         public BienalDbContext(DbContextOptions<BienalDbContext> options)
             : base(options)
         {
