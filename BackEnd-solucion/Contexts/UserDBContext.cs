@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Entidades;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Contexts

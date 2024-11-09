@@ -10,6 +10,13 @@ using Requests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 
+
+// Add these using statements at the top
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Cargar las configuraciones de Azure Blob Storage desde appsettings
@@ -31,28 +38,72 @@ builder.Services.AddScoped<ICRUDEsculturaService, EsculturasServices>();
 builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();
 builder.Services.AddScoped<ICRUDServicesEscultores, EscultoresServices>();
 
-// 
-// Add Identity services
-builder.Services.AddIdentity<MyUser, MyRol>(options =>
+
+builder.Services.AddScoped<IServiceUsers, UsersServices>();
+
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+
+// Configurar IdentityCore
+builder.Services.AddIdentityCore<MyUser>()
+    .AddRoles<MyRol>()
+    .AddEntityFrameworkStores<MyIdentityDBContext>()
+    .AddApiEndpoints();
+
+
+// Configurar IdentityOptions
+
+builder.Services.Configure<IdentityOptions>(options =>
+    {
+        // Password settings
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredLength = 1;
+        options.Password.RequiredUniqueChars = 0;
+
+        // Lockout settings
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.MaxFailedAccessAttempts = 999;
+        options.Lockout.AllowedForNewUsers = true;
+
+        // User settings
+        options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+        options.User.RequireUniqueEmail = true;
+    });
+
+
+
+
+
+
+builder.Services.AddAuthentication(options =>
 {
-    // Password settings
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 4;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddCookie(IdentityConstants.ApplicationScheme)
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
 
-    // Email settings
-    options.SignIn.RequireConfirmedEmail = false;
+// Configure Authorization
+builder.Services.AddAuthorization();
 
-    // Lockout settings
-    options.Lockout.AllowedForNewUsers = false;
-    options.Lockout.MaxFailedAccessAttempts = 12;
-})
-.AddEntityFrameworkStores<MyIdentityDBContext>()
-.AddDefaultTokenProviders();
-
-builder.Services.AddScoped<ICRUDServiceUsers, UsersServices>();
 
 builder.Services.AddControllers();
 
@@ -84,6 +135,9 @@ app.UseCors(options => {
                         options.AllowAnyMethod();
                         }
             );
+
+// Add before UseAuthorization
+app.UseAuthentication();
 
 app.UseAuthorization();
 
