@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Entidades;
 using Microsoft.EntityFrameworkCore;
+using Models;
 
 namespace Contexts
 {
@@ -12,6 +13,8 @@ namespace Contexts
         public DbSet<Eventos> Eventos { get; set; }
 
         public DbSet<MyUser> Users { get; set; }
+        public DbSet<Votos> Votos { get; set; }
+        public DbSet<Edicion> Edicion { get; set; }
 
         public BienalDbContext(DbContextOptions<BienalDbContext> options)
             : base(options)

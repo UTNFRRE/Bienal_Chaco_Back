@@ -142,10 +142,6 @@ namespace Servicios
                     throw new Exception("Escultura no encontrada");
                 }
 
-                escultura.Votos += request.Voto;
-                escultura.CantVotaciones++;
-                escultura.PromedioVotos = escultura.Votos / escultura.CantVotaciones;
-
                 this._context.Update(escultura);
                 await this._context.SaveChangesAsync();
                 return escultura;
