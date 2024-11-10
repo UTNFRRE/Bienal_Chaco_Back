@@ -65,10 +65,14 @@ namespace Servicios
         {
             return await this._context.Esculturas.ToListAsync();
         }
-
-        public async Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize)
+        //Este usa el front
+        public async Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize, int? AnioEdicion =null)
         {
-            var listescultura = await this._context.Esculturas.Skip((pageNumber -1) * pageSize).Take(pageSize).ToListAsync();
+            var listescultura = await this._context.Esculturas
+                .Where(e => e.EdicionAño == AnioEdicion)
+                .Skip((pageNumber -1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
             var listesculturaDTO = new List<EsculturasListLiteDTO>();
 
             foreach (Esculturas esculturas in listescultura)
@@ -80,7 +84,7 @@ namespace Servicios
             return listesculturaDTO;
         }
 
-        public async Task<Esculturas>? GetByAsync(int id)
+        public async Task<Esculturas>? GetByAsync(int id) //Get by id
         {
             return await this._context.Esculturas.FindAsync(id);
         }
@@ -216,7 +220,7 @@ namespace Servicios
     { 
         Task<Esculturas>? CreateAsync(EsculturaPostPut request);
         Task<IEnumerable<Esculturas>> GetAllAsync();
-        Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize);
+        Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize, int? AnioEdicion);
         Task<EsculturasDetailDTO>? GetDetail(int idEscultura);
         Task<Esculturas>? GetByAsync(int id); 
         Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request);

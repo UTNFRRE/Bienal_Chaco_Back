@@ -82,11 +82,11 @@ namespace APIBienal.Controllers
 
             return Ok(esculturaDetail);
         }
-
+        // Este usa el front
         [HttpGet("GetAllLite")]
-        public async Task<IActionResult> ObtenerListaEsculturas( int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> ObtenerListaEsculturas( int pageNumber = 1, int pageSize = 10, int? AnioEdicion = null)
         {
-            var esculturaDetail = await this.esculturaService.GetAllList(pageNumber, pageSize);
+            var esculturaDetail = await this.esculturaService.GetAllList(pageNumber, pageSize, AnioEdicion);
             if (esculturaDetail == null)
             {
                 return NotFound("No se encontro ninguna escultura");
