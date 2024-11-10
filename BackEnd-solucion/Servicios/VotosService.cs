@@ -23,9 +23,9 @@ namespace Servicios
         {
             Votos newVoto = new Votos
             {
-                UrserId = request.UrserId,
+                UserId = request.UserId,
                 EsculturaId = request.EsculturaId,
-                Puntuacion = request.Puntuacion
+                Puntuacion = request.Puntuacion,
             };
             _context.Votos.Add(newVoto);
             await _context.SaveChangesAsync();
@@ -39,9 +39,9 @@ namespace Servicios
         }
 
         //Metodo asincrono para saber si un usuario voto una escultura
-        public async Task<Boolean> ExistAsync(int userid, int esculturaid)
+        public async Task<Boolean> ExistAsync(string userid, int esculturaid)
         {
-            return await _context.Votos.AnyAsync(x => x.UrserId == userid && x.EsculturaId == esculturaid);
+            return await _context.Votos.AnyAsync(x => x.UserId == userid && x.EsculturaId == esculturaid);
         }
     }
     public interface ICRUDServicesVotos
@@ -49,6 +49,6 @@ namespace Servicios
         Task <Votos> CreateAsync(VotosListRequest votos);
         
         Task<IEnumerable<Votos>> GetAllAsync();
-        Task<Boolean> ExistAsync(int userid, int esculturaid);
+        Task<Boolean> ExistAsync(string userid, int esculturaid);
     }
 }
