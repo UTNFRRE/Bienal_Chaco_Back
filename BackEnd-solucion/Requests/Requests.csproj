@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.Extensions.Features" Version="8.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BienalModel\Models.csproj" />
+  </ItemGroup>
+
 </Project>

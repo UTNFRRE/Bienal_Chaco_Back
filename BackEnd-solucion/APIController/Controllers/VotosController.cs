@@ -38,7 +38,7 @@ namespace APIController.Controllers
         }
 
         [HttpHead]
-        public async Task<ActionResult> ExistVoto(int userid, int esculturaid)
+        public async Task<ActionResult> ExistVoto(string userid, int esculturaid)
         {
             var existe = await this.votosService.ExistAsync(userid, esculturaid);
             if (existe == false) {

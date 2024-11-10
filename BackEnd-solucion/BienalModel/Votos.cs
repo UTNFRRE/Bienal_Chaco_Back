@@ -15,7 +15,7 @@ namespace Entidades
         public int VotoId { get; set; }
         [ForeignKey("MyUser")]
         [Required]
-        public int UrserId { get; set; }
+        public string UserId { get; set; } // Renamed from UrserId to UserId
         public MyUser User { get; set; }
         [ForeignKey("Esculturas")]
         [Required]
