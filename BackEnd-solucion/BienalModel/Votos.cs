@@ -16,11 +16,11 @@ namespace Entidades
         [ForeignKey("MyUser")]
         [Required]
         public int UrserId { get; set; }
-
+        public MyUser User { get; set; }
         [ForeignKey("Esculturas")]
         [Required]
         public int EsculturaId { get; set; }
-
+        public Esculturas Esculturas { get; set; }
         [Required]
         public float Puntuacion { get; set; }
         public DateOnly FechaCreacion { get; set; } = DateOnly.FromDateTime(DateTime.Now);

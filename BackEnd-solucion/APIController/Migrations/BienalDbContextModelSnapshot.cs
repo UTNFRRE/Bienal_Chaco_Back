@@ -50,9 +50,16 @@ namespace APIController.Migrations
                     b.Property<int>("EdicionAño")
                         .HasColumnType("int");
 
+                    b.Property<DateOnly>("FechaNacimiento")
+                        .HasColumnType("date");
+
                     b.Property<string>("Foto")
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
+
+                    b.Property<string>("LugarNacimiento")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -64,6 +71,10 @@ namespace APIController.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Premios")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Telefono")
                         .IsUnicode(false)
@@ -240,14 +251,8 @@ namespace APIController.Migrations
                     b.Property<int>("EsculturaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EsculturasEsculturaId")
-                        .HasColumnType("int");
-
                     b.Property<DateOnly>("FechaCreacion")
                         .HasColumnType("date");
-
-                    b.Property<string>("MyUserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<float>("Puntuacion")
                         .HasColumnType("real");
@@ -255,11 +260,15 @@ namespace APIController.Migrations
                     b.Property<int>("UrserId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("VotoId");
 
-                    b.HasIndex("EsculturasEsculturaId");
+                    b.HasIndex("EsculturaId");
 
-                    b.HasIndex("MyUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Votos");
                 });
@@ -315,13 +324,21 @@ namespace APIController.Migrations
 
             modelBuilder.Entity("Entidades.Votos", b =>
                 {
-                    b.HasOne("Entidades.Esculturas", null)
+                    b.HasOne("Entidades.Esculturas", "Esculturas")
                         .WithMany("Votos")
-                        .HasForeignKey("EsculturasEsculturaId");
+                        .HasForeignKey("EsculturaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Entidades.MyUser", null)
+                    b.HasOne("Entidades.MyUser", "User")
                         .WithMany("Votos")
-                        .HasForeignKey("MyUserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Esculturas");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Entidades.Escultores", b =>

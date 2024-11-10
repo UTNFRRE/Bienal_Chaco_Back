@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace APIController.Migrations
 {
     /// <inheritdoc />
-    public partial class EdicionYVotos : Migration
+    public partial class VotosyEdicion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,6 +30,27 @@ namespace APIController.Migrations
                 nullable: false,
                 defaultValue: 0);
 
+            migrationBuilder.AddColumn<DateOnly>(
+                name: "FechaNacimiento",
+                table: "Escultores",
+                type: "date",
+                nullable: false,
+                defaultValue: new DateOnly(1, 1, 1));
+
+            migrationBuilder.AddColumn<string>(
+                name: "LugarNacimiento",
+                table: "Escultores",
+                type: "nvarchar(60)",
+                maxLength: 60,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Premios",
+                table: "Escultores",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
             migrationBuilder.CreateTable(
                 name: "Edicion",
                 columns: table => new
@@ -50,25 +71,26 @@ namespace APIController.Migrations
                     VotoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UrserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     EsculturaId = table.Column<int>(type: "int", nullable: false),
                     Puntuacion = table.Column<float>(type: "real", nullable: false),
-                    FechaCreacion = table.Column<DateOnly>(type: "date", nullable: false),
-                    EsculturasEsculturaId = table.Column<int>(type: "int", nullable: true),
-                    MyUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    FechaCreacion = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Votos", x => x.VotoId);
                     table.ForeignKey(
-                        name: "FK_Votos_Esculturas_EsculturasEsculturaId",
-                        column: x => x.EsculturasEsculturaId,
+                        name: "FK_Votos_Esculturas_EsculturaId",
+                        column: x => x.EsculturaId,
                         principalTable: "Esculturas",
-                        principalColumn: "EsculturaId");
+                        principalColumn: "EsculturaId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Votos_Users_MyUserId",
-                        column: x => x.MyUserId,
+                        name: "FK_Votos_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -87,14 +109,14 @@ namespace APIController.Migrations
                 column: "EdicionAño");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Votos_EsculturasEsculturaId",
+                name: "IX_Votos_EsculturaId",
                 table: "Votos",
-                column: "EsculturasEsculturaId");
+                column: "EsculturaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Votos_MyUserId",
+                name: "IX_Votos_UserId",
                 table: "Votos",
-                column: "MyUserId");
+                column: "UserId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Escultores_Edicion_EdicionAño",
@@ -160,6 +182,18 @@ namespace APIController.Migrations
 
             migrationBuilder.DropColumn(
                 name: "EdicionAño",
+                table: "Escultores");
+
+            migrationBuilder.DropColumn(
+                name: "FechaNacimiento",
+                table: "Escultores");
+
+            migrationBuilder.DropColumn(
+                name: "LugarNacimiento",
+                table: "Escultores");
+
+            migrationBuilder.DropColumn(
+                name: "Premios",
                 table: "Escultores");
 
             migrationBuilder.RenameColumn(
