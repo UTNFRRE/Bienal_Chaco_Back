@@ -37,7 +37,8 @@ namespace Servicios
                 Premios = request.Premios,
                 Pais = request.Pais,
                 Telefono = request.Telefono,
-                Biografia = request.Biografia
+                Biografia = request.Biografia,
+                EdicionAño = request.EdicionAño
             };
 
             // Si el 'request' incluye una foto, se sube al almacenamiento en Azure y se guarda la URL en el campo 'Imagen'.
@@ -188,24 +189,7 @@ namespace Servicios
             return escultores;
         }
         //
-        public async Task<IEnumerable<EscultorDetailDTO>>GetEscultorDetailAsync() //No usamomos ma
-        {
-            var escultor = await _context.Escultores
-                .Select(e => new EscultorDetailDTO
-                {
-                    id = e.EscultorId,
-                    nombre = e.Nombre + " " + e.Apellido,
-                    fechaNacimiento = null,
-                    lugarNacimiento = null,
-                    premios =null,
-                    contacto = e.Telefono,
-                    pais = e.Pais,
-                    foto = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + e.Foto
-                })
-                .ToListAsync();
-
-            return escultor;
-        }
+        
     }
     // Interfaz genérica para las operaciones CRUD.
     public interface ICRUDServicesEscultores
@@ -219,7 +203,6 @@ namespace Servicios
 
         Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id);
         Task<IEnumerable<object>> getEscultoresPublic();
-        Task<IEnumerable<EscultorDetailDTO>> GetEscultorDetailAsync();
         Task<IEnumerable<Escultores>> GetAllFilter(int pageNumber, int pageSize, string busqueda);
     }
 

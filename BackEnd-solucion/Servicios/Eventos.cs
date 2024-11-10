@@ -36,7 +36,8 @@ namespace Servicios
                 Descripcion = request.Descripcion,
                 Tematica = request.Tematica,
                 latitud = request.latitud,
-                longitud = request.longitud
+                longitud = request.longitud,
+                EdicionAño = request.EdicionAño
             };
             
             

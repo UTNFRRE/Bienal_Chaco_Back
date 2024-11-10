@@ -25,6 +25,7 @@ namespace Requests
         public string? Telefono { get; set; }
         public string? Biografia { get; set; } = string.Empty;
         public IFormFile? Imagen { get; set; }
+        public int EdicionAño { get; set; }
     }
     public class EscultoresPatchRequest
     {

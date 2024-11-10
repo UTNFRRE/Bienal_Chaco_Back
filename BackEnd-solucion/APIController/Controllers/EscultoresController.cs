@@ -51,17 +51,7 @@ namespace APIController.Controllers
             escultor.Foto = this.url + escultor.Foto;
             return Ok(escultor);
         }
-        //get escultor detail
-        [HttpGet("/escultoresAdmin")]
-        public async Task<IActionResult> GetDetail()
-        {
-            var esc = await escultorService.GetEscultorDetailAsync();
-            if (esc == null)
-            {
-                return NotFound();
-            }
-            return Ok(esc);
-        }
+        
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEscultor(int id,[FromForm] EscultoresListRequest request)

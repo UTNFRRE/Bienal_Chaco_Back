@@ -46,6 +46,7 @@ namespace Servicios
                 Descripcion = request.Descripcion,
                 FechaCreacion = request.FechaCreacion,
                 Tematica = request.Tematica,
+                EdicionAño = request.EdicionAño
             };  
 
             if (request.Imagen!= null) //cambiar por lo que viene en el request
