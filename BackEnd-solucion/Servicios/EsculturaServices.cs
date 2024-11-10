@@ -62,13 +62,6 @@ namespace Servicios
 
         }
 
-        public async Task<IEnumerable<Esculturas>> GetAllAsync()
-        {
-            
-            IEnumerable<Esculturas> esculturas= await this._context.Esculturas.ToListAsync();
-            await this.asignarPromedios(esculturas);
-            return esculturas;
-        }
         //Este usa el front
         public async Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize, int? AnioEdicion =null)
         {
@@ -278,7 +271,6 @@ namespace Servicios
     public interface ICRUDEsculturaService
     { 
         Task<Esculturas>? CreateAsync(EsculturaPostPut request);
-        Task<IEnumerable<Esculturas>> GetAllAsync();
         Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize, int? AnioEdicion);
         Task<EsculturasDetailDTO>? GetDetail(int idEscultura);
         Task<Esculturas>? GetByAsync(int id); 
