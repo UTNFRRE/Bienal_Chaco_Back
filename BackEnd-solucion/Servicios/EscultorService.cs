@@ -55,22 +55,23 @@ namespace Servicios
         }
 
         // Método asíncrono para obtener todos los escultores de la base de datos.
-        public async Task<IEnumerable<Escultores>> GetAllAsync(int pageNumber , int pageSize, string? busqueda = null)
+        public async Task<IEnumerable<Escultores>> GetAllAsync(int pageNumber , int pageSize, int? AnioEdicion = null, string? busqueda = null)
         {
             if (busqueda != null) //Depende de si hay un parametro busqueda, llama al metodo GetAllFilter
             {
-                return await GetAllFilter(pageNumber, pageSize, busqueda);
+                return await GetAllFilter(pageNumber, pageSize, AnioEdicion, busqueda);
             }
 
             return await _context.Escultores
+                .Where(e => e.EdicionAño == AnioEdicion)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
         // Metodo asinc de filtrado con opcion a filtrado por campos de la tabla escultores. 
-        public async Task<IEnumerable<Escultores>> GetAllFilter(int pageNumber, int pageSize, string busqueda)
+        public async Task<IEnumerable<Escultores>> GetAllFilter(int pageNumber, int pageSize, int? AnioEdicion, string busqueda)
         {
-            return await _context.Escultores.Where(u => (u.Nombre + " " + u.Apellido).Contains(busqueda) || u.DNI.Contains(busqueda) || u.Pais.Contains(busqueda))
+            return await _context.Escultores.Where(u => (u.EdicionAño == AnioEdicion) && ((u.Nombre + " " + u.Apellido).Contains(busqueda) || u.DNI.Contains(busqueda) || u.Pais.Contains(busqueda)))
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -177,9 +178,9 @@ namespace Servicios
         }
 
         //get public
-        public async Task<IEnumerable<object>> getEscultoresPublic() //NO tocar
+        public async Task<IEnumerable<object>> getEscultoresPublic(int? AnioEdicion = null) //NO tocar
         {
-            var escultores = await _context.Escultores.Select(e => new
+            var escultores = await _context.Escultores.Where(u => u.EdicionAño == AnioEdicion).Select(e => new
             {
                 id = e.EscultorId,
                 nombre = e.Nombre + ' ' + e.Apellido,
@@ -195,15 +196,15 @@ namespace Servicios
     public interface ICRUDServicesEscultores
     {
         Task <Escultores> CreateAsync(EscultoresListRequest request);
-        Task<IEnumerable<Escultores>> GetAllAsync( int pageNumber, int pageSize, string? busqueda);
+        Task<IEnumerable<Escultores>> GetAllAsync( int pageNumber, int pageSize, int? AnioEdicion, string? busqueda);
         Task<Escultores> GetByAsync(int id);
         Task<Escultores> UpdateAsync(int id, EscultoresListRequest request);
         Task<Escultores>? UpdatePatchAsync(int id, EscultoresPatchRequest request);
         Task DeleteAsync(int id);
 
         Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id);
-        Task<IEnumerable<object>> getEscultoresPublic();
-        Task<IEnumerable<Escultores>> GetAllFilter(int pageNumber, int pageSize, string busqueda);
+        Task<IEnumerable<object>> getEscultoresPublic(int? AnioEdicion);
+        Task<IEnumerable<Escultores>> GetAllFilter(int pageNumber, int pageSize, int? AnioEdicion, string busqueda);
     }
 
     //dto para esculturas de un escultor
