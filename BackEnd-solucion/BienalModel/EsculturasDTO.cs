@@ -28,6 +28,7 @@ namespace Models
         public string urlImagen { get; set; } = "https://bienalobjectstorage.blob.core.windows.net/imagenes/";
 
         public string Imagenes { get; set; }
+        public double promedioVotos { get; set; }
 
         //constructor de Esculturas
         public EsculturasDetailDTO(Esculturas escultura, Escultores Escultor) 
@@ -44,8 +45,9 @@ namespace Models
             EscultorNombre = Escultor.Nombre;
             EscultorImagen = urlImagen + Escultor.Foto;
             EscultorPais = Escultor.Pais;
-  
-              }
+            promedioVotos = escultura.PromedioVotos;
+
+        }
     }
 
     public class EsculturasListLiteDTO
@@ -67,6 +69,7 @@ namespace Models
         public string urlImagen { get; set; } = "https://bienalobjectstorage.blob.core.windows.net/imagenes/";
 
         public string Imagenes { get; set; }
+        public double promedioVotos { get; set; }
 
         //constructor de Esculturas
         public EsculturasListLiteDTO(Esculturas escultura, Escultores escultor)
@@ -84,6 +87,7 @@ namespace Models
             EscultorNombre = escultor.Nombre + escultor.Apellido;
             EscultorPais = escultor.Pais;
             Imagenes = urlImagen + escultura.Imagenes;
+            promedioVotos = escultura.PromedioVotos;
         }
 
 

@@ -145,6 +145,6 @@ namespace APIBienal.Controllers
             }
             return Ok("Se elimino exitosamente la escultura");
         }
-        
+
     }
 }
