@@ -11,10 +11,10 @@ namespace Requests
     {
         [Required]
         public int Año { get; set; }
-
-        public DateOnly? FechaInicio { get; set; }
-
-        public DateOnly? FechaFin { get; set; }
+        [Required]
+        public DateOnly FechaInicio { get; set; }
+        [Required]
+        public DateOnly FechaFin { get; set; }
     }
 
     public class EdicionUpdateRequest
@@ -22,16 +22,18 @@ namespace Requests
         [Required]
         public int Año { get; set; }
 
-        public DateOnly? FechaInicio { get; set; }
-
-        public DateOnly? FechaFin { get; set; }
+        [Required]
+        public DateOnly FechaInicio { get; set; }
+        
+        [Required]
+        public DateOnly FechaFin { get; set; }
     }
     public class EdicionPatchEdicion
     {
         public int Año { get; set; }
 
-        public DateOnly? FechaInicio { get; set; }
+        public DateOnly FechaInicio { get; set; }
 
-        public DateOnly? FechaFin { get; set; }
+        public DateOnly FechaFin { get; set; }
     }
 }

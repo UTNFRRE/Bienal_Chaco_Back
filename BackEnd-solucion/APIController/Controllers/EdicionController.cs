@@ -12,6 +12,9 @@ using Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using static Servicios.Ediciones;
 using Models;
+using FluentValidation;
+using APIController.Validadores;
+using System.ComponentModel.DataAnnotations;
 
 namespace APIBienal.Controllers
 {

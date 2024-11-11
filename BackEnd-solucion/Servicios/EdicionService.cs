@@ -77,13 +77,13 @@ namespace Servicios
                    
                     if (request.FechaInicio != null)
                     {
-                        edicionExistente.FechaInicio = request.FechaInicio.Value;
+                        edicionExistente.FechaInicio = request.FechaInicio;
                     }
             
 
-                    if (request.FechaFin.HasValue)
+                    if (request.FechaFin != null)
                     {
-                        edicionExistente.FechaFin = request.FechaFin.Value;
+                        edicionExistente.FechaFin = request.FechaFin;
                     }
                     this._context.Update(edicionExistente);
 

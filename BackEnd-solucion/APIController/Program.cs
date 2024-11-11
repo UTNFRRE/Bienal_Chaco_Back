@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using static Servicios.Ediciones;
 using FluentValidation;
 using APIController.Validadores;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,12 @@ var connectionString = builder.Configuration.GetConnectionString("Connection");
 builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(connectionString,
      b => b.MigrationsAssembly("APIController")));
 
-builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
+builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<EdicionValidator>();
+
+builder.Services.AddFluentValidationAutoValidation();
+
 
 builder.Services.AddScoped<ICRUDEsculturaService, EsculturasServices>();
 builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();
@@ -57,8 +63,6 @@ builder.Services.AddIdentity<MyUser, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<ICRUDServiceUsers, UsersServices>();
-
-builder.Services.AddValidatorsFromAssemblyContaining<EdicionValidator>();
 
 builder.Services.AddControllers();
 
