@@ -27,7 +27,7 @@ builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(c
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();
 
-builder.Services.AddValidatorsFromAssemblyContaining<EdicionValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<EdicionPostValidator>();
 
 builder.Services.AddFluentValidationAutoValidation();
 
