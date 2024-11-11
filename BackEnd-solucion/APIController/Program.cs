@@ -10,6 +10,8 @@ using Requests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using static Servicios.Ediciones;
+using FluentValidation;
+using APIController.Validadores;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +57,8 @@ builder.Services.AddIdentity<MyUser, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<ICRUDServiceUsers, UsersServices>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<EdicionValidator>();
 
 builder.Services.AddControllers();
 
