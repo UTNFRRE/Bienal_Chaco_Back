@@ -48,9 +48,9 @@ namespace Servicios
         }
 
         // Obtener todos los eventos
-        public async Task<IEnumerable<Eventos>> GetAllEventosAsync()
+        public async Task<IEnumerable<Eventos>> GetAllEventosAsync(int? AnioEdicion)
         {
-            var listaEventos = await this._context.Eventos.ToListAsync();
+            var listaEventos = await this._context.Eventos.Where(u => u.EdicionAño == AnioEdicion).ToListAsync();
             return listaEventos;
         }
 
@@ -67,11 +67,11 @@ namespace Servicios
             return listaEventosFecha;
         }
 
-        public async Task<IEnumerable<Eventos>> GetEventosNextAsync()
+        public async Task<IEnumerable<Eventos>> GetEventosNextAsync(int? AnioEdicion)
         {
             var now = DateTime.Now;
 
-            var listaEventosNext = await this._context.Eventos.Where(e => e.Fecha>= now).OrderBy(e => e.Fecha).Take(6).ToListAsync();
+            var listaEventosNext = await this._context.Eventos.Where(e => (e.Fecha>= now) && e.EdicionAño == AnioEdicion).OrderBy(e => e.Fecha).Take(6).ToListAsync();
             return listaEventosNext ;
         }
 
@@ -140,10 +140,10 @@ namespace Servicios
     {
         
         Task<Eventos> CreateEventoAsync(EventoCreateRequest request);
-        Task<IEnumerable<Eventos>> GetAllEventosAsync();
+        Task<IEnumerable<Eventos>> GetAllEventosAsync(int? AnioEdicion);
         Task<Eventos> GetEventoByIdAsync(int id);
         Task<IEnumerable<Eventos>> GetEventosByFechaAsync(DateTime parameter);
-        Task<IEnumerable<Eventos>> GetEventosNextAsync();
+        Task<IEnumerable<Eventos>> GetEventosNextAsync(int? AnioEdicion);
         Task<Eventos> UpdateEventoAsync(int id,EventoUpdateRequest request);
         Task<Eventos> UpdatePatchEventoAsync(int id,EventoPatchRequest request);
         Task DeleteEventoAsync(int id);
