@@ -1,16 +1,17 @@
 ﻿using FluentValidation;
 using Models;
+using Requests;
 using Servicios;
 
 namespace APIController.Validadores
 {
-    public class EdicionValidator : AbstractValidator<Edicion>
+    public class EdicionValidator : AbstractValidator<EdicionPostRequests>
     {
         public EdicionValidator()
         {
             RuleFor(edicion => edicion.Año).Must(AñoValido).WithMessage("Solo se admiten años entre 2020 y 2025");
 
-            RuleFor(edicion => edicion.FechaFin).Must((edicion, fechaFin) => fechaFin > edicion.FechaFin).WithMessage("La fecha de fin debe ser superior a fecha inicio")
+            RuleFor(edicion => edicion.FechaFin).Must((edicion, fechaFin) => fechaFin > edicion.FechaInicio).WithMessage("La fecha de fin debe ser superior a fecha inicio")
                                                 .Must((edicion, fechaFin) => ValidarDuracion(edicion.FechaInicio, fechaFin)).WithMessage("Un evento no puede durar más de un mes");
             //si hay una fecha de Inicio, no puede no haber una fecha de fin
 
