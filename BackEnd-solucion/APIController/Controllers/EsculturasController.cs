@@ -12,6 +12,10 @@ using Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using static System.Net.WebRequestMethods;
 
+//ESTO ME DIJO GPT QUE LO AGREGUE PARA CORREGIR EL GETFILEPATH
+using Microsoft.AspNetCore.Hosting; 
+using Microsoft.Extensions.Hosting;
+
 namespace APIBienal.Controllers
 {
     [ApiController]
@@ -19,10 +23,17 @@ namespace APIBienal.Controllers
     public class EsculturasController : ControllerBase
     {
         private readonly ICRUDEsculturaService esculturaService;
-
         public EsculturasController(ICRUDEsculturaService esculturasService)
         {
             this.esculturaService = esculturasService;
+        }
+
+        //ESTO TAMBIEN AGREGO EL CHATGPT PARA CORREGIR EL GETFILEPATH
+        private readonly IWebHostEnvironment _environment;
+        // Inyección de IWebHostEnvironment a través del constructor
+        public EsculturasController(IWebHostEnvironment environment)
+        {
+            _environment = environment;
         }
 
         // Crear Escultura (CRUD para esculturas)
@@ -128,8 +139,11 @@ namespace APIBienal.Controllers
             return Ok("Se elimino exitosamente la escultura");
         }
 
+        //TODO ESTO ES SOBRE UN SISTEMA DE ARCHIVOS (EN NUESTRO CASO STORAGE DE AZURE)
+        //no se que tan util sea, ya que mas abajo hice que haga todo sobre la base de datos pero por ahora hay que probar.
 
         // Upload de imagen y de multiimagen
+        //Upload de una sola imagen en un sistema de archivos como por ejemplo el storage de Azure
         [HttpPut("UploadImage")]
         public async Task<IActionResult> UploadImage(IFormFile formFile, string esculturaID)
         {
@@ -162,6 +176,7 @@ namespace APIBienal.Controllers
             }
         }
 
+        //Upload de varias imagenes en un sistema de archivos como por ejemplo el storage de Azure
         [HttpPut("MultiUploadImage")]
         public async Task<IActionResult> MultiUploadImage(IFormFileCollection fileCollection, string esculturaID)
         {
@@ -200,6 +215,7 @@ namespace APIBienal.Controllers
             }
         }
 
+        //Get de una sola imagen en un sistema de archivos como por ejemplo el storage de Azure
         [HttpGet("GetImage")]
         public IActionResult GetImage(string esculturaID)
         {
@@ -218,6 +234,7 @@ namespace APIBienal.Controllers
             }
         }
 
+        //Get de varias imagenes en un sistema de archivos como por ejemplo el storage de Azure
         [HttpGet("GetMultiImage")]
         public async Task<IActionResult> GetMultiImage(string esculturaID)
         {
@@ -243,211 +260,139 @@ namespace APIBienal.Controllers
             }
         }
 
+        //Descarga de una sola imagen en un sistema de archivos como por ejemplo el storage de Azure
         [HttpGet("download")]
-        public async Task<IActionResult> download(string productcode)
+        public async Task<IActionResult> Download(string esculturaID)
         {
-            // string Imageurl = string.Empty;
-            //string hosturl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
             try
             {
-                string Filepath = GetFilepath(productcode);
-                string imagepath = Filepath + "\\" + productcode + ".png";
-                if (System.IO.File.Exists(imagepath))
+                string filePath = GetFilepath(esculturaID);
+                string imagePath = filePath + "\\" + esculturaID + ".png";
+
+                if (System.IO.File.Exists(imagePath))
                 {
                     MemoryStream stream = new MemoryStream();
-                    using (FileStream fileStream = new FileStream(imagepath, FileMode.Open))
+                    using (FileStream fileStream = new FileStream(imagePath, FileMode.Open))
                     {
                         await fileStream.CopyToAsync(stream);
                     }
                     stream.Position = 0;
-                    return File(stream, "image/png", productcode + ".png");
-                    //Imageurl = hosturl + "/Upload/product/" + productcode + "/" + productcode + ".png";
+                    return File(stream, "image/png", esculturaID + ".png");
                 }
                 else
                 {
-                    return NotFound();
+                    return NotFound("Imagen no encontrada.");
                 }
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return StatusCode(500, $"Error: {ex.Message}");
             }
-
-
         }
 
+        //Remove de una sola imagen en un sistema de archivos como por ejemplo el storage de Azure
         [HttpDelete("remove")]
-        public async Task<IActionResult> Remove(string sculptureId)
+        public async Task<IActionResult> Remove(string esculturaID)
         {
             try
             {
-                var containerClient = new BlobContainerClient("<connection_string>", "sculptures");
-                var blobClient = containerClient.GetBlobClient($"{sculptureId}.png");
+                var containerClient = new BlobContainerClient("<connection_string>", "esculturas");
+                var blobClient = containerClient.GetBlobClient($"{esculturaID}.png");
 
                 if (await blobClient.ExistsAsync())
                 {
                     await blobClient.DeleteAsync();
-                    return Ok("Image deleted successfully.");
+                    return Ok("Imagen eliminada exitosamente.");
                 }
                 else
                 {
-                    return NotFound("Image not found.");
+                    return NotFound("Imagen no encontrada.");
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, $"Error: {ex.Message}");
             }
         }
 
+        //Remove de varias imagenes en un sistema de archivos como por ejemplo el storage de Azure
         [HttpDelete("multiremove")]
-        public async Task<IActionResult> MultiRemove(string sculptureId)
+        public async Task<IActionResult> MultiRemove(string esculturaID)
         {
-            var containerClient = new BlobContainerClient("<connection_string>", "sculptures");
+            var containerClient = new BlobContainerClient("<connection_string>", "esculturas");
             int deleteCount = 0;
 
             try
             {
-                await foreach (var blobItem in containerClient.GetBlobsAsync(prefix: $"{sculptureId}/"))
+                await foreach (var blobItem in containerClient.GetBlobsAsync(prefix: $"{esculturaID}/"))
                 {
                     var blobClient = containerClient.GetBlobClient(blobItem.Name);
                     await blobClient.DeleteAsync();
                     deleteCount++;
                 }
 
-                return Ok($"{deleteCount} images deleted successfully.");
+                return Ok($"{deleteCount} imágenes eliminadas exitosamente.");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, $"Error: {ex.Message}");
             }
         }
 
-    [HttpPut("DBMultiUploadImage")]
-        public async Task<IActionResult> DBMultiUploadImage(IFormFileCollection filecollection, string productcode)
+
+        //AHORA TRABAJA SOBRE LA BASE DE DATOS
+
+        //Todo lo que seria con la base de datos puede tener error en el nombre de la tabla o en el nombre de los datos
+        //de la tabla, ya que yo (Augusto) no puedo ver la base de datos.
+
+        //Upload de varias imagenes en la base de datos
+        // Ruta para cargar múltiples imágenes
+        [HttpPut("DBMultiUploadImage")]
+        public async Task<IActionResult> DBMultiUploadImage(IFormFileCollection filecollection, string EsculturaID)
         {
-            APIResponse response = new APIResponse();
-            int passcount = 0; int errorcount = 0;
-            try
-            {
-                foreach (var file in filecollection)
-                {
-                    using (MemoryStream stream = new MemoryStream())
-                    {
-                        await file.CopyToAsync(stream);
-                        this.context.TblProductimages.Add(new Repos.Models.TblProductimage()
-                        {
-                            Productcode = productcode,
-                            Productimage = stream.ToArray()
-                        });
-                        await this.context.SaveChangesAsync();
-                        passcount++;
-                    }
-                }
+            var (passcount, errorcount) = await esculturaService.DBMultiUploadImageAsync(filecollection, EsculturaID);
 
-
-            }
-            catch (Exception ex)
+            if (errorcount > 0)
             {
-                errorcount++;
-                response.Message = ex.Message;
+                return StatusCode(500, $"Error: {errorcount} archivos fallidos.");
             }
-            response.ResponseCode = 200;
-            response.Result = passcount + " Files uploaded &" + errorcount + " files failed";
-            return Ok(response);
+
+            return Ok($"{passcount} archivos cargados correctamente.");
         }
 
-
+        // Ruta para obtener todas las imágenes de una escultura
         [HttpGet("GetDBMultiImage")]
-        public async Task<IActionResult> GetDBMultiImage(string productcode)
+        public async Task<IActionResult> GetDBMultiImage(string EsculturaID)
         {
-            List<string> Imageurl = new List<string>();
-            //string hosturl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
-            try
-            {
-                var _productimage = this.context.TblProductimages.Where(item => item.Productcode == productcode).ToList();
-                if (_productimage != null && _productimage.Count > 0)
-                {
-                    _productimage.ForEach(item =>
-                    {
-                        Imageurl.Add(Convert.ToBase64String(item.Productimage));
-                    });
-                }
-                else
-                {
-                    return NotFound();
-                }
-                //string Filepath = GetFilepath(productcode);
+            var imageUrls = await esculturaService.GetDBMultiImageAsync(EsculturaID);
 
-                //if (System.IO.Directory.Exists(Filepath))
-                //{
-                //    DirectoryInfo directoryInfo = new DirectoryInfo(Filepath);
-                //    FileInfo[] fileInfos = directoryInfo.GetFiles();
-                //    foreach (FileInfo fileInfo in fileInfos)
-                //    {
-                //        string filename = fileInfo.Name;
-                //        string imagepath = Filepath + "\\" + filename;
-                //        if (System.IO.File.Exists(imagepath))
-                //        {
-                //            string _Imageurl = hosturl + "/Upload/product/" + productcode + "/" + filename;
-                //            Imageurl.Add(_Imageurl);
-                //        }
-                //    }
-                //}
-
-            }
-            catch (Exception ex)
-            {
-            }
-            return Ok(Imageurl);
-
-        }
-
-
-        [HttpGet("dbdownload")]
-        public async Task<IActionResult> dbdownload(string productcode)
-        {
-
-            try
-            {
-
-                var _productimage = await this.context.TblProductimages.FirstOrDefaultAsync(item => item.Productcode == productcode);
-                if (_productimage != null)
-                {
-                    return File(_productimage.Productimage, "image/png", productcode + ".png");
-                }
-
-
-                //string Filepath = GetFilepath(productcode);
-                //string imagepath = Filepath + "\\" + productcode + ".png";
-                //if (System.IO.File.Exists(imagepath))
-                //{
-                //    MemoryStream stream = new MemoryStream();
-                //    using (FileStream fileStream = new FileStream(imagepath, FileMode.Open))
-                //    {
-                //        await fileStream.CopyToAsync(stream);
-                //    }
-                //    stream.Position = 0;
-                //    return File(stream, "image/png", productcode + ".png");
-                //    //Imageurl = hosturl + "/Upload/product/" + productcode + "/" + productcode + ".png";
-                //}
-                else
-                {
-                    return NotFound();
-                }
-            }
-            catch (Exception ex)
+            if (imageUrls == null || !imageUrls.Any())
             {
                 return NotFound();
             }
 
-
+            return Ok(imageUrls);
         }
 
-        [NonAction]
-        private string GetFilepath(string productcode)
+        // Ruta para descargar una imagen de la base de datos
+        [HttpGet("dbdownload")]
+        public async Task<IActionResult> dbdownload(string EsculturaID)
         {
-            return this.environment.WebRootPath + "\\Upload\\product\\" + productcode;
+            var image = await esculturaService.DbDownloadAsync(EsculturaID);
+
+            if (image == null)
+            {
+                return NotFound();
+            }
+
+            return File(image, "image/png", $"{EsculturaID}.png");
+        }
+
+        // Crea y devuelve el PATH de una escultura
+        [NonAction]
+        private string GetFilepath(string EsculturaID)
+        {
+            return Path.Combine(_environment.WebRootPath, "Upload", "escultura", EsculturaID);
         }
 
     }

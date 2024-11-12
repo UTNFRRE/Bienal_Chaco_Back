@@ -259,6 +259,86 @@ namespace Servicios
             }
             return true;
         }
+
+        // TRABAJO SOBRE LA BASE DE DATOS PARA CARGAR VARIAS IMAGENES, OBTENER TODAS LAS IMAGENES Y DESCARGAR IMAGENES DE UNA ESCULTURA
+        // Agregar múltiples imágenes a la base de datos
+        public async Task<(int passcount, int errorcount)> DBMultiUploadImageAsync(IFormFileCollection filecollection, string EsculturaID)
+        {
+            int passcount = 0;
+            int errorcount = 0;
+
+            try
+            {
+                foreach (var file in filecollection)
+                {
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        await file.CopyToAsync(stream);
+
+                        // Agregar imagen a la base de datos con el EsculturaID correspondiente
+                        _context.TblEsculturaimagen.Add(new TblEsculturaimagen()
+                        {
+                            EsculturaID = EsculturaID,  // ID de la escultura
+                            EsculturaImagen = stream.ToArray()  // Imagen de la escultura
+                        });
+                        await _context.SaveChangesAsync();
+                        passcount++;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                errorcount++;
+            }
+
+            return (passcount, errorcount);
+        }
+        // Obtener todas las imágenes de una escultura de la base de datos
+        public async Task<List<string>> GetDBMultiImageAsync(string EsculturaID)
+        {
+            List<string> ImageUrls = new List<string>();
+
+            try
+            {
+                var esculturaImages = _context.TblEsculturaimagen
+                    .Where(item => item.EsculturaID == EsculturaID)
+                    .ToList();
+
+                if (esculturaImages.Any())
+                {
+                    foreach (var item in esculturaImages)
+                    {
+                        ImageUrls.Add(Convert.ToBase64String(item.EsculturaImagen));
+                    }
+                }
+                else
+                {
+                    return null; // Si no hay imágenes, retorna null
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return ImageUrls;
+        }
+        // Descargar la imagen de la base de datos
+        public async Task<byte[]> DbDownloadAsync(string EsculturaID)
+        {
+            var esculturaImage = await _context.TblEsculturaimagen
+                .FirstOrDefaultAsync(item => item.EsculturaID == EsculturaID);
+
+            if (esculturaImage != null)
+            {
+                return esculturaImage.EsculturaImagen;
+            }
+            else
+            {
+                return null; // Si no se encuentra la imagen, retorna null
+            }
+        }
+
     }
     public class EsculturaPromedio
     {
@@ -278,6 +358,8 @@ namespace Servicios
         Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request);
         Task<Esculturas> VoteEscultura(int id, EsculturaVoto request);
         Task<bool> DeleteAsync(int id);
-    
+        Task<(int passcount, int errorcount)> DBMultiUploadImageAsync(IFormFileCollection filecollection, string EsculturaID);
+        Task<List<string>> GetDBMultiImageAsync(string EsculturaID);
+        Task<byte[]> DbDownloadAsync(string EsculturaID);
     } 
 
