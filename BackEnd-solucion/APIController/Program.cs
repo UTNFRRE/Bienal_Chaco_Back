@@ -23,14 +23,19 @@ var builder = WebApplication.CreateBuilder(args);
 //crear variable para cadena de conexion
 var connectionString = builder.Configuration.GetConnectionString("Connection");
 
+
 // Configurar la conexión a la base de datos inMemory
-builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("PruebaBD"));
-//builder.Services.AddDbContext<BienalDbContext>(options => options.UseMySql(connectionString,
-     //b => b.MigrationsAssembly("APIController"));
+//builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("PruebaBD"));
+builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(connectionString,
+     b => b.MigrationsAssembly("APIController")));
 
 // Configurar MyIdentityDBContext
 builder.Services.AddDbContext<MyIdentityDBContext>(options => options.UseSqlServer(connectionString,
      b => b.MigrationsAssembly("APIController")));
+
+builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
+builder.Services.AddAuthorizationBuilder();
+
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
 
@@ -47,40 +52,35 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 
 // Configurar IdentityCore
-builder.Services.AddIdentityCore<MyUser>()
-    .AddRoles<MyRol>()
-    .AddEntityFrameworkStores<MyIdentityDBContext>()
-    .AddApiEndpoints();
+builder.Services.AddIdentity<MyUser, MyRol>(options => {
+    // Password settings
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 1;
+    options.Password.RequiredUniqueChars = 0;
 
+    // Lockout settings
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 999;
+    options.Lockout.AllowedForNewUsers = true;
+
+    // User settings
+    options.User.AllowedUserNameCharacters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
+})                                                      
+    .AddEntityFrameworkStores<MyIdentityDBContext>()
+    .AddDefaultTokenProviders()
+    .AddApiEndpoints();
 
 // Configurar IdentityOptions
 
-builder.Services.Configure<IdentityOptions>(options =>
-    {
-        // Password settings
-        options.Password.RequireDigit = false;
-        options.Password.RequireLowercase = false;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequiredLength = 1;
-        options.Password.RequiredUniqueChars = 0;
 
-        // Lockout settings
-        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-        options.Lockout.MaxFailedAccessAttempts = 999;
-        options.Lockout.AllowedForNewUsers = true;
-
-        // User settings
-        options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-        options.User.RequireUniqueEmail = true;
-    });
-
-
-
-
-
-
+/*
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -100,10 +100,9 @@ builder.Services.AddAuthentication(options =>
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
-
+*/
 // Configure Authorization
-builder.Services.AddAuthorization();
-
+//builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
@@ -118,6 +117,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors();
 
 var app = builder.Build();
+
+app.MapIdentityApi<MyUser>();
 
 // Configurar el pipeline HTTP
 if (app.Environment.IsDevelopment())
@@ -136,11 +137,7 @@ app.UseCors(options => {
                         }
             );
 
-// Add before UseAuthorization
-app.UseAuthentication();
-
-app.UseAuthorization();
-
 app.MapControllers();
+
 
 app.Run();

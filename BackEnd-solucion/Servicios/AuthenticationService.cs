@@ -54,7 +54,7 @@ namespace Servicios
             return result.Succeeded;
         }
 
-        public async Task<string> LoginUserAsync(LoginRequest request)
+        public async Task<string> LoginUserAsync(LoginToRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null) return null;
@@ -72,7 +72,7 @@ namespace Servicios
     public interface IAuthenticationService
     {
         Task<bool> RegisterUserAsync(UsuarioCreateRequest request);
-        Task<string> LoginUserAsync(LoginRequest request);
+        Task<string> LoginUserAsync(LoginToRequest request);
     }
 
 }

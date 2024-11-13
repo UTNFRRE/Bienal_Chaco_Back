@@ -33,7 +33,7 @@ namespace APIBienal.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginToRequest request)
         {
             var access__token = await _authenticationService.LoginUserAsync(request);
             if (access__token != null)

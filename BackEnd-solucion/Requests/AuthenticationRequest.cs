@@ -12,7 +12,7 @@ namespace Requests
         public DateTime DateOfBirth { get; set; }
     }
 
-    public class LoginRequest
+    public class LoginToRequest
     {
         public string Email { get; set; }
         public string Password { get; set; }
