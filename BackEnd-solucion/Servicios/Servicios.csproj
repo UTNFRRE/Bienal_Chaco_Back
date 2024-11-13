@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Requests\Requests.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

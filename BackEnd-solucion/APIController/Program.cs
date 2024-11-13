@@ -33,7 +33,9 @@ builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(c
 builder.Services.AddDbContext<MyIdentityDBContext>(options => options.UseSqlServer(connectionString,
      b => b.MigrationsAssembly("APIController")));
 
-builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
+builder.Services.AddAuthentication()
+                                    .AddBearerToken(IdentityConstants.BearerScheme);
+
 builder.Services.AddAuthorizationBuilder();
 
 
@@ -44,15 +46,16 @@ builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();
 builder.Services.AddScoped<ICRUDServicesEscultores, EscultoresServices>();
 
 
-builder.Services.AddScoped<IServiceUsers, UsersServices>();
+//builder.Services.AddScoped<IServiceUsers, UsersServices>();
 
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+//builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
-builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+//builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 
 // Configurar IdentityCore
 builder.Services.AddIdentity<MyUser, MyRol>(options => {
+    
     // Password settings
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
@@ -78,7 +81,6 @@ builder.Services.AddIdentity<MyUser, MyRol>(options => {
     .AddApiEndpoints();
 
 // Configurar IdentityOptions
-
 
 /*
 builder.Services.AddAuthentication(options =>
