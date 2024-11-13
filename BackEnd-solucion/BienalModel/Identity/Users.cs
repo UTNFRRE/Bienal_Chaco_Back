@@ -13,10 +13,8 @@ namespace Entidades
 {
     public class MyUser : IdentityUser
     {
-        public string FullName { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        //navegabilidad para relacion muchos a muchos con votos
-        [JsonIgnore]
-        public virtual ICollection<Votos>? Votos { get; set; }
+        public string? FullName { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        
     }
 }
