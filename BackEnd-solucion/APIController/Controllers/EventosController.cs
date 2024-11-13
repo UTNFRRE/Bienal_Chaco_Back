@@ -36,9 +36,9 @@ namespace APIBienal.Controllers
 
         // Obtener todos los eventos
         [HttpGet]
-        public async Task<IActionResult> GetAllEventos()
+        public async Task<IActionResult> GetAllEventos(int? AnioEdicion = null)
         {
-            var listadeeventos = await this.eventoService.GetAllEventosAsync();
+            var listadeeventos = await this.eventoService.GetAllEventosAsync(AnioEdicion);
             return listadeeventos == null ? NotFound() : Ok (listadeeventos);
         }
 
@@ -69,9 +69,9 @@ namespace APIBienal.Controllers
 
         // obtener eventos proximos
         [HttpGet("next")]
-        public async Task<IActionResult> GetEventosNext()
+        public async Task<IActionResult> GetEventosNext(int? AnioEdicion = null)
         {
-            var listadeeventos = await this.eventoService.GetEventosNextAsync();
+            var listadeeventos = await this.eventoService.GetEventosNextAsync(AnioEdicion);
             return listadeeventos == null ? NotFound() : Ok (listadeeventos);
 
         }

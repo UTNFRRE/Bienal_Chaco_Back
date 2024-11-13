@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -23,6 +24,13 @@ namespace Entidades
         [Required]
         [MaxLength(10)]
         public string? DNI { get; set; }
+
+        public DateOnly FechaNacimiento { get; set; }
+        [MaxLength(60)]
+        public string? LugarNacimiento { get; set; }
+
+        public string Premios { get; set; }
+
         [MaxLength(50)]
         public string? Pais { get; set; }
         public string? Telefono { get; set; }
@@ -31,6 +39,7 @@ namespace Entidades
         public string? Foto { get; set; }
         [JsonIgnore]
         public ICollection<Esculturas>? Esculturas { get; set; }
-
+        [ForeignKey("Edicion")]
+        public int EdicionAño { get; set;}
     }
 }

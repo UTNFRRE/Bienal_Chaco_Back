@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -30,10 +31,14 @@ namespace Entidades
         public string? Tematica { get; set; }
 
         public int CantVotaciones { get; set; }
+        //navegabilidad para relacion muchos a muchos con votos
         [JsonIgnore]
-        public int Votos { get; set; }
+        public virtual ICollection<Votos>? Votos { get; set; }
         //atributo cal ulado Votos/CantVotaciones
         public double PromedioVotos { get; set; }
-   
+
+        [ForeignKey("Edicion")]
+        public int EdicionAño { get; set; }
+
     }
 }

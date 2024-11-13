@@ -9,6 +9,7 @@ using Entidades;
 using Requests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using static Servicios.Ediciones;
 
 
 // Add these using statements at the top
@@ -45,7 +46,8 @@ builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();
 builder.Services.AddScoped<ICRUDEsculturaService, EsculturasServices>();
 builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();
 builder.Services.AddScoped<ICRUDServicesEscultores, EscultoresServices>();
-
+builder.Services.AddScoped<ICRUDServicesVotos, VotosService>();
+builder.Services.AddScoped<ICRUDServiceEdicion, EdicionServices>();
 
 //builder.Services.AddScoped<IServiceUsers, UsersServices>();
 

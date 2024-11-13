@@ -23,6 +23,8 @@ namespace Requests
         public string Tematica { get; set; }
         public double? longitud { get; set; }
         public double? latitud { get; set; }
+        [Required]
+        public int EdicionAño { get; set; }
     }
 
     public class EventoUpdateRequest

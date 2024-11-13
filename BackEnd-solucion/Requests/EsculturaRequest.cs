@@ -20,6 +20,8 @@ namespace Requests
         public DateOnly FechaCreacion { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
         public string? Tematica { get; set; }
+        [Required]
+        public int EdicionAño { get; set; }
     }
 
     public class EsculturaPatch
