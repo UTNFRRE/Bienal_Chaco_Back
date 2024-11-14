@@ -183,7 +183,7 @@ namespace Servicios
             var escultores = await _context.Escultores.Where(u => u.EdicionAño == AnioEdicion).Select(e => new
             {
                 id = e.EscultorId,
-                nombre = e.Nombre + ' ' + e.Apellido,
+                nombre = e.Nombre,
                 pais = e.Pais,
                 foto = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + e.Foto
             }).ToListAsync();
