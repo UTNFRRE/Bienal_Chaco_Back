@@ -134,14 +134,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthorization(); 
 
 app.UseHttpsRedirection();
 app.UseCors(options => { 
-                        options.AllowAnyOrigin();
+                        options.WithOrigins("http://localhost:5173", "http://localhost:5173/", "http://127.0.0.1:5173/");
                         options.AllowAnyMethod();
                         options.AllowAnyHeader();
-                        //options.AllowCredentials();
+                        options.AllowCredentials();
                         }
             );
 
