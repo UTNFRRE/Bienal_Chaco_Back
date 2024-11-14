@@ -163,6 +163,6 @@ app.MapGet("users/info", async (ClaimsPrincipal claims, MyIdentityDBContext cont
         UserName = userLogueado.UserName,
         Email = userLogueado.Email
     });
-});
+}).RequireAuthorization();
 
 app.Run();
