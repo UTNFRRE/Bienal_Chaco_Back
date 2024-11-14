@@ -4,6 +4,7 @@ using Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIController.Migrations
 {
     [DbContext(typeof(BienalDbContext))]
-    partial class BienalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241107153836_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,19 +50,9 @@ namespace APIController.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(10)");
 
-                    b.Property<int>("EdicionAño")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly>("FechaNacimiento")
-                        .HasColumnType("date");
-
                     b.Property<string>("Foto")
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
-
-                    b.Property<string>("LugarNacimiento")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -72,17 +65,11 @@ namespace APIController.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("Premios")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Telefono")
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
                     b.HasKey("EscultorId");
-
-                    b.HasIndex("EdicionAño");
 
                     b.ToTable("Escultores");
                 });
@@ -101,9 +88,6 @@ namespace APIController.Migrations
                     b.Property<string>("Descripcion")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("EdicionAño")
-                        .HasColumnType("int");
 
                     b.Property<int>("EscultoresID")
                         .HasColumnType("int");
@@ -126,9 +110,10 @@ namespace APIController.Migrations
                     b.Property<string>("Tematica")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("EsculturaId");
+                    b.Property<int>("Votos")
+                        .HasColumnType("int");
 
-                    b.HasIndex("EdicionAño");
+                    b.HasKey("EsculturaId");
 
                     b.HasIndex("EscultoresID");
 
@@ -146,9 +131,6 @@ namespace APIController.Migrations
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EdicionAño")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
@@ -175,8 +157,6 @@ namespace APIController.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EdicionAño");
 
                     b.ToTable("Eventos");
                 });
@@ -240,72 +220,8 @@ namespace APIController.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Entidades.Votos", b =>
-                {
-                    b.Property<int>("VotoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VotoId"));
-
-                    b.Property<int>("EsculturaId")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly>("FechaCreacion")
-                        .HasColumnType("date");
-
-                    b.Property<float>("Puntuacion")
-                        .HasColumnType("real");
-
-                    b.Property<int>("UrserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("VotoId");
-
-                    b.HasIndex("EsculturaId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Votos");
-                });
-
-            modelBuilder.Entity("Models.Edicion", b =>
-                {
-                    b.Property<int>("Año")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly?>("FechaFin")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("FechaInicio")
-                        .HasColumnType("date");
-
-                    b.HasKey("Año");
-
-                    b.ToTable("Edicion");
-                });
-
-            modelBuilder.Entity("Entidades.Escultores", b =>
-                {
-                    b.HasOne("Models.Edicion", null)
-                        .WithMany("Escultores")
-                        .HasForeignKey("EdicionAño")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Entidades.Esculturas", b =>
                 {
-                    b.HasOne("Models.Edicion", null)
-                        .WithMany("Esculturas")
-                        .HasForeignKey("EdicionAño")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Entidades.Escultores", null)
                         .WithMany("Esculturas")
                         .HasForeignKey("EscultoresID")
@@ -313,56 +229,9 @@ namespace APIController.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Entidades.Eventos", b =>
-                {
-                    b.HasOne("Models.Edicion", null)
-                        .WithMany("Eventos")
-                        .HasForeignKey("EdicionAño")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Entidades.Votos", b =>
-                {
-                    b.HasOne("Entidades.Esculturas", "Esculturas")
-                        .WithMany("Votos")
-                        .HasForeignKey("EsculturaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entidades.MyUser", "User")
-                        .WithMany("Votos")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Esculturas");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Entidades.Escultores", b =>
                 {
                     b.Navigation("Esculturas");
-                });
-
-            modelBuilder.Entity("Entidades.Esculturas", b =>
-                {
-                    b.Navigation("Votos");
-                });
-
-            modelBuilder.Entity("Entidades.MyUser", b =>
-                {
-                    b.Navigation("Votos");
-                });
-
-            modelBuilder.Entity("Models.Edicion", b =>
-                {
-                    b.Navigation("Escultores");
-
-                    b.Navigation("Esculturas");
-
-                    b.Navigation("Eventos");
                 });
 #pragma warning restore 612, 618
         }

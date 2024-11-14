@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +35,9 @@ namespace Entidades
 
         public double? latitud { get; set; }
         public double? longitud {get; set; }
+
+        [ForeignKey("Edicion")]
+        public int EdicionAño { get; set; }
     }
 }
 

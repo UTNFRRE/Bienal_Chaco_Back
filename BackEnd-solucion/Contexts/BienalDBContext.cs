@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Entidades;
 using Microsoft.EntityFrameworkCore;
+using Models;
 
 namespace Contexts
 {
@@ -11,10 +12,15 @@ namespace Contexts
         public DbSet<Esculturas> Esculturas { get; set; }
         public DbSet<Eventos> Eventos { get; set; }
 
+        
+        public DbSet<Votos> Votos { get; set; }
+        public DbSet<Edicion> Edicion { get; set; }
+
         public BienalDbContext(DbContextOptions<BienalDbContext> options)
             : base(options)
         {
         }
+        
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         // InMemoryDatabase para pruebas, después cambiar a SQL Server
@@ -22,12 +28,11 @@ namespace Contexts
         // optionsBuilder.UseSqlServer(@"Server=.\;Database=BienalDB;Trusted_Connection=True;");
         //}
 
-
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //configuración de restricciones al crear la base de datos
-
+            //configuración de restricciones al crear la base de datos 
             modelBuilder.Entity<Escultores>(entity =>
             {
                 entity.Property(e => e.EscultorId)
@@ -65,3 +70,4 @@ namespace Contexts
         }
     }
 }
+

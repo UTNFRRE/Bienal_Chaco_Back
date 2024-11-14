@@ -37,24 +37,6 @@ namespace APIBienal.Controllers
             return CreatedAtAction(nameof(ObtenerEscultura), new { id = esculturaCreate.EsculturaId }, esculturaCreate);
         }
 
-        // Obtener todas las esculturas
-        [HttpGet]
-        public async Task<IActionResult> ObtenerTodasLasEsculturas()
-        {
-            var esculturas = await this.esculturaService.GetAllAsync();
-            //agregar link de imagen hardcodeo url de azure a cada imagen
-            foreach (var escultura in esculturas)
-            {
-                escultura.Imagenes = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + escultura.Imagenes;
-            }
-
-            if (esculturas == null)
-            {
-                return NotFound("No se encontraron esculturas.");
-            }
-            return Ok(esculturas);
-        }
-
         // Obtener escultura por ID
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerEscultura(int id)
@@ -82,15 +64,17 @@ namespace APIBienal.Controllers
 
             return Ok(esculturaDetail);
         }
-
-        [HttpGet("GetAllLite")]
-        public async Task<IActionResult> ObtenerListaEsculturas()
+        // Este usa el front
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> ObtenerListaEsculturas( int pageNumber = 1, int pageSize = 10, int? AnioEdicion = null, string? busqueda = null)
         {
-            var esculturaDetail = await this.esculturaService.GetAllList();
+            var esculturaDetail = await this.esculturaService.GetAllList(pageNumber, pageSize, AnioEdicion, busqueda);
             if (esculturaDetail == null)
             {
                 return NotFound("No se encontro ninguna escultura");
             }
+
+            
 
             return Ok(esculturaDetail);
         }
@@ -107,7 +91,7 @@ namespace APIBienal.Controllers
          return Ok(esculturaUpdate);
     }
 
-    [HttpPatch("{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> ActualizarPropiedadEscultura(int id, [FromForm] EsculturaPatch request)
         {
             Esculturas? esculturaUpdate = await this.esculturaService.UpdatePatchAsync(id, request);
@@ -117,6 +101,18 @@ namespace APIBienal.Controllers
             }
             return Ok(esculturaUpdate);
         }
+        //Voto de Escultura
+        [HttpPatch("{id}/Votar")]
+        public async Task<IActionResult> Votacion(int id, [FromForm] EsculturaVoto request)
+        {
+            Esculturas? esculturaUpdate = await this.esculturaService.VoteEscultura(id, request);
+            if (esculturaUpdate == null)
+            {
+                return NotFound("Ocurrio un error al votar la escultura. Intentelo nuevamente. Verifique si existe la escultura");
+            }
+            return Ok(esculturaUpdate);
+        }
+
 
         //implementar patch con imagen para escultura
 
@@ -131,6 +127,6 @@ namespace APIBienal.Controllers
             }
             return Ok("Se elimino exitosamente la escultura");
         }
-        
+
     }
 }
