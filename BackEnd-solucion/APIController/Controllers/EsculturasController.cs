@@ -66,9 +66,9 @@ namespace APIBienal.Controllers
         }
         // Este usa el front
         [HttpGet("GetAll")]
-        public async Task<IActionResult> ObtenerListaEsculturas( int pageNumber = 1, int pageSize = 10, int? AnioEdicion = null)
+        public async Task<IActionResult> ObtenerListaEsculturas( int pageNumber = 1, int pageSize = 10, int? AnioEdicion = null, string? busqueda = null)
         {
-            var esculturaDetail = await this.esculturaService.GetAllList(pageNumber, pageSize, AnioEdicion);
+            var esculturaDetail = await this.esculturaService.GetAllList(pageNumber, pageSize, AnioEdicion, busqueda);
             if (esculturaDetail == null)
             {
                 return NotFound("No se encontro ninguna escultura");
