@@ -133,6 +133,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseHttpsRedirection();
 app.UseCors(options => { 
                         options.AllowAnyOrigin();
