@@ -30,9 +30,9 @@ namespace APIController.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAllEscultores(int pageNumber = 1  , int pageSize = 10, string? busqueda = null)
+        public async Task<ActionResult> GetAllEscultores(int pageNumber = 1  , int pageSize = 10, int? AnioEdicion = null, string? busqueda = null)
         {
-            var lista_escultores = await this.escultorService.GetAllAsync( pageNumber, pageSize, busqueda);
+            var lista_escultores = await this.escultorService.GetAllAsync(pageNumber, pageSize, AnioEdicion, busqueda);
             foreach (var escultor in lista_escultores)
             {
                 escultor.Foto = this.url + escultor.Foto;
@@ -51,17 +51,7 @@ namespace APIController.Controllers
             escultor.Foto = this.url + escultor.Foto;
             return Ok(escultor);
         }
-        //get escultor detail
-        [HttpGet("/escultoresAdmin")]
-        public async Task<IActionResult> GetDetail()
-        {
-            var esc = await escultorService.GetEscultorDetailAsync();
-            if (esc == null)
-            {
-                return NotFound();
-            }
-            return Ok(esc);
-        }
+        
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEscultor(int id,[FromForm] EscultoresListRequest request)
@@ -111,9 +101,9 @@ namespace APIController.Controllers
         }
         //get public escultores
         [HttpGet("api/escultoresPublic")]
-        public async Task<IActionResult> getEscultoresPublic()
+        public async Task<IActionResult> getEscultoresPublic(int? AnioEdicion = null)
         {
-            var esc = await escultorService.getEscultoresPublic();
+            var esc = await escultorService.getEscultoresPublic(AnioEdicion);
             if (esc == null)
             {
                 return NoContent();

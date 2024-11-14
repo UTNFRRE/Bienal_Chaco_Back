@@ -37,24 +37,6 @@ namespace APIBienal.Controllers
             return CreatedAtAction(nameof(ObtenerEscultura), new { id = esculturaCreate.EsculturaId }, esculturaCreate);
         }
 
-        // Obtener todas las esculturas
-        [HttpGet]
-        public async Task<IActionResult> ObtenerTodasLasEsculturas()
-        {
-            var esculturas = await this.esculturaService.GetAllAsync();
-            //agregar link de imagen hardcodeo url de azure a cada imagen
-            foreach (var escultura in esculturas)
-            {
-                escultura.Imagenes = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + escultura.Imagenes;
-            }
-
-            if (esculturas == null)
-            {
-                return NotFound("No se encontraron esculturas.");
-            }
-            return Ok(esculturas);
-        }
-
         // Obtener escultura por ID
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerEscultura(int id)
@@ -82,11 +64,11 @@ namespace APIBienal.Controllers
 
             return Ok(esculturaDetail);
         }
-
-        [HttpGet("GetAllLite")]
-        public async Task<IActionResult> ObtenerListaEsculturas( int pageNumber = 1, int pageSize = 10)
+        // Este usa el front
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> ObtenerListaEsculturas( int pageNumber = 1, int pageSize = 10, int? AnioEdicion = null, string? busqueda = null)
         {
-            var esculturaDetail = await this.esculturaService.GetAllList(pageNumber, pageSize);
+            var esculturaDetail = await this.esculturaService.GetAllList(pageNumber, pageSize, AnioEdicion, busqueda);
             if (esculturaDetail == null)
             {
                 return NotFound("No se encontro ninguna escultura");
@@ -145,6 +127,6 @@ namespace APIBienal.Controllers
             }
             return Ok("Se elimino exitosamente la escultura");
         }
-        
+
     }
 }

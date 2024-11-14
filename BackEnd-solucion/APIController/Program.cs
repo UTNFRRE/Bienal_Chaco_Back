@@ -9,6 +9,16 @@ using Entidades;
 using Requests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using static Servicios.Ediciones;
+
+
+// Add these using statements at the top
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
+using Azure.Core;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,39 +26,89 @@ var builder = WebApplication.CreateBuilder(args);
 //crear variable para cadena de conexion
 var connectionString = builder.Configuration.GetConnectionString("Connection");
 
+
 // Configurar la conexión a la base de datos inMemory
-builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("PruebaBD"));
-//builder.Services.AddDbContext<BienalDbContext>(options => options.UseMySql(connectionString,
-     //b => b.MigrationsAssembly("APIController"));
+//builder.Services.AddDbContext<BienalDbContext>(options => options.UseInMemoryDatabase("PruebaBD"));
+builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(connectionString,
+     b => b.MigrationsAssembly("APIController")));
+
+// Configurar MyIdentityDBContext
+builder.Services.AddDbContext<MyIdentityDBContext>(options => options.UseSqlServer(connectionString,
+     b => b.MigrationsAssembly("APIController")));
+
+builder.Services.AddAuthentication()
+                                    .AddBearerToken(IdentityConstants.BearerScheme);
+
+builder.Services.AddAuthorizationBuilder();
+
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
 
 builder.Services.AddScoped<ICRUDEsculturaService, EsculturasServices>();
 builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();
 builder.Services.AddScoped<ICRUDServicesEscultores, EscultoresServices>();
+builder.Services.AddScoped<ICRUDServicesVotos, VotosService>();
+builder.Services.AddScoped<ICRUDServiceEdicion, EdicionServices>();
 
-// 
-// Add Identity services
-builder.Services.AddIdentity<MyUser, IdentityRole>(options =>
-{
+//builder.Services.AddScoped<IServiceUsers, UsersServices>();
+
+//builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+//builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+
+// Configurar IdentityCore
+builder.Services.AddIdentity<MyUser, MyRol>(options => {
+    
     // Password settings
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
     options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 4;
-
-    // Email settings
-    options.SignIn.RequireConfirmedEmail = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 1;
+    options.Password.RequiredUniqueChars = 0;
 
     // Lockout settings
-    options.Lockout.AllowedForNewUsers = false;
-    options.Lockout.MaxFailedAccessAttempts = 12;
-})
-.AddEntityFrameworkStores<BienalDbContext>()
-.AddDefaultTokenProviders();
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 999;
+    options.Lockout.AllowedForNewUsers = true;
 
-builder.Services.AddScoped<ICRUDServiceUsers, UsersServices>();
+    // User settings
+    options.User.AllowedUserNameCharacters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
+})                                                      
+    .AddEntityFrameworkStores<MyIdentityDBContext>()
+    .AddDefaultTokenProviders()
+    .AddApiEndpoints();
+
+// Configurar IdentityOptions
+
+/*
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddCookie(IdentityConstants.ApplicationScheme)
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+*/
+// Configure Authorization
+//builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
@@ -64,6 +124,8 @@ builder.Services.AddCors();
 
 var app = builder.Build();
 
+app.MapIdentityApi<MyUser>();
+
 // Configurar el pipeline HTTP
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -75,11 +137,48 @@ app.UseHttpsRedirection();
 app.UseCors(options => { 
                         options.AllowAnyOrigin();
                         options.AllowAnyMethod();
+                        options.AllowAnyHeader();
                         }
             );
 
-app.UseAuthorization();
-
 app.MapControllers();
+
+//endpoint para devolver la informacion del usuario en la sesion
+app.MapGet("users/info", async (ClaimsPrincipal claims, MyIdentityDBContext context) =>
+{
+    string userId = claims.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+
+    var userLogueado = await context.Users.FindAsync(userId);
+
+    if (userLogueado == null)
+    {
+        return Results.NotFound("User not found");
+    }
+
+    return Results.Ok(new
+    {
+        Id = userLogueado.Id,
+        UserName = userLogueado.UserName,
+        Email = userLogueado.Email
+    });
+});
+
+//endpoint lista de usuarios 
+app.MapGet("users/{UserName}", async (string UserName, MyIdentityDBContext context) =>
+{
+    var userLogueado = await context.Users.FirstOrDefaultAsync(user => user.UserName == UserName);
+
+    if (userLogueado == null)
+    {
+        return Results.NotFound("User not found");
+    }
+
+    return Results.Ok(new
+    {
+        Id = userLogueado.Id,
+        UserName = userLogueado.UserName,
+        Email = userLogueado.Email
+    });
+});
 
 app.Run();
