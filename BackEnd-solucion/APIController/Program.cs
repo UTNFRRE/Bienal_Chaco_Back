@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using Azure.Core;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -149,9 +150,27 @@ app.MapControllers();
 app.MapGet("users/info", async (ClaimsPrincipal claims, MyIdentityDBContext context) =>
 {
     string userId = claims.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-    
+
     var userLogueado = await context.Users.FindAsync(userId);
-    
+
+    if (userLogueado == null)
+    {
+        return Results.NotFound("User not found");
+    }
+
+    return Results.Ok(new
+    {
+        Id = userLogueado.Id,
+        UserName = userLogueado.UserName,
+        Email = userLogueado.Email
+    });
+});
+
+//endpoint lista de usuarios 
+app.MapGet("users/{email}", async (string UserName, MyIdentityDBContext context) =>
+{
+    var userLogueado = await context.Users.FirstOrDefaultAsync(user => user.UserName == UserName);
+
     if (userLogueado == null)
     {
         return Results.NotFound("User not found");
