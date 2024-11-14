@@ -167,7 +167,7 @@ app.MapGet("users/info", async (ClaimsPrincipal claims, MyIdentityDBContext cont
 });
 
 //endpoint lista de usuarios 
-app.MapGet("users/{email}", async (string UserName, MyIdentityDBContext context) =>
+app.MapGet("users/{UserName}", async (string UserName, MyIdentityDBContext context) =>
 {
     var userLogueado = await context.Users.FirstOrDefaultAsync(user => user.UserName == UserName);
 
