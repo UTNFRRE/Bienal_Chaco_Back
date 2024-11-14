@@ -37,7 +37,8 @@ builder.Services.AddDbContext<MyIdentityDBContext>(options => options.UseSqlServ
 
 builder.Services.AddAuthorization()
                 .AddAuthentication()
-                .AddBearerToken(IdentityConstants.BearerScheme);
+                .AddCookie(IdentityConstants.ApplicationScheme);
+                //.AddBearerToken(IdentityConstants.BearerScheme);
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
 
