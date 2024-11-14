@@ -182,6 +182,6 @@ app.MapGet("users/{email}", async (string UserName, MyIdentityDBContext context)
         UserName = userLogueado.UserName,
         Email = userLogueado.Email
     });
-});
+}).RequireAuthorization();
 
 app.Run();

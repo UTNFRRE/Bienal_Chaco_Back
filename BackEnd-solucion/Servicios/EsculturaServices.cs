@@ -63,14 +63,20 @@ namespace Servicios
         }
 
         //Este usa el front
-        public async Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize, int? AnioEdicion =null)
+        public async Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize, int? AnioEdicion =null, string? busqueda = null)
         {
+            if (busqueda != null) //Depende de si hay un parametro busqueda, llama al metodo GetAllFilter
+            {
+                return await GetAllFilterEsc(pageNumber, pageSize, AnioEdicion, busqueda);
+            }
             var listescultura = await this._context.Esculturas
                 .Where(e => e.EdicionAño == AnioEdicion)
                 .Skip((pageNumber -1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+
             await this.asignarPromedios(listescultura);
+
             var listesculturaDTO = new List<EsculturasListLiteDTO>();
 
             foreach (Esculturas esculturas in listescultura)
@@ -82,6 +88,28 @@ namespace Servicios
             ;
             return listesculturaDTO;
         }
+        public async Task<IEnumerable<EsculturasListLiteDTO>> GetAllFilterEsc(int pageNumber, int pageSize, int? AnioEdicion, string busqueda)
+        {
+            var esculturasFiltradas = await _context.Esculturas
+                .Where(u => u.EdicionAño == AnioEdicion && (u.Nombre.Contains(busqueda) || u.Tematica.Contains(busqueda)))
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // asignamos prom a las esculturas filtradas
+            await this.asignarPromedios(esculturasFiltradas);
+
+            var listesculturaDTO = new List<EsculturasListLiteDTO>();
+
+            foreach (var escultura in esculturasFiltradas)
+            {
+                var escultor = await this._context.Escultores.FindAsync(escultura.EscultoresID);
+                listesculturaDTO.Add(new EsculturasListLiteDTO(escultura, escultor));
+            }
+
+            return listesculturaDTO;
+        }
+
 
         public async Task<Esculturas>? GetByAsync(int id) //Get by id
         {
@@ -271,7 +299,8 @@ namespace Servicios
     public interface ICRUDEsculturaService
     { 
         Task<Esculturas>? CreateAsync(EsculturaPostPut request);
-        Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize, int? AnioEdicion);
+        Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize, int? AnioEdicion, string? busqueda);
+        Task<IEnumerable<EsculturasListLiteDTO>> GetAllFilterEsc(int pageNumber, int pageSize, int? AnioEdicion, string busqueda);
         Task<EsculturasDetailDTO>? GetDetail(int idEscultura);
         Task<Esculturas>? GetByAsync(int id); 
         Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request);
