@@ -15,7 +15,6 @@ namespace Entidades
     {
         public string? FullName { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Votos>? Votos { get; set; }
+        
     }
 }
