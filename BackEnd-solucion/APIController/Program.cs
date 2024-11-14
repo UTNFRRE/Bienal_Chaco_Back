@@ -35,11 +35,9 @@ builder.Services.AddDbContext<BienalDbContext>(options => options.UseSqlServer(c
 builder.Services.AddDbContext<MyIdentityDBContext>(options => options.UseSqlServer(connectionString,
      b => b.MigrationsAssembly("APIController")));
 
-builder.Services.AddAuthentication()
-                                    .AddBearerToken(IdentityConstants.BearerScheme);
-
-builder.Services.AddAuthorizationBuilder();
-
+builder.Services.AddAuthorization()
+                .AddAuthentication()
+                .AddBearerToken(IdentityConstants.BearerScheme);
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
 
@@ -137,10 +135,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors(options => { 
-                        options.WithOrigins("http://localhost:5173", "http://localhost:5173/", "http://127.0.0.1:5173/");
+                        options.AllowAnyOrigin();
                         options.AllowAnyMethod();
                         options.AllowAnyHeader();
-                        options.AllowCredentials();
+                        //options.AllowCredentials();
                         }
             );
 
