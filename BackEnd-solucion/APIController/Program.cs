@@ -56,7 +56,7 @@ builder.Services.AddScoped<ICRUDServiceEdicion, EdicionServices>();
 
 
 // Configurar IdentityCore
-builder.Services.AddIdentity<MyUser, MyRol>(options => {
+builder.Services.AddIdentityCore<MyUser>(options => {
     
     // Password settings
     options.Password.RequireDigit = false;
