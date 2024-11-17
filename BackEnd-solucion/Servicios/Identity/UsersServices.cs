@@ -64,9 +64,9 @@ namespace Servicios
             await _signInManager.SignOutAsync();
         }
 
-        public async Task DeleteUserAsync(string id)
+        public async Task DeleteUserAsync(string email)
         {
-            var userToDelete = await _userManager.FindByIdAsync(id);
+            var userToDelete = await _userManager.FindByEmailAsync(email);
             if (userToDelete != null)
             {
                 var result = await _userManager.DeleteAsync(userToDelete);
@@ -84,7 +84,7 @@ namespace Servicios
         Task<IEnumerable<UserRolDTO>> GetAllUsersAsync();
         Task<UserInfoDTO> GetUserInfoByEmailAsync(string email);
         Task Logout();
-        Task DeleteUserAsync(string id);
+        Task DeleteUserAsync(string email);
 
     }
     
