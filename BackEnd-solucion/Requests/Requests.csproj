@@ -16,8 +16,4 @@
     <ProjectReference Include="..\BienalModel\Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Identity\" />
-  </ItemGroup>
-
 </Project>

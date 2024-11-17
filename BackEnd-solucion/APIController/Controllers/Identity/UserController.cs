@@ -47,6 +47,20 @@ namespace APIBienal.Controllers
             }
         }
 
+        [HttpPost("Logout")]
+        public async Task<IActionResult> LogOut()
+        {
+            try
+            {
+                await _userService.Logout();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
         // Eliminar un Usuario
         [Authorize]

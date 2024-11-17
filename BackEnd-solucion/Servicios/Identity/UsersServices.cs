@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Requests;
 using Microsoft.AspNetCore.Identity; // Asegúrate de importar esto para UserManager
 using Contexts;
+using Requests.Identity;
 
 
 
@@ -14,16 +15,29 @@ namespace Servicios
     public class UsersServices : IServiceUsers
     {
         private readonly UserManager<MyUser> _userManager;
-
-        public UsersServices(UserManager<MyUser> userManager)
+        private readonly SignInManager<MyUser> _signInManager;
+        public UsersServices(UserManager<MyUser> userManager, SignInManager<MyUser> signInManager)
         {
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
     
 
-        public async Task<IEnumerable<MyUser>> GetAllUsersAsync()
+        public async Task<IEnumerable<UserRolDTO>> GetAllUsersAsync()
         {
-            return await _userManager.Users.ToListAsync();
+            var listaUsuarios = await _userManager.Users.ToListAsync();
+            var listaUserRol = new List<UserRolDTO>();
+            
+            foreach (var user in listaUsuarios)
+            {
+                var usuario = user.UserName;
+                var roles = await _userManager.GetRolesAsync(user);
+                var rol = roles.FirstOrDefault();
+                
+                var userRol = new UserRolDTO(usuario, rol);
+                listaUserRol.Add(userRol);
+            }
+            return listaUserRol;
         }
 
         public async Task<MyUser> GetUserByIdAsync(string id)
@@ -31,6 +45,10 @@ namespace Servicios
             return await _userManager.FindByIdAsync(id);
         }
 
+        public async Task Logout()
+        {
+           await _signInManager.SignOutAsync();
+        }
 
         public async Task DeleteUserAsync(string id)
         {
@@ -49,9 +67,10 @@ namespace Servicios
 
     public interface IServiceUsers
     {
-    Task<IEnumerable<MyUser>> GetAllUsersAsync();
-    Task<MyUser> GetUserByIdAsync(string id);
-    Task DeleteUserAsync(string id);
+        Task<IEnumerable<UserRolDTO>> GetAllUsersAsync();
+        Task<MyUser> GetUserByIdAsync(string id);
+        Task Logout();
+       Task DeleteUserAsync(string id);
 
     }
     

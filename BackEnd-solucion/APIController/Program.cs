@@ -53,7 +53,7 @@ builder.Services.AddScoped<ICRUDServiceEdicion, EdicionServices>();
 
 builder.Services.AddScoped<IRolesServices, RolesServices>();
 
-//builder.Services.AddScoped<IServiceUsers, UsersServices>();
+builder.Services.AddScoped<IServiceUsers, UsersServices>();
 
 //builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
