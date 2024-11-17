@@ -13,16 +13,18 @@ namespace Servicios.Identity
      public class RolesServices : IRolesServices
     {
         private readonly RoleManager<MyRol> _roleManager;
-        private readonly UserManager<MyRol> _userManager;
+        private readonly UserManager<MyUser> _userManager;
 
-        public RolesServices(RoleManager<MyRol> roleManager, UserManager<MyRol> userManager)
+        public RolesServices(RoleManager<MyRol> roleManager, UserManager<MyUser> userManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
         }
 
-        public async Task CreateRoleAsync(MyRol role)
+        public async Task CreateRoleAsync(string nombreRol)
         {
+            var role = new MyRol { Name = nombreRol };
+
             var result = await _roleManager.CreateAsync(role);
             if (!result.Succeeded)
             {
@@ -39,7 +41,7 @@ namespace Servicios.Identity
         }   
     
         // metodo para buscar rol, pensado que puede ser admin o public
-        public async Task<IdentityRole> GetRoleByName(string name)
+        public async Task<MyRol> GetRoleByName(string name)
         {
             return await _roleManager.FindByNameAsync(name);
         }
@@ -71,9 +73,9 @@ namespace Servicios.Identity
 
     public interface IRolesServices
 {
-    Task CreateRoleAsync(MyRol role);
+    Task CreateRoleAsync(string role);
     Task<List<MyRol>> GetRolesAsync();
-    Task<IdentityRole> GetRoleByName(string name);
+    Task<MyRol> GetRoleByName(string name);
     Task AssignRoleAsync(string email, string roleName);
     Task DeleteRoleAsync(string name);
 }
