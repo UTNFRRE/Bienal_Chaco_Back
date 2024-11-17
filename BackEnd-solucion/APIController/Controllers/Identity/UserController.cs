@@ -31,11 +31,11 @@ namespace APIBienal.Controllers
             return listadeUsuarios == null ? NotFound() : Ok(listadeUsuarios);
         }
 
-        // Obtener un Usuario por ID
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUsuarioById(string id)
+        // Obtener un Usuario por email
+        [HttpGet("InfoUsuario")]
+        public async Task<IActionResult> GetUserInfoByEmailAsync(string email)
         {
-            var usuarioObtenido = await _userService.GetUserByIdAsync(id);
+            var usuarioObtenido = await _userService.GetUserInfoByEmailAsync(email);
 
             if (usuarioObtenido == null)
             {

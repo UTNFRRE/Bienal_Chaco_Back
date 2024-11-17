@@ -18,6 +18,18 @@ namespace Requests.Identity
             RoleName = rolName;
         }
     }
+
+    public class UserInfoDTO
+    {
+        public string UserId { get; set; }
+        public string? RoleName { get; set; }
+
+        public UserInfoDTO(string user, string rolName)
+        {
+            UserId = user;
+            RoleName = rolName;
+        }
+    }
     
 
 
