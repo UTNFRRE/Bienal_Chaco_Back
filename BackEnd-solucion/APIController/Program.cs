@@ -169,22 +169,4 @@ app.MapGet("users/info", async (ClaimsPrincipal claims, MyIdentityDBContext cont
     });
 });
 
-//endpoint lista de usuarios 
-app.MapGet("users/{UserName}", async (string UserName, MyIdentityDBContext context) =>
-{
-    var userLogueado = await context.Users.FirstOrDefaultAsync(user => user.UserName == UserName);
-
-    if (userLogueado == null)
-    {
-        return Results.NotFound("User not found");
-    }
-
-    return Results.Ok(new
-    {
-        Id = userLogueado.Id,
-        UserName = userLogueado.UserName,
-        Email = userLogueado.Email
-    });
-});
-
 app.Run();
