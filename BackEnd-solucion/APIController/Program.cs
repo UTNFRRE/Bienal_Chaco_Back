@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using Azure.Core;
+using Servicios.Identity;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +50,8 @@ builder.Services.AddScoped<ICRUDServiceEvent, EventosServices>();
 builder.Services.AddScoped<ICRUDServicesEscultores, EscultoresServices>();
 builder.Services.AddScoped<ICRUDServicesVotos, VotosService>();
 builder.Services.AddScoped<ICRUDServiceEdicion, EdicionServices>();
+
+builder.Services.AddScoped<IRolesServices, RolesServices>();
 
 //builder.Services.AddScoped<IServiceUsers, UsersServices>();
 
