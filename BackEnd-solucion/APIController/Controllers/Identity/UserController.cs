@@ -22,8 +22,9 @@ namespace APIBienal.Controllers
         {
             _userService = userService;
         }
-        
+
         // Obtener todos los Usuarios
+        
         [HttpGet]
         public async Task<IActionResult> GetAllUsuarios()
         {
@@ -32,6 +33,7 @@ namespace APIBienal.Controllers
         }
 
         // Obtener un Usuario por email
+        
         [HttpGet("InfoUsuario")]
         public async Task<IActionResult> GetUserInfoByEmailAsync(string email)
         {
@@ -63,7 +65,6 @@ namespace APIBienal.Controllers
 
 
         // Eliminar un Usuario
-        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(string id)
         {
