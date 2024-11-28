@@ -40,7 +40,7 @@ builder.Services.AddDbContext<MyIdentityDBContext>(options => options.UseSqlServ
 builder.Services.AddAuthentication()
                                     .AddBearerToken(IdentityConstants.BearerScheme);
 
-builder.Services.AddAuthorizationBuilder();
+builder.Services.AddAuthorization();
 
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
@@ -168,7 +168,12 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseCors(options => { 
                         options.AllowAnyOrigin();
                         options.AllowAnyMethod();
