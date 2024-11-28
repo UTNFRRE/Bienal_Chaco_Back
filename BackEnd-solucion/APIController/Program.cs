@@ -178,24 +178,4 @@ app.UseCors(options => {
 
 app.MapControllers();
 
-//endpoint para devolver la informacion del usuario en la sesion
-app.MapGet("users/info", async (ClaimsPrincipal claims, MyIdentityDBContext context) =>
-{
-    string userId = claims.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-
-    var userLogueado = await context.Users.FindAsync(userId);
-
-    if (userLogueado == null)
-    {
-        return Results.NotFound("User not found");
-    }
-
-    return Results.Ok(new
-    {
-        Id = userLogueado.Id,
-        UserName = userLogueado.UserName,
-        Email = userLogueado.Email
-    });
-});
-
 app.Run();
