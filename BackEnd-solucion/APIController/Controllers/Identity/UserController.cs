@@ -24,8 +24,8 @@ namespace APIBienal.Controllers
         }
 
         // Obtener todos los Usuarios
-        
-        [HttpGet, Authorize]
+        [Authorize]
+        [HttpGet]
         public async Task<IActionResult> GetAllUsuarios()
         {
             var listadeUsuarios = await _userService.GetAllUsersAsync();
