@@ -22,8 +22,9 @@ namespace APIBienal.Controllers
         {
             _userService = userService;
         }
-        
+
         // Obtener todos los Usuarios
+        
         [HttpGet]
         public async Task<IActionResult> GetAllUsuarios()
         {
@@ -31,11 +32,12 @@ namespace APIBienal.Controllers
             return listadeUsuarios == null ? NotFound() : Ok(listadeUsuarios);
         }
 
-        // Obtener un Usuario por ID
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUsuarioById(string id)
+        // Obtener un Usuario por email
+        
+        [HttpGet("InfoUsuario")]
+        public async Task<IActionResult> GetUserInfoByEmailAsync(string email)
         {
-            var usuarioObtenido = await _userService.GetUserByIdAsync(id);
+            var usuarioObtenido = await _userService.GetUserInfoByEmailAsync(email);
 
             if (usuarioObtenido == null)
             {
@@ -47,9 +49,22 @@ namespace APIBienal.Controllers
             }
         }
 
+        [HttpPost("Logout")]
+        public async Task<IActionResult> LogOut()
+        {
+            try
+            {
+                await _userService.Logout();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
         // Eliminar un Usuario
-        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(string id)
         {
