@@ -15,23 +15,27 @@ namespace Requests
         public DateOnly? FechaInicio { get; set; }
 
         public DateOnly? FechaFin { get; set; }
+
+        public bool VotacionHabilitada { get; set; } = false;
     }
 
     public class EdicionUpdateRequest
     {
-        [Required]
-        public int Año { get; set; }
-
         public DateOnly? FechaInicio { get; set; }
 
         public DateOnly? FechaFin { get; set; }
+
+        public bool VotacionHabilitada { get; set; } = false;
+
     }
     public class EdicionPatchEdicion
     {
-        public int Año { get; set; }
 
         public DateOnly? FechaInicio { get; set; }
 
         public DateOnly? FechaFin { get; set; }
+
+        public bool VotacionHabilitada { get; set; } = false;
+
     }
 }
