@@ -55,6 +55,8 @@ builder.Services.AddScoped<IRolesServices, RolesServices>();
 
 builder.Services.AddScoped<IServiceUsers, UsersServices>();
 
+builder.Services.AddScoped<ITokenService, TokenService>();
+
 //builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 //builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();

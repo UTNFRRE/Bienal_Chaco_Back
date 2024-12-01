@@ -19,11 +19,14 @@ namespace APIBienal.Controllers
     public class EsculturasController : ControllerBase
     {
         private readonly ICRUDEsculturaService esculturaService;
+        private readonly TokenService _tokenService;
 
         public EsculturasController(ICRUDEsculturaService esculturasService)
         {
+            this._tokenService = new TokenService();
             this.esculturaService = esculturasService;
         }
+
 
         // Crear Escultura (CRUD para esculturas)
         [HttpPost]
@@ -126,6 +129,14 @@ namespace APIBienal.Controllers
                 return NotFound("No se encontro una escultura con el id proporcionado");
             }
             return Ok("Se elimino exitosamente la escultura");
+        }
+
+        // Generar token
+        [HttpGet("gettoken/{esculturaId}")]
+        public IActionResult GenerarToken(int esculturaId)
+        {
+            var token = _tokenService.GenerateToken(esculturaId);
+            return Ok(new { token });
         }
 
     }
