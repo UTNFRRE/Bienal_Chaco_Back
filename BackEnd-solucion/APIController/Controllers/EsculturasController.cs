@@ -132,12 +132,26 @@ namespace APIBienal.Controllers
         }
 
         // Generar token
-        [HttpGet("gettoken/{esculturaId}")]
+        [HttpGet("GetToken")]
         public IActionResult GenerarToken(int esculturaId)
         {
             var token = _tokenService.GenerateToken(esculturaId);
             return Ok(new { token });
         }
+
+        [HttpHead("Token")]
+        public IActionResult ValidarToken([FromHeader] string token, [FromHeader] int idEscultura)
+        {
+            var isValid = _tokenService.ValidateToken(token, idEscultura);
+
+            if (!isValid)
+            {
+                return Unauthorized(new { isValid = false, message = "Token inválido o no coincide con la escultura." });
+            }
+
+            return Ok(new { isValid = true, message = "Token válido." });
+        }
+
 
     }
 }
