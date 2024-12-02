@@ -24,7 +24,7 @@ namespace APIBienal.Controllers
         }
 
         // Obtener todos los Usuarios
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Identity.Bearer")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsuarios()
         {
