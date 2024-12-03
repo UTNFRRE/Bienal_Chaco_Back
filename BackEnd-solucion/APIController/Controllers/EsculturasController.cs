@@ -42,18 +42,33 @@ namespace APIBienal.Controllers
 
 
         // Prueba multi imagenes
-        [HttpPost("uploadImages")]
-        public async Task<IActionResult> UploadImagesAsync([FromForm] IEnumerable<IFormFile> files)
+        [HttpPost("uploadImages/{esculturaId}")]
+        public async Task<IActionResult> UploadImages(int esculturaId, IFormFile[] files)
         {
-            // Llamar al servicio para cargar las imágenes
-            var uploadedFileNames = await esculturaService.UploadImagesAsync(files);
-
-            if (uploadedFileNames == null || !uploadedFileNames.Any())
+            if (files == null || files.Length == 0)
             {
-                return BadRequest("No files uploaded.");
+                return BadRequest("No se han enviado imágenes.");
             }
 
-            return Ok(new { filenames = uploadedFileNames });
+            // Llamamos al servicio para cargar las imágenes y asociarlas a la escultura
+            var imagenesCargadas = await esculturaService.UploadImagesAsync(esculturaId, files);
+
+            return Ok(new { imagenes = imagenesCargadas });
+        }
+
+        [HttpGet("{esculturaId}/imagenes")]
+        public async Task<IActionResult> GetImagenesByEscultura(int esculturaId)
+        {
+            var imagenes = await _context.Imagenes
+                .Where(i => i.EsculturaId == esculturaId)
+                .ToListAsync();
+
+            if (imagenes == null || imagenes.Count == 0)
+            {
+                return NotFound("No se encontraron imágenes para esta escultura.");
+            }
+
+            return Ok(imagenes);
         }
 
 

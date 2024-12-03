@@ -11,6 +11,7 @@ namespace Contexts
         public DbSet<Escultores> Escultores { get; set; }
         public DbSet<Esculturas> Esculturas { get; set; }
         public DbSet<Eventos> Eventos { get; set; }
+        public DbSet<Imagen> Imagenes { get; set; }
 
         
         public DbSet<Votos> Votos { get; set; }
@@ -32,6 +33,14 @@ namespace Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            base.OnModelCreating(modelBuilder);
+            // Configuración de la relación entre Escultura e Imagen (uno a muchos)
+            modelBuilder.Entity<Imagen>()
+                .HasOne(i => i.Escultura)
+                .WithMany(e => e.Imagenes)
+                .HasForeignKey(i => i.EsculturaId);
+
             //configuración de restricciones al crear la base de datos 
             modelBuilder.Entity<Escultores>(entity =>
             {

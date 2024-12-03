@@ -19,8 +19,18 @@ namespace Entidades
         public string Nombre { get; set; } = "";
         [MaxLength(200)]
         public string? Descripcion { get; set; }
+
+
+
+        // multi imagenes
         [Required]
-        public string Imagenes { get; set; } = "";
+        // Relación de uno a muchos con las imágenes
+        public ICollection<Imagen> Imagenes { get; set; }
+
+
+
+
+
         //primero sin control de que exista ese escultor
         [Required]
         public int EscultoresID { get; set; }

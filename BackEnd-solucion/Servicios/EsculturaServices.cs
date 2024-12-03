@@ -289,25 +289,40 @@ namespace Servicios
         }
 
         //Prueba multi imagenes
-        public async Task<List<string>> UploadImagesAsync(IEnumerable<IFormFile> files)
+        // Implementación del método UploadImagesAsync
+        public async Task<IList<string>> UploadImagesAsync(int esculturaId, IFormFile[] files)
         {
-            var uploadedFileNames = new List<string>();
+            var imagenesCargadas = new List<string>();
 
-            if (files == null || !files.Any())
+            var escultura = await _context.Esculturas
+                .Include(e => e.Imagenes)  // Asegúrate de incluir las imágenes
+                .FirstOrDefaultAsync(e => e.EsculturaId == esculturaId);
+
+            if (escultura == null)
             {
-                return null;
+                throw new Exception("Escultura no encontrada");
             }
 
             foreach (var file in files)
             {
-                if (file.Length == 0) continue;
+                var filename = await _azureStorageService.UploadAsync(file);
 
-                // Aquí usamos el servicio de Azure para cargar cada archivo.
-                var blobFilename = await _azureStorageService.UploadAsync(file);
-                uploadedFileNames.Add(blobFilename);
+                // Crear un objeto Imagen para cada archivo
+                var imagen = new Imagen
+                {
+                    NombreArchivo = filename,
+                    EsculturaId = esculturaId,
+                };
+
+                // Agregar la imagen a la colección de imágenes de la escultura
+                escultura.Imagenes.Add(imagen);
+                imagenesCargadas.Add(filename);
             }
 
-            return uploadedFileNames;
+            // Guardar los cambios en la base de datos
+            await _context.SaveChangesAsync();
+
+            return imagenesCargadas;
         }
     }
     public class EsculturaPromedio
@@ -330,7 +345,7 @@ namespace Servicios
         Task<Esculturas> VoteEscultura(int id, EsculturaVoto request);
         Task<bool> DeleteAsync(int id);
 
-        Task<List<string>> UploadImagesAsync(IEnumerable<IFormFile> files);
+        Task<IList<string>> UploadImagesAsync(int esculturaId, IFormFile[] files);
     
     } 
 
