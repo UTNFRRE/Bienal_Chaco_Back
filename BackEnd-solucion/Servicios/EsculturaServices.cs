@@ -287,6 +287,28 @@ namespace Servicios
             }
             return true;
         }
+
+        //Prueba multi imagenes
+        public async Task<List<string>> UploadImagesAsync(IEnumerable<IFormFile> files)
+        {
+            var uploadedFileNames = new List<string>();
+
+            if (files == null || !files.Any())
+            {
+                return null;
+            }
+
+            foreach (var file in files)
+            {
+                if (file.Length == 0) continue;
+
+                // Aquí usamos el servicio de Azure para cargar cada archivo.
+                var blobFilename = await _azureStorageService.UploadAsync(file);
+                uploadedFileNames.Add(blobFilename);
+            }
+
+            return uploadedFileNames;
+        }
     }
     public class EsculturaPromedio
     {
@@ -307,6 +329,8 @@ namespace Servicios
         Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request);
         Task<Esculturas> VoteEscultura(int id, EsculturaVoto request);
         Task<bool> DeleteAsync(int id);
+
+        Task<List<string>> UploadImagesAsync(IEnumerable<IFormFile> files);
     
     } 
 

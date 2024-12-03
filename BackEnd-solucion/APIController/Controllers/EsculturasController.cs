@@ -40,6 +40,24 @@ namespace APIBienal.Controllers
             return CreatedAtAction(nameof(ObtenerEscultura), new { id = esculturaCreate.EsculturaId }, esculturaCreate);
         }
 
+
+        // Prueba multi imagenes
+        [HttpPost("uploadImages")]
+        public async Task<IActionResult> UploadImagesAsync([FromForm] IEnumerable<IFormFile> files)
+        {
+            // Llamar al servicio para cargar las imÃ¡genes
+            var uploadedFileNames = await esculturaService.UploadImagesAsync(files);
+
+            if (uploadedFileNames == null || !uploadedFileNames.Any())
+            {
+                return BadRequest("No files uploaded.");
+            }
+
+            return Ok(new { filenames = uploadedFileNames });
+        }
+
+
+
         // Obtener escultura por ID
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerEscultura(int id)
@@ -146,10 +164,10 @@ namespace APIBienal.Controllers
 
             if (!isValid)
             {
-                return Unauthorized(new { isValid = false, message = "Token inválido o no coincide con la escultura." });
+                return Unauthorized(new { isValid = false, message = "Token invï¿½lido o no coincide con la escultura." });
             }
 
-            return Ok(new { isValid = true, message = "Token válido." });
+            return Ok(new { isValid = true, message = "Token vï¿½lido." });
         }
 
 
