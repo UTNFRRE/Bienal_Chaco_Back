@@ -59,16 +59,17 @@ namespace APIBienal.Controllers
         [HttpGet("{esculturaId}/imagenes")]
         public async Task<IActionResult> GetImagenesByEscultura(int esculturaId)
         {
-            var imagenes = await _context.Imagenes
-                .Where(i => i.EsculturaId == esculturaId)
-                .ToListAsync();
+            var imagenes = await this.esculturaService.GetImagenesByEsculturaAsync(esculturaId);
 
-            if (imagenes == null || imagenes.Count == 0)
+            if (imagenes == null || !imagenes.Any())
             {
                 return NotFound("No se encontraron imágenes para esta escultura.");
             }
 
-            return Ok(imagenes);
+            // Regresamos las imágenes con la URL completa
+            var imagenesConUrl = imagenes.Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo).ToList();
+                
+            return Ok(imagenesConUrl);
         }
 
 
@@ -76,18 +77,20 @@ namespace APIBienal.Controllers
         // Obtener escultura por ID
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerEscultura(int id)
-    {
-        var escultura = await this.esculturaService.GetByAsync(id);
-        if (escultura == null)
         {
-            return NotFound("No se encontro una escultura con el id proporcionado");
+            var escultura = await this.esculturaService.GetByAsync(id);
+            if (escultura == null)
+            {
+                return NotFound("No se encontro una escultura con el id proporcionado");
+            }
+
+            // Asignar las URLs a la propiedad ImagenesUrls
+            escultura.ImagenesUrls = escultura.Imagenes
+                .Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo)
+                .ToList();
+
+            return Ok(escultura);
         }
-
-            //devolver link de imagen hardcodeo url de azure
-        escultura.Imagenes = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + escultura.Imagenes;
-
-        return Ok(escultura);
-    }
 
         [HttpGet("GetDetail/{id}")]
         public async Task<IActionResult> ObtenerDetalleEscultura(int id)

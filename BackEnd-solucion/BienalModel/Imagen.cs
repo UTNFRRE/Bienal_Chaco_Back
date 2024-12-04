@@ -11,11 +11,13 @@ using System.Threading.Tasks;
 
 namespace Entidades
 {
-   public class Imagen
-{
-    public int Id { get; set; }
-    public string NombreArchivo { get; set; }
-    public int EsculturaId { get; set; } // Relación con la escultura
-    public Esculturas Escultura { get; set; } // Relación inversa
-}
+    public class Imagen
+    {
+        public string FilePath { get; set; } // Ruta de almacenamiento (si aplica)
+        public string Url { get; set; } // Ruta de almacenamiento (si aplica)
+        public int Id { get; set; }
+        public string NombreArchivo { get; set; }
+        public int EsculturaId { get; set; } // Relación con la escultura
+        public Esculturas Escultura { get; set; } // Relación inversa
+    }
 }

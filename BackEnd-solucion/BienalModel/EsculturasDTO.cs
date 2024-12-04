@@ -16,38 +16,42 @@ namespace Models
         public string? Tematica { get; set; }
         public string? Descripcion { get; set; }
         public DateOnly? FechaCreacion { get; set; }
-
-
-
         public string? EscultorNombre { get; set; }
-
         public string? EscultorPais { get; set; }
-
         public string? EscultorImagen { get; set; }
         [JsonIgnore]
         public string urlImagen { get; set; } = "https://bienalobjectstorage.blob.core.windows.net/imagenes/";
 
-        public string Imagenes { get; set; }
+        // List<Imagen> mantiene la propiedad original
+        public List<Imagen> Imagenes { get; set; }
+
+        // Nueva propiedad para devolver las URLs de las imágenes
+        public List<string> ImagenesUrls { get; set; } = new List<string>();
+
         public double promedioVotos { get; set; }
 
         //constructor de Esculturas
         public EsculturasDetailDTO(Esculturas escultura, Escultores Escultor) 
-              {
-            EsculturaId = escultura.EsculturaId;
-            Nombre = escultura.Nombre;
-            Tematica = escultura.Tematica;
-            Descripcion = escultura.Descripcion;
-            FechaCreacion = escultura.FechaCreacion;
-            Imagenes = urlImagen + escultura.Imagenes;
-            
+            {
+                EsculturaId = escultura.EsculturaId;
+                Nombre = escultura.Nombre;
+                Tematica = escultura.Tematica;
+                Descripcion = escultura.Descripcion;
+                FechaCreacion = escultura.FechaCreacion;
 
+                // Asignar la lista original de imágenes
+                Imagenes = escultura.Imagenes;
 
-            EscultorNombre = Escultor.Nombre;
-            EscultorImagen = urlImagen + Escultor.Foto;
-            EscultorPais = Escultor.Pais;
-            promedioVotos = escultura.PromedioVotos;
+                // Generar las URLs para las imágenes y asignarlas a la nueva propiedad
+                ImagenesUrls = escultura.Imagenes
+                    .Select(img => urlImagen + img.NombreArchivo)
+                    .ToList();
 
-        }
+                EscultorNombre = Escultor.Nombre;
+                EscultorImagen = urlImagen + Escultor.Foto;
+                EscultorPais = Escultor.Pais;
+                promedioVotos = escultura.PromedioVotos;
+            }
     }
 
     public class EsculturasListLiteDTO

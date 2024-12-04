@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Entidades
 {
@@ -24,9 +25,10 @@ namespace Entidades
 
         // multi imagenes
         [Required]
-        // Relación de uno a muchos con las imágenes
-        public ICollection<Imagen> Imagenes { get; set; }
+        public List<Imagen> Imagenes { get; set; }
 
+        // Nueva propiedad para devolver las URLs de las imágenes
+        public List<string> ImagenesUrls { get; set; } = new List<string>();
 
 
 

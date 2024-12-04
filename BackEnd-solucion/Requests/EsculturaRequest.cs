@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
+using Entidades;
 
 namespace Requests
 {
@@ -11,7 +12,7 @@ namespace Requests
         [MaxLength(200)]
         public string? Descripcion { get; set; }
         [Required]
-        public IFormFile? Imagen { get; set; }
+        public List<Imagen> Imagenes { get; set; }
         //primero sin control de que exista ese escultor
         [Required]
         public int EscultorID { get; set; }
@@ -30,7 +31,7 @@ namespace Requests
         public string? Nombre { get; set; }
         [MaxLength(200)]
         public string? Descripcion { get; set; }
-        public IFormFile? Imagen { get; set; }
+        public List<Imagen> Imagenes { get; set; }
         public int? EscultorID { get; set; }
         public DateOnly? FechaCreacion { get; set; }
         public string? Tematica { get; set; }
