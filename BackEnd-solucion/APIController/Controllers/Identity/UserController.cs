@@ -24,7 +24,7 @@ namespace APIBienal.Controllers
         }
 
         // Obtener todos los Usuarios
-        [Authorize(AuthenticationSchemes = "Identity.Bearer")]
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsuarios()
         {
@@ -48,7 +48,7 @@ namespace APIBienal.Controllers
                 return Ok(usuarioObtenido);
             }
         }
-
+        [Authorize(AuthenticationSchemes = "Identity.Bearer")]
         [HttpPost("Logout")]
         public async Task<IActionResult> LogOut()
         {
