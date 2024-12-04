@@ -27,6 +27,7 @@ namespace Entidades
         [Required]
         public List<Imagen> Imagenes { get; set; }
 
+        [NotMapped]
         // Nueva propiedad para devolver las URLs de las imágenes
         public List<string> ImagenesUrls { get; set; } = new List<string>();
 

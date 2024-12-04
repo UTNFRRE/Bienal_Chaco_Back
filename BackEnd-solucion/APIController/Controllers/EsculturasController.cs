@@ -30,14 +30,17 @@ namespace APIBienal.Controllers
 
         // Crear Escultura (CRUD para esculturas)
         [HttpPost]
-        public async Task<IActionResult> CrearEscultura([FromForm] EsculturaPostPut request)
+        public async Task<IActionResult> CrearEsculturaConImagenes([FromForm] EsculturaPostRequest request)
         {
-            Esculturas esculturaCreate = await this.esculturaService.CreateAsync(request);
-            if (esculturaCreate == null)
+            try
             {
-                return BadRequest("Ya existe una escultura con nombre asignado");
+                var nuevaEscultura = await esculturaService.CreateAsync(request);
+                return CreatedAtAction(nameof(ObtenerEscultura), new { id = nuevaEscultura.EsculturaId }, nuevaEscultura);
             }
-            return CreatedAtAction(nameof(ObtenerEscultura), new { id = esculturaCreate.EsculturaId }, esculturaCreate);
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
 
@@ -120,7 +123,7 @@ namespace APIBienal.Controllers
 
         // Actualizar escultura
         [HttpPut("{id}")]
-    public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPostPut request)
+    public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPutRequest request)
     {
         Esculturas? esculturaUpdate = await this.esculturaService.UpdatePutEsculturaAsync(id, request);
             if (esculturaUpdate == null)

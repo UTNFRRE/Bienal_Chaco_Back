@@ -34,12 +34,13 @@ namespace Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+            modelBuilder.Entity<Esculturas>()
+                    .HasMany(e => e.Imagenes)
+                    .WithOne(i => i.Escultura)
+                    .HasForeignKey(i => i.EsculturaId)
+                    .OnDelete(DeleteBehavior.Cascade); // Configura el comportamiento en cascada (opcional)
+
             base.OnModelCreating(modelBuilder);
-            // Configuración de la relación entre Escultura e Imagen (uno a muchos)
-            modelBuilder.Entity<Imagen>()
-                .HasOne(i => i.Escultura)
-                .WithMany(e => e.Imagenes)
-                .HasForeignKey(i => i.EsculturaId);
 
             //configuración de restricciones al crear la base de datos 
             modelBuilder.Entity<Escultores>(entity =>

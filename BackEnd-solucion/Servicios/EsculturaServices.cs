@@ -56,35 +56,58 @@ namespace Servicios
             return formFile;
         }
 
-        public async Task<Esculturas> CreateAsync(EsculturaPostPut request)
+
+        public async Task<Esculturas> CreateAsync(EsculturaPostRequest request)
         {
-            var newEscultura = new Esculturas
+            // Crear la nueva escultura
+            var nuevaEscultura = new Esculturas
             {
                 Nombre = request.Nombre,
-                Descripcion = request.Descripcion
+                Descripcion = request.Descripcion,
+                FechaCreacion = request.FechaCreacion,
+                EscultoresID = request.EscultorID,
+                Tematica = request.Tematica,
+                EdicionAño = request.EdicionAño,
+                Imagenes = new List<Imagen>()
             };
 
-            // Si hay imágenes en el request, las agregamos
-            if (request.Imagenes != null && request.Imagenes.Any())
+            // Agregar la escultura al contexto
+            await _context.Esculturas.AddAsync(nuevaEscultura);
+            await _context.SaveChangesAsync(); // Guardar para obtener el ID de la escultura
+
+            // Procesar las imágenes
+            if (request.Imagenes != null && request.Imagenes.Length > 0)
             {
                 foreach (var file in request.Imagenes)
                 {
-                    var iFormFile = ConvertToIFormFile(file);
-                    var url = await _azureStorageService.UploadAsync(iFormFile); // Sube la imagen y obtiene la URL
-                    newEscultura.Imagenes.Add(new Imagen
+                    var url = await _azureStorageService.UploadAsync(file); // Subir imagen y obtener URL
+
+                    // Crear un objeto Imagen
+                    var imagen = new Imagen
                     {
+                        NombreArchivo = file.FileName,
                         Url = url,
-                        NombreArchivo = file.NombreArchivo
-                    });
+                        EsculturaId = nuevaEscultura.EsculturaId, // Asociar a la escultura recién creada
+                    };
+
+                    if (nuevaEscultura.Imagenes == null)
+                    {
+                        nuevaEscultura.Imagenes = new List<Imagen>();
+                    }
+                    nuevaEscultura.Imagenes.Add(imagen);
                 }
+
+                // Guardar los cambios en la base de datos
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                // Si no hay imágenes, asegúrate de no insertar NULL en el campo 'Imagenes'
+                nuevaEscultura.Imagenes = new List<Imagen>(); // List vacía
             }
 
-            await _context.Esculturas.AddAsync(newEscultura);
-            await _context.SaveChangesAsync();
-            return newEscultura;
+            return nuevaEscultura;
         }
-
-
 
 
 
@@ -164,44 +187,64 @@ namespace Servicios
         }
 
         ///modificar UpdateAsync para sobrecargar con parametro EsculturaPatchRequest
-        public async Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request)
+        public async Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPutRequest request)
         {
-            //validación si existe id del escultor
+            // Buscar la escultura a actualizar
+            var esculturaToUpdate = await _context.Esculturas
+                .Include(e => e.Imagenes) // Incluir las imágenes asociadas
+                .FirstOrDefaultAsync(e => e.EsculturaId == id);
 
-            /*var escultorExistente = this._context.Escultores.FirstOrDefault(e => e.EscultorId == request.EscultorID);
-            if (esculturaExistente == null)
+            if (esculturaToUpdate == null)
             {
-                return null;
-            }*/
+                throw new Exception("Escultura no encontrada");
+            }
 
-        var esculturaToUpdate = this._context.Esculturas.Find(id);
-            if (esculturaToUpdate != null)
+            // Actualizar los datos principales de la escultura
+            esculturaToUpdate.Nombre = request.Nombre;
+            esculturaToUpdate.Descripcion = request.Descripcion;
+            esculturaToUpdate.FechaCreacion = request.FechaCreacion;
+            esculturaToUpdate.EscultoresID = request.EscultorID;
+            esculturaToUpdate.Tematica = request.Tematica;
+
+            // Manejar la eliminación de imágenes (si se proporcionan IDs para eliminar)
+            if (request.ImagenesAEliminar != null && request.ImagenesAEliminar.Length > 0)
             {
-                esculturaToUpdate.Nombre = request.Nombre;
-                esculturaToUpdate.EscultoresID = request.EscultorID;
-                esculturaToUpdate.Descripcion = request.Descripcion;
-                esculturaToUpdate.FechaCreacion = request.FechaCreacion;
-                esculturaToUpdate.Tematica = request.Tematica;
+                var imagenesAEliminar = esculturaToUpdate.Imagenes
+                    .Where(i => request.ImagenesAEliminar.Contains(i.Id))
+                    .ToList();
 
-                //control de errores nuevo nombre de escultura no existe
-               
-            if (request.Imagenes != null && request.Imagenes.Any())
-            {
-                // Convierte cada imagen en la lista a IFormFile
-                var formFiles = request.Imagenes.Select(imagen => ConvertToIFormFile(imagen)).ToList();
-
-                // Itera sobre cada IFormFile y llama a UploadAsync para cada uno
-                foreach (var formFile in formFiles)
+                foreach (var imagen in imagenesAEliminar)
                 {
-                    string blobFileName = Path.GetFileName(formFile.FileName);
-                    await this._azureStorageService.UploadAsync(formFile, blobFileName);
+                    // Eliminar la imagen del almacenamiento (Azure Blob)
+                    await _azureStorageService.DeleteAsync(imagen.Url);
+
+                    // Eliminar la imagen de la base de datos
+                    _context.Imagenes.Remove(imagen);
                 }
             }
-                
-                this._context.Update(esculturaToUpdate);
-                await this._context.SaveChangesAsync();
+
+            // Manejar la subida de nuevas imágenes
+            if (request.NuevasImagenes != null && request.NuevasImagenes.Length > 0)
+            {
+                foreach (var file in request.NuevasImagenes)
+                {
+                    var url = await _azureStorageService.UploadAsync(file); // Subir la imagen y obtener la URL
+
+                    var nuevaImagen = new Imagen
+                    {
+                        NombreArchivo = file.FileName,
+                        Url = url,
+                        EsculturaId = id
+                    };
+
+                    esculturaToUpdate.Imagenes.Add(nuevaImagen); // Asociar la nueva imagen
+                }
             }
-            
+
+            // Guardar los cambios en la base de datos
+            _context.Update(esculturaToUpdate);
+            await _context.SaveChangesAsync();
+
             return esculturaToUpdate;
         }
 
@@ -403,12 +446,12 @@ namespace Servicios
 
     public interface ICRUDEsculturaService
     { 
-        Task<Esculturas>? CreateAsync(EsculturaPostPut request);
+        Task<Esculturas>? CreateAsync(EsculturaPostRequest request);
         Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize, int? AnioEdicion, string? busqueda);
         Task<IEnumerable<EsculturasListLiteDTO>> GetAllFilterEsc(int pageNumber, int pageSize, int? AnioEdicion, string busqueda);
         Task<EsculturasDetailDTO>? GetDetail(int idEscultura);
         Task<Esculturas>? GetByAsync(int id); 
-        Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPostPut request);
+        Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPutRequest request);
         Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request);
         Task<Esculturas> VoteEscultura(int id, EsculturaVoto request);
         Task<bool> DeleteAsync(int id);
