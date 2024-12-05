@@ -33,7 +33,6 @@ namespace APIBienal.Controllers
         }
 
         // Obtener un Usuario por email
-        
         [HttpGet("InfoUsuario")]
         public async Task<IActionResult> GetUserInfoByEmailAsync(string email)
         {
@@ -63,8 +62,8 @@ namespace APIBienal.Controllers
             }
         }
 
-
         // Eliminar un Usuario
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(string id)
         {
