@@ -28,7 +28,8 @@ namespace Servicios
                 {
                     Año = request.Año,
                     FechaInicio = request.FechaInicio,
-                    FechaFin = request.FechaFin
+                    FechaFin = request.FechaFin,
+                    VotacionHabilitada = request.VotacionHabilitada
                 };
 
                 this._context.Edicion.Add(newEdicion);
@@ -54,9 +55,10 @@ namespace Servicios
                 var edicionExistente = await this._context.Edicion.FindAsync(año);
                 if (edicionExistente != null)
                 {
-                    edicionExistente.Año = request.Año;
+                  
                     edicionExistente.FechaInicio = request.FechaInicio;
                     edicionExistente.FechaFin = request.FechaFin;
+                    edicionExistente.VotacionHabilitada = request.VotacionHabilitada;
                     
                     this._context.Update(edicionExistente);
 
@@ -70,10 +72,7 @@ namespace Servicios
                 var edicionExistente = await this._context.Edicion.FindAsync(año);
                 if (edicionExistente != null)
                 {
-                    if (request.Año != null)
-                    {
-                        edicionExistente.Año = request.Año;
-                    }
+                 
                    
                     if (request.FechaInicio != null)
                     {
@@ -85,6 +84,12 @@ namespace Servicios
                     {
                         edicionExistente.FechaFin = request.FechaFin.Value;
                     }
+
+                    if (request.VotacionHabilitada != edicionExistente.VotacionHabilitada)
+                    {
+                        edicionExistente.VotacionHabilitada = request.VotacionHabilitada;
+                    }
+
                     this._context.Update(edicionExistente);
 
                     await this._context.SaveChangesAsync();

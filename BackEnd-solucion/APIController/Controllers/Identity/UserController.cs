@@ -24,7 +24,7 @@ namespace APIBienal.Controllers
         }
 
         // Obtener todos los Usuarios
-        
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsuarios()
         {
@@ -33,7 +33,6 @@ namespace APIBienal.Controllers
         }
 
         // Obtener un Usuario por email
-        
         [HttpGet("InfoUsuario")]
         public async Task<IActionResult> GetUserInfoByEmailAsync(string email)
         {
@@ -48,7 +47,7 @@ namespace APIBienal.Controllers
                 return Ok(usuarioObtenido);
             }
         }
-
+        [Authorize(AuthenticationSchemes = "Identity.Bearer")]
         [HttpPost("Logout")]
         public async Task<IActionResult> LogOut()
         {
@@ -65,6 +64,7 @@ namespace APIBienal.Controllers
 
 
         // Eliminar un Usuario
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(string id)
         {

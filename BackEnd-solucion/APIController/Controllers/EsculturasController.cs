@@ -11,6 +11,7 @@ using Servicios;
 using Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using static System.Net.WebRequestMethods;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIBienal.Controllers
 {
@@ -19,13 +20,19 @@ namespace APIBienal.Controllers
     public class EsculturasController : ControllerBase
     {
         private readonly ICRUDEsculturaService esculturaService;
+        private readonly TokenService _tokenService;
 
         public EsculturasController(ICRUDEsculturaService esculturasService)
         {
+            this._tokenService = new TokenService();
             this.esculturaService = esculturasService;
         }
 
+       
+
+
         // Crear Escultura (CRUD para esculturas)
+         [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> CrearEscultura([FromForm] EsculturaPostPut request)
         {
@@ -79,7 +86,7 @@ namespace APIBienal.Controllers
             return Ok(esculturaDetail);
         }
 
-        // Actualizar escultura
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPut("{id}")]
     public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPostPut request)
     {
@@ -90,7 +97,7 @@ namespace APIBienal.Controllers
             }   
          return Ok(esculturaUpdate);
     }
-
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> ActualizarPropiedadEscultura(int id, [FromForm] EsculturaPatch request)
         {
@@ -113,10 +120,10 @@ namespace APIBienal.Controllers
             return Ok(esculturaUpdate);
         }
 
-
         //implementar patch con imagen para escultura
 
         // Eliminar escultura
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarEscultura(int id)
         {
@@ -127,6 +134,28 @@ namespace APIBienal.Controllers
             }
             return Ok("Se elimino exitosamente la escultura");
         }
+
+        // Generar token
+        [HttpGet("GetToken")]
+        public IActionResult GenerarToken(int esculturaId)
+        {
+            var token = _tokenService.GenerateToken(esculturaId);
+            return Ok(new { token });
+        }
+
+        [HttpHead("Token")]
+        public IActionResult ValidarToken([FromHeader] string token, [FromHeader] int idEscultura)
+        {
+            var isValid = _tokenService.ValidateToken(token, idEscultura);
+
+            if (!isValid)
+            {
+                return Unauthorized(new { isValid = false, message = "Token inválido o no coincide con la escultura." });
+            }
+
+            return Ok(new { isValid = true, message = "Token válido." });
+        }
+
 
     }
 }

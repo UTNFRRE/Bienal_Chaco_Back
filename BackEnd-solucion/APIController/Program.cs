@@ -40,7 +40,7 @@ builder.Services.AddDbContext<MyIdentityDBContext>(options => options.UseSqlServ
 builder.Services.AddAuthentication()
                                     .AddBearerToken(IdentityConstants.BearerScheme);
 
-builder.Services.AddAuthorizationBuilder();
+builder.Services.AddAuthorization();
 
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
@@ -55,6 +55,7 @@ builder.Services.AddScoped<IRolesServices, RolesServices>();
 
 builder.Services.AddScoped<IServiceUsers, UsersServices>();
 
+//builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 // Configurar IdentityCore
 builder.Services.AddIdentity<MyUser, MyRol>(options => {
@@ -139,6 +140,7 @@ if (app.Environment.IsDevelopment())
 
     });
 }
+
 
 app.UseHttpsRedirection();
 
