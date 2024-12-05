@@ -1,4 +1,5 @@
 ﻿using Entidades;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -16,7 +17,7 @@ namespace APIController.Controllers.Identity
         {
             rolesServices = _rolesservices;
         }
-
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPost("CreateRol")]
         public async Task<IActionResult> CreateRol(string nombreRol)
             {
@@ -39,6 +40,7 @@ namespace APIController.Controllers.Identity
         }
 
         // PUT api/<RolesController>/5
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPost("AsignarRol")]
         public async Task<IActionResult> AsignateRol(string email, string rolename)
         {
@@ -47,6 +49,7 @@ namespace APIController.Controllers.Identity
         }
 
         // DELETE api/<RolesController>/5
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpDelete]
         public async Task<IActionResult> DeleteRol(string nameRole)
         {
