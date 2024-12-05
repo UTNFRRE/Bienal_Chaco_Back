@@ -7,6 +7,8 @@ using Requests;
 using Contexts;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Text.Json.Serialization;
+using Models;
+using static System.Net.WebRequestMethods;
 
 namespace Servicios
 {
@@ -15,7 +17,6 @@ namespace Servicios
         // Se definen dos variables privadas para el contexto de la base de datos y el servicio de almacenamiento en Azure.
         private readonly BienalDbContext _context;
         private readonly IAzureStorageService _azureStorageService;
-
         public EscultoresServices(BienalDbContext context, IAzureStorageService azureStorageService)
         {
             // Asignación de los parámetros a las variables privadas de la clase.
@@ -165,17 +166,17 @@ namespace Servicios
         public async Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id)
         {
             var esc = await _context.Esculturas
-                .Where(e => e.EscultoresID == id)  // Filtramos por escultor ID
-                .Select(e => new EsculturasEscultorDTO
-                {
-                    id = e.EsculturaId,
-                    escultorid = e.EscultoresID,
-                    nombre = e.Nombre,
-                    descripcion = e.Descripcion,
-                    // Concatenamos las URLs de las imágenes en un solo string
-                    imagenes = string.Join(", ", e.Imagenes.Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo))
-                })
+               .Where(e => e.EscultoresID == id)  // Filtramos por escultor ID
+               .Select(e => new EsculturasEscultorDTO
+               {
+                   id = e.EsculturaId,
+                   escultorid = e.EscultoresID,
+                   nombre = e.Nombre,
+                   descripcion = e.Descripcion,
+                   imagenes = e.Imagenes.Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.Url).ToList()
+               })
                 .ToListAsync();
+
             return esc;
         }
 
@@ -214,7 +215,7 @@ namespace Servicios
         public int id { get; set; }
         public string? nombre { get; set; }
         public string? descripcion { get; set; }
-        public string? imagenes { get; set; }
+        public List<string>? imagenes { get; set; }
         [JsonIgnore]
         public int escultorid { get; set; }
 
