@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using Azure.Core;
+using Servicios.Identity;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,7 +40,7 @@ builder.Services.AddDbContext<MyIdentityDBContext>(options => options.UseSqlServ
 builder.Services.AddAuthentication()
                                     .AddBearerToken(IdentityConstants.BearerScheme);
 
-builder.Services.AddAuthorizationBuilder();
+builder.Services.AddAuthorization();
 
 
 builder.Services.AddScoped<IAzureStorageService, AzureBlobStorageService>();            
@@ -50,12 +51,11 @@ builder.Services.AddScoped<ICRUDServicesEscultores, EscultoresServices>();
 builder.Services.AddScoped<ICRUDServicesVotos, VotosService>();
 builder.Services.AddScoped<ICRUDServiceEdicion, EdicionServices>();
 
-//builder.Services.AddScoped<IServiceUsers, UsersServices>();
+builder.Services.AddScoped<IRolesServices, RolesServices>();
+
+builder.Services.AddScoped<IServiceUsers, UsersServices>();
 
 //builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-
-//builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-
 
 // Configurar IdentityCore
 builder.Services.AddIdentity<MyUser, MyRol>(options => {
@@ -84,40 +84,44 @@ builder.Services.AddIdentity<MyUser, MyRol>(options => {
     .AddDefaultTokenProviders()
     .AddApiEndpoints();
 
-// Configurar IdentityOptions
-
-/*
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddCookie(IdentityConstants.ApplicationScheme)
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-});
-*/
-// Configure Authorization
-//builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
 // Configuración de Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 
+//connfiguracion de Header con el Bearer Token en Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bienal API", Version = "V1.1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @"Authorization header using the Bearer scheme. <br /> <br />
+                      Enter 'Bearer' [space] and then your token in the text input below.<br /> <br />
+                      Example: 'Bearer 12345abcdef'<br /> <br />",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+      {
+        {
+          new OpenApiSecurityScheme
+          {
+            Reference = new OpenApiReference
+              {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+              },
+              Scheme = "oauth2",
+              Name = "Bearer",
+              In = ParameterLocation.Header,
+            },
+            new List<string>()
+          }
+        });
 });
 
 builder.Services.AddCors();
@@ -131,9 +135,16 @@ app.MapIdentityApi<MyUser>();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bienal API V1.1");
+
     });
 
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+//configuracion de Cors
 app.UseCors(options => { 
                         options.AllowAnyOrigin();
                         options.AllowAnyMethod();
@@ -142,43 +153,5 @@ app.UseCors(options => {
             );
 
 app.MapControllers();
-
-//endpoint para devolver la informacion del usuario en la sesion
-app.MapGet("users/info", async (ClaimsPrincipal claims, MyIdentityDBContext context) =>
-{
-    string userId = claims.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-
-    var userLogueado = await context.Users.FindAsync(userId);
-
-    if (userLogueado == null)
-    {
-        return Results.NotFound("User not found");
-    }
-
-    return Results.Ok(new
-    {
-        Id = userLogueado.Id,
-        UserName = userLogueado.UserName,
-        Email = userLogueado.Email
-    });
-});
-
-//endpoint lista de usuarios 
-app.MapGet("users/{UserName}", async (string UserName, MyIdentityDBContext context) =>
-{
-    var userLogueado = await context.Users.FirstOrDefaultAsync(user => user.UserName == UserName);
-
-    if (userLogueado == null)
-    {
-        return Results.NotFound("User not found");
-    }
-
-    return Results.Ok(new
-    {
-        Id = userLogueado.Id,
-        UserName = userLogueado.UserName,
-        Email = userLogueado.Email
-    });
-});
 
 app.Run();

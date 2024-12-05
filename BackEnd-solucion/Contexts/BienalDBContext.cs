@@ -11,6 +11,7 @@ namespace Contexts
         public DbSet<Escultores> Escultores { get; set; }
         public DbSet<Esculturas> Esculturas { get; set; }
         public DbSet<Eventos> Eventos { get; set; }
+        public DbSet<Imagen> Imagenes { get; set; }
 
         
         public DbSet<Votos> Votos { get; set; }
@@ -32,6 +33,15 @@ namespace Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<Esculturas>()
+                    .HasMany(e => e.Imagenes)
+                    .WithOne(i => i.Escultura)
+                    .HasForeignKey(i => i.EsculturaId)
+                    .OnDelete(DeleteBehavior.Cascade); // Configura el comportamiento en cascada (opcional)
+
+            base.OnModelCreating(modelBuilder);
+
             //configuración de restricciones al crear la base de datos 
             modelBuilder.Entity<Escultores>(entity =>
             {
