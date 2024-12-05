@@ -12,6 +12,7 @@ using Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using static System.Net.WebRequestMethods;
 using Microsoft.AspNetCore.Authorization;
+using Models;
 
 namespace APIBienal.Controllers
 {
@@ -121,7 +122,15 @@ namespace APIBienal.Controllers
             {
                 return NotFound("No se encontro ninguna escultura");
             }
-            
+            foreach(EsculturasListLiteDTO esculturas in esculturaDetail)
+            {
+                List<Imagen> imagenes = await this.esculturaService.GetImagenesByEsculturaAsync(esculturas.EsculturaId);
+                foreach (Imagen img in imagenes)
+                {
+                    img.Url = this.objUrl + img.Url;
+                }
+                esculturas.Imagenes = imagenes;
+            }
             return Ok(esculturaDetail);
         }
 
