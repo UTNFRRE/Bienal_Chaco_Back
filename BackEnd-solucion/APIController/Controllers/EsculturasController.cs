@@ -11,6 +11,7 @@ using Servicios;
 using Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using static System.Net.WebRequestMethods;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIBienal.Controllers
 {
@@ -27,8 +28,11 @@ namespace APIBienal.Controllers
             this.esculturaService = esculturasService;
         }
 
+       
+
 
         // Crear Escultura (CRUD para esculturas)
+         [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> CrearEscultura([FromForm] EsculturaPostPut request)
         {
@@ -82,7 +86,7 @@ namespace APIBienal.Controllers
             return Ok(esculturaDetail);
         }
 
-        // Actualizar escultura
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPut("{id}")]
     public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPostPut request)
     {
@@ -93,7 +97,7 @@ namespace APIBienal.Controllers
             }   
          return Ok(esculturaUpdate);
     }
-
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> ActualizarPropiedadEscultura(int id, [FromForm] EsculturaPatch request)
         {
@@ -116,10 +120,10 @@ namespace APIBienal.Controllers
             return Ok(esculturaUpdate);
         }
 
-
         //implementar patch con imagen para escultura
 
         // Eliminar escultura
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarEscultura(int id)
         {
@@ -146,10 +150,10 @@ namespace APIBienal.Controllers
 
             if (!isValid)
             {
-                return Unauthorized(new { isValid = false, message = "Token inv·lido o no coincide con la escultura." });
+                return Unauthorized(new { isValid = false, message = "Token inv√°lido o no coincide con la escultura." });
             }
 
-            return Ok(new { isValid = true, message = "Token v·lido." });
+            return Ok(new { isValid = true, message = "Token v√°lido." });
         }
 
 

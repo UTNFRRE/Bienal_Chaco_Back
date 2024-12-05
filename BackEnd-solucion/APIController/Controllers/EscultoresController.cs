@@ -1,6 +1,7 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Entidades;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Requests;
 using Servicios;
@@ -22,6 +23,7 @@ namespace APIController.Controllers
         }
 
         // CREATE: api/Escultor
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> CreateEscultor([FromForm] EscultoresListRequest request)
         {
@@ -51,8 +53,8 @@ namespace APIController.Controllers
             escultor.Foto = this.url + escultor.Foto;
             return Ok(escultor);
         }
-        
 
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEscultor(int id,[FromForm] EscultoresListRequest request)
         {
@@ -64,7 +66,7 @@ namespace APIController.Controllers
             return Ok(updatedEscultor);
         }
 
-        //patch
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> PatchEscultor(int id, [FromForm] EscultoresPatchRequest request)
         {
@@ -76,7 +78,7 @@ namespace APIController.Controllers
             return Ok(patchedEscultor);
         }
 
-        // DELETE: api/Escultor/5
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEscultor(int id)
         {
