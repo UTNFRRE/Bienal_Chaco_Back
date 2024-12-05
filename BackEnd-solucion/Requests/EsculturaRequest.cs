@@ -37,8 +37,8 @@ namespace Requests
         public int EscultorID { get; set; }
         public string? Tematica { get; set; }
         public int EdicionAño { get; set; }
-        public IFormFile[] NuevasImagenes { get; set; } // Nuevas imágenes a subir
-        public int[] ImagenesAEliminar { get; set; } // IDs de imágenes a eliminar (opcional)
+        public IFormFile[]? NuevasImagenes { get; set; } // Nuevas imágenes a subir
+        public int[]? ImagenesAEliminar { get; set; } // IDs de imágenes a eliminar (opcional)
     }
 
 
@@ -49,7 +49,8 @@ namespace Requests
         [MaxLength(200)]
         public string? Descripcion { get; set; }
 
-        public List<Imagen> Imagenes { get; set; }
+        public IFormFile[]? NuevasImagenes { get; set; } // Nuevas imágenes a subir
+        public int[]? ImagenesAEliminar { get; set; } // IDs de imágenes a eliminar (opcional)
 
         public int? EscultorID { get; set; }
         public DateOnly? FechaCreacion { get; set; }

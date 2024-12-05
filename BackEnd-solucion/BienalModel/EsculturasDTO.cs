@@ -26,7 +26,7 @@ namespace Models
         public List<Imagen> Imagenes { get; set; }
 
         // Nueva propiedad para devolver las URLs de las imágenes
-        public List<string> ImagenesUrls { get; set; } = new List<string>();
+        public List<string> ImagenesUrls { get; set; }
 
         public double promedioVotos { get; set; }
 
@@ -42,9 +42,9 @@ namespace Models
                 // Asignar la lista original de imágenes
                 Imagenes = escultura.Imagenes;
 
-                // Generar las URLs para las imágenes y asignarlas a la nueva propiedad
+                // Generar URLs dinámicamente
                 ImagenesUrls = escultura.Imagenes
-                    .Select(img => urlImagen + img.NombreArchivo)
+                    .Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo)
                     .ToList();
 
                 EscultorNombre = Escultor.Nombre;
@@ -61,7 +61,6 @@ namespace Models
         public string? Tematica { get; set; }
         public string? Descripcion { get; set; }
 
-        
         public int EscultorID { get; set;}
 
         public DateOnly FechaCreacion { get; set; } = DateOnly.FromDateTime(DateTime.Now);
@@ -69,32 +68,30 @@ namespace Models
         public string? EscultorNombre { get; set; }
 
         public string? EscultorPais { get; set; }
-        [JsonIgnore]
-        public string urlImagen { get; set; } = "https://bienalobjectstorage.blob.core.windows.net/imagenes/";
 
-        public string Imagenes { get; set; }
+        public List<Imagen> Imagenes { get; set; }
+
+        public List<string> ImagenesUrls { get; set; }
+
         public double promedioVotos { get; set; }
 
         //constructor de Esculturas
         public EsculturasListLiteDTO(Esculturas escultura, Escultores escultor)
         {
-            
             EsculturaId = escultura.EsculturaId;
             Nombre = escultura.Nombre;
             Tematica = escultura.Tematica;
             Descripcion = escultura.Descripcion;
-
             EscultorID = escultura.EscultoresID;
             FechaCreacion = escultura.FechaCreacion;
-
-
             EscultorNombre = escultor.Nombre + escultor.Apellido;
             EscultorPais = escultor.Pais;
-            Imagenes = urlImagen + escultura.Imagenes;
+            Imagenes = escultura.Imagenes;
+            // Generar URLs dinámicamente
+            ImagenesUrls = escultura.Imagenes
+                .Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo)
+                .ToList();
             promedioVotos = escultura.PromedioVotos;
         }
-
-
-
     }
 }

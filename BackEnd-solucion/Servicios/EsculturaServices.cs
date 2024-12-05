@@ -34,14 +34,7 @@ namespace Servicios
             this._azureStorageService = azureStorageService;
         }
 
-
-
-
-
-
-
         //PRUEBA IMAGENES
-
         public IFormFile ConvertToIFormFile(Imagen imagen)
         {
             // Asegúrate de que FilePath tenga una ruta válida al archivo
@@ -55,7 +48,6 @@ namespace Servicios
 
             return formFile;
         }
-
 
         public async Task<Esculturas> CreateAsync(EsculturaPostRequest request)
         {
@@ -109,12 +101,6 @@ namespace Servicios
             return nuevaEscultura;
         }
 
-
-
-
-
-
-
         //Este usa el front
         public async Task<IEnumerable<EsculturasListLiteDTO>> GetAllList( int pageNumber , int pageSize, int? AnioEdicion =null, string? busqueda = null)
         {
@@ -123,6 +109,7 @@ namespace Servicios
                 return await GetAllFilterEsc(pageNumber, pageSize, AnioEdicion, busqueda);
             }
             var listescultura = await this._context.Esculturas
+                .Include(e => e.Imagenes)
                 .Where(e => e.EdicionAño == AnioEdicion)
                 .Skip((pageNumber -1) * pageSize)
                 .Take(pageSize)
@@ -141,6 +128,7 @@ namespace Servicios
             ;
             return listesculturaDTO;
         }
+        
         public async Task<IEnumerable<EsculturasListLiteDTO>> GetAllFilterEsc(int pageNumber, int pageSize, int? AnioEdicion, string busqueda)
         {
             var esculturasFiltradas = await _context.Esculturas
@@ -173,22 +161,34 @@ namespace Servicios
 
         public async Task<EsculturasDetailDTO>? GetDetail(int id)
         {
-            var escultura = await this._context.Esculturas.FindAsync(id);
+            var escultura = await this._context.Esculturas
+                .Include(e => e.Imagenes) // Incluir imágenes asociadas
+                .FirstOrDefaultAsync(e => e.EsculturaId == id);
             
             if (escultura == null)
             {
                 return null;
             }
+
             await this.asignarPromedio(escultura);
+
             var escultor = await this._context.Escultores.FindAsync(escultura.EscultoresID);
-            EsculturasDetailDTO EsculturaDetalle = new EsculturasDetailDTO(escultura, escultor);
-            return EsculturaDetalle;
-            
+
+            EsculturasDetailDTO esculturaDetalle = new EsculturasDetailDTO(escultura, escultor);
+
+            return esculturaDetalle;
         }
 
         ///modificar UpdateAsync para sobrecargar con parametro EsculturaPatchRequest
-        public async Task<Esculturas>? UpdatePutEsculturaAsync(int id, EsculturaPutRequest request)
+        public async Task<Esculturas?> UpdatePutEsculturaAsync(int id, EsculturaPutRequest request)
         {
+            // Validar que al menos una de las dos operaciones esté presente
+            if ((request.ImagenesAEliminar == null || request.ImagenesAEliminar.Length == 0) &&
+                (request.NuevasImagenes == null || request.NuevasImagenes.Length == 0))
+            {
+                throw new Exception("Debe proporcionar imágenes para eliminar o nuevas imágenes para agregar.");
+            }
+
             // Buscar la escultura a actualizar
             var esculturaToUpdate = await _context.Esculturas
                 .Include(e => e.Imagenes) // Incluir las imágenes asociadas
@@ -205,6 +205,107 @@ namespace Servicios
             esculturaToUpdate.FechaCreacion = request.FechaCreacion;
             esculturaToUpdate.EscultoresID = request.EscultorID;
             esculturaToUpdate.Tematica = request.Tematica;
+
+            // Manejar la eliminación de imágenes
+            if (request.ImagenesAEliminar != null && request.ImagenesAEliminar.Length > 0)
+            {
+                var imagenesAEliminar = esculturaToUpdate.Imagenes
+                    .Where(i => request.ImagenesAEliminar.Contains(i.Id))
+                    .ToList();
+
+                foreach (var imagen in imagenesAEliminar)
+                {
+                    // Eliminar la imagen del almacenamiento (Azure Blob)
+                    await _azureStorageService.DeleteAsync(imagen.Url);
+
+                    // Eliminar la imagen de la base de datos
+                    _context.Imagenes.Remove(imagen);
+                }
+            }
+
+            // Manejar la subida de nuevas imágenes
+            if (request.NuevasImagenes != null && request.NuevasImagenes.Length > 0)
+            {
+                foreach (var file in request.NuevasImagenes)
+                {
+                    // Subir la imagen y obtener la URL
+                    var url = await _azureStorageService.UploadAsync(file);
+
+                    // Crear la nueva imagen y asociarla a la escultura
+                    var nuevaImagen = new Imagen
+                    {
+                        NombreArchivo = file.FileName,
+                        Url = url,
+                        EsculturaId = id
+                    };
+
+                    esculturaToUpdate.Imagenes.Add(nuevaImagen);
+                }
+            }
+
+            // Guardar los cambios en la base de datos
+            _context.Update(esculturaToUpdate);
+            await _context.SaveChangesAsync();
+
+            // Formatear las URLs de las imágenes
+            esculturaToUpdate.ImagenesUrls = esculturaToUpdate.Imagenes
+                .Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo)
+                .ToList();
+
+            return esculturaToUpdate;
+        }
+
+        public async Task<Esculturas?> VoteEscultura(int id, EsculturaVoto request)
+        {
+            // Cargar la escultura e incluir las imágenes relacionadas
+            var escultura = await this._context.Esculturas
+                .Include(e => e.Imagenes)
+                .FirstOrDefaultAsync(e => e.EsculturaId == id);
+
+            if (escultura == null)
+            {
+                throw new Exception("Escultura no encontrada");
+            }
+
+            // Actualizar las propiedades de votación
+            escultura.CantVotaciones += 1;
+            escultura.PromedioVotos = ((escultura.PromedioVotos * (escultura.CantVotaciones - 1)) + request.Voto) / escultura.CantVotaciones;
+
+            // Guardar los cambios en la base de datos
+            this._context.Update(escultura);
+            await this._context.SaveChangesAsync();
+
+            // Formatear las URLs de las imágenes
+            escultura.ImagenesUrls = escultura.Imagenes
+                .Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo)
+                .ToList();
+
+            return escultura;
+        }
+
+        public async Task<Esculturas?> UpdatePatchAsync(int id, EsculturaPatch request)
+        {
+            // Buscar la escultura por ID
+            var esculturaToUpdate = await this._context.Esculturas
+                .Include(e => e.Imagenes) // Incluir las imágenes relacionadas
+                .FirstOrDefaultAsync(e => e.EsculturaId == id);
+
+            if (esculturaToUpdate == null)
+            {
+                return null;
+            }
+
+            // Actualizar el nombre si está presente
+            if (!string.IsNullOrEmpty(request.Nombre))
+            {
+                esculturaToUpdate.Nombre = request.Nombre;
+            }
+
+            // Actualizar la descripción si está presente
+            if (!string.IsNullOrEmpty(request.Descripcion))
+            {
+                esculturaToUpdate.Descripcion = request.Descripcion;
+            }
 
             // Manejar la eliminación de imágenes (si se proporcionan IDs para eliminar)
             if (request.ImagenesAEliminar != null && request.ImagenesAEliminar.Length > 0)
@@ -241,81 +342,27 @@ namespace Servicios
                 }
             }
 
+            // Actualizar el EscultorID si está presente
+            if (request.EscultorID.HasValue)
+            {
+                esculturaToUpdate.EscultoresID = request.EscultorID.Value;
+            }
+
+            // Actualizar la FechaCreacion si está presente
+            if (request.FechaCreacion.HasValue)
+            {
+                esculturaToUpdate.FechaCreacion = request.FechaCreacion.Value;
+            }
+
             // Guardar los cambios en la base de datos
-            _context.Update(esculturaToUpdate);
-            await _context.SaveChangesAsync();
-
-            return esculturaToUpdate;
-        }
-
-        public async Task<Esculturas> VoteEscultura(int id, EsculturaVoto request)
-            {
-                var escultura = await this._context.Esculturas.FindAsync(id);
-                
-                if (escultura == null)
-                {
-                    throw new Exception("Escultura no encontrada");
-                }
-
-                this._context.Update(escultura);
-                await this._context.SaveChangesAsync();
-                return escultura;
-        }
-
-        public async Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request)
-        {
-            var esculturaToUpdate = await this._context.Esculturas.FindAsync(id);
-
-            if (esculturaToUpdate == null)
-            {
-                return null;
-            }
-
-            if (!string.IsNullOrEmpty(request.Nombre))
-            {
-                esculturaToUpdate.Nombre = request.Nombre;
-            }
-
-            if (!string.IsNullOrEmpty(request.Descripcion))
-            {
-                esculturaToUpdate.Descripcion = request.Descripcion;
-            }
-
-            // Si la lista de imágenes no es null y contiene elementos
-            if (request.Imagenes != null && request.Imagenes.Any())
-            {
-                // Convierte cada imagen en la lista a IFormFile
-                var formFiles = request.Imagenes.Select(imagen => ConvertToIFormFile(imagen)).ToList();
-
-                // Itera sobre cada IFormFile y llama a UploadAsync para cada uno
-                foreach (var formFile in formFiles)
-                {
-                    // Obtén el nombre del archivo para el blob
-                    string blobFileName = Path.GetFileName(formFile.FileName);
-
-                    // Subir la imagen y obtener el nombre del archivo del blob o alguna URL
-                    var uploadedFile = await this._azureStorageService.UploadAsync(formFile, blobFileName);
-
-                    // Aquí deberías agregar el objeto de la imagen subida a la lista de imágenes de la escultura.
-                    // Suponiendo que `Imagenes` es una lista de objetos `Imagen`, agregamos un nuevo objeto Imagen con el blob file name.
-                    esculturaToUpdate.Imagenes.Add(new Imagen { FilePath = uploadedFile }); // Asegúrate de agregar la lógica correcta para agregar imágenes a la lista
-                }
-            }
-
-            if (request.EscultorID != null)
-            {
-                // Conversión implícita de int? a int
-                esculturaToUpdate.EscultoresID = (int)request.EscultorID;
-            }
-
-            if (request.FechaCreacion != null)
-            {
-                esculturaToUpdate.FechaCreacion = (DateOnly)request.FechaCreacion;
-            }
-
-            this._context.Update(esculturaToUpdate);
-
+            this._context.Esculturas.Update(esculturaToUpdate);
             await this._context.SaveChangesAsync();
+
+            // Formatear las URLs de las imágenes
+            esculturaToUpdate.ImagenesUrls = esculturaToUpdate.Imagenes
+                .Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo)
+                .ToList();
+
             return esculturaToUpdate;
         }
 
@@ -391,43 +438,6 @@ namespace Servicios
             return true;
         }
 
-        //Prueba multi imagenes
-        // Implementación del método UploadImagesAsync
-        public async Task<IList<string>> UploadImagesAsync(int esculturaId, IFormFile[] files)
-        {
-            var imagenesCargadas = new List<string>();
-
-            var escultura = await _context.Esculturas
-                .Include(e => e.Imagenes)  // Asegúrate de incluir las imágenes
-                .FirstOrDefaultAsync(e => e.EsculturaId == esculturaId);
-
-            if (escultura == null)
-            {
-                throw new Exception("Escultura no encontrada");
-            }
-
-            foreach (var file in files)
-            {
-                var filename = await _azureStorageService.UploadAsync(file);
-
-                // Crear un objeto Imagen para cada archivo
-                var imagen = new Imagen
-                {
-                    NombreArchivo = filename,
-                    EsculturaId = esculturaId,
-                };
-
-                // Agregar la imagen a la colección de imágenes de la escultura
-                escultura.Imagenes.Add(imagen);
-                imagenesCargadas.Add(filename);
-            }
-
-            // Guardar los cambios en la base de datos
-            await _context.SaveChangesAsync();
-
-            return imagenesCargadas;
-        }
-
         public async Task<List<Imagen>> GetImagenesByEsculturaAsync(int esculturaId)
         {
             return await _context.Imagenes
@@ -455,8 +465,6 @@ namespace Servicios
         Task<Esculturas>? UpdatePatchAsync(int id, EsculturaPatch request);
         Task<Esculturas> VoteEscultura(int id, EsculturaVoto request);
         Task<bool> DeleteAsync(int id);
-
-        Task<IList<string>> UploadImagesAsync(int esculturaId, IFormFile[] files);
         Task<List<Imagen>> GetImagenesByEsculturaAsync(int esculturaId);
     
     } 

@@ -13,11 +13,13 @@ namespace Entidades
 {
     public class Imagen
     {
-        public string FilePath { get; set; } // Ruta de almacenamiento (si aplica)
+        public string? FilePath { get; set; } // Ruta de almacenamiento (si aplica)
         public string Url { get; set; } // Ruta de almacenamiento (si aplica)
         public int Id { get; set; }
         public string NombreArchivo { get; set; }
         public int EsculturaId { get; set; } // Relación con la escultura
+
+        [JsonIgnore]
         public Esculturas Escultura { get; set; } // Relación inversa
     }
 }

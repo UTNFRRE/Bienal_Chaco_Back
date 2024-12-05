@@ -43,22 +43,6 @@ namespace APIBienal.Controllers
             }
         }
 
-
-        // Prueba multi imagenes
-        [HttpPost("uploadImages/{esculturaId}")]
-        public async Task<IActionResult> UploadImages(int esculturaId, IFormFile[] files)
-        {
-            if (files == null || files.Length == 0)
-            {
-                return BadRequest("No se han enviado imágenes.");
-            }
-
-            // Llamamos al servicio para cargar las imágenes y asociarlas a la escultura
-            var imagenesCargadas = await esculturaService.UploadImagesAsync(esculturaId, files);
-
-            return Ok(new { imagenes = imagenesCargadas });
-        }
-
         [HttpGet("{esculturaId}/imagenes")]
         public async Task<IActionResult> GetImagenesByEscultura(int esculturaId)
         {
@@ -75,8 +59,6 @@ namespace APIBienal.Controllers
             return Ok(imagenesConUrl);
         }
 
-
-
         // Obtener escultura por ID
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerEscultura(int id)
@@ -84,17 +66,25 @@ namespace APIBienal.Controllers
             var escultura = await this.esculturaService.GetByAsync(id);
             if (escultura == null)
             {
-                return NotFound("No se encontro una escultura con el id proporcionado");
+                return NotFound("No se encontró una escultura con el id proporcionado");
             }
 
-            // Asignar las URLs a la propiedad ImagenesUrls
-            escultura.ImagenesUrls = escultura.Imagenes
-                .Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo)
-                .ToList();
+            var imagenes = await this.esculturaService.GetImagenesByEsculturaAsync(id);
+
+            if (imagenes == null || !imagenes.Any())
+            {
+                return NotFound("No se encontraron imágenes para esta escultura.");
+            }
+
+            // Regresamos las imágenes con la URL completa
+            var imagenesConUrl = imagenes.Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo).ToList();
+            escultura.ImagenesUrls = imagenesConUrl;
 
             return Ok(escultura);
         }
 
+
+        // NO FUNCIONAAAAA
         [HttpGet("GetDetail/{id}")]
         public async Task<IActionResult> ObtenerDetalleEscultura(int id)
         {
@@ -106,6 +96,7 @@ namespace APIBienal.Controllers
 
             return Ok(esculturaDetail);
         }
+
         // Este usa el front
         [HttpGet("GetAll")]
         public async Task<IActionResult> ObtenerListaEsculturas( int pageNumber = 1, int pageSize = 10, int? AnioEdicion = null, string? busqueda = null)
@@ -116,14 +107,12 @@ namespace APIBienal.Controllers
                 return NotFound("No se encontro ninguna escultura");
             }
 
-            
-
             return Ok(esculturaDetail);
         }
 
         // Actualizar escultura
         [HttpPut("{id}")]
-    public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPutRequest request)
+        public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPutRequest request)
     {
         Esculturas? esculturaUpdate = await this.esculturaService.UpdatePutEsculturaAsync(id, request);
             if (esculturaUpdate == null)
