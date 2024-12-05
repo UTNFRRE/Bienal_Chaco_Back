@@ -55,10 +55,6 @@ builder.Services.AddScoped<IRolesServices, RolesServices>();
 
 builder.Services.AddScoped<IServiceUsers, UsersServices>();
 
-//builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-
-//builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-
 
 // Configurar IdentityCore
 builder.Services.AddIdentity<MyUser, MyRol>(options => {
@@ -87,37 +83,13 @@ builder.Services.AddIdentity<MyUser, MyRol>(options => {
     .AddDefaultTokenProviders()
     .AddApiEndpoints();
 
-// Configurar IdentityOptions
-
-/*
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddCookie(IdentityConstants.ApplicationScheme)
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-});
-*/
-// Configure Authorization
-//builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
 // Configuración de Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 
+//connfiguracion de Header con el Bearer Token en Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bienal API", Version = "V1.1" });
@@ -169,6 +141,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+//configuracion de Cors
 app.UseCors(options => { 
                         options.AllowAnyOrigin();
                         options.AllowAnyMethod();
