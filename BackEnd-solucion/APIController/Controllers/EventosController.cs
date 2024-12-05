@@ -10,6 +10,7 @@ using Entidades;
 using Servicios;
 using Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIBienal.Controllers
 {
@@ -27,6 +28,7 @@ namespace APIBienal.Controllers
         }
 
         // Crear un nuevo evento
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> CreateEvento([FromForm]EventoCreateRequest request)
         {
@@ -60,6 +62,7 @@ namespace APIBienal.Controllers
         }
         
         // obtener de una fecha
+
         [HttpGet("fecha/{fecha}")]
         public async Task<IActionResult> GetEventosByFecha( DateTime fecha)
         {
@@ -79,6 +82,7 @@ namespace APIBienal.Controllers
 
 
         // Actualizar un evento existente
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEvento(int id,[FromForm] EventoUpdateRequest request)
         {
@@ -87,6 +91,7 @@ namespace APIBienal.Controllers
         }
 
         // Actualizar un evento existente
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdatePatchEvento(int id,[FromForm] EventoPatchRequest request)
         {
@@ -96,6 +101,7 @@ namespace APIBienal.Controllers
 
 
         // Eliminar un evento
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvento(int id)
         {
