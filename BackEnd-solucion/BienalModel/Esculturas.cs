@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Entidades
 {
@@ -19,8 +20,20 @@ namespace Entidades
         public string Nombre { get; set; } = "";
         [MaxLength(200)]
         public string? Descripcion { get; set; }
+
+
+
+        // multi imagenes
         [Required]
-        public string Imagenes { get; set; } = "";
+        public List<Imagen> Imagenes { get; set; }
+
+        [NotMapped]
+        // Nueva propiedad para devolver las URLs de las imágenes
+        public List<string> ImagenesUrls { get; set; }
+
+
+
+
         //primero sin control de que exista ese escultor
         [Required]
         public int EscultoresID { get; set; }

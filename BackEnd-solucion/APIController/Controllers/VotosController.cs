@@ -1,6 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Entidades;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Requests;
 using Servicios;
@@ -23,6 +24,7 @@ namespace APIController.Controllers
         }
 
         //Create: api/Votos
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "user")]
         [HttpPost]
         public async Task<IActionResult> CreateVoto([FromBody] VotosListRequest votos)
         {
@@ -37,6 +39,7 @@ namespace APIController.Controllers
             return Ok(lista_votos);
         }
 
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "user")]
         [HttpHead]
         public async Task<ActionResult> ExistVoto(string userid, int esculturaid)
         {

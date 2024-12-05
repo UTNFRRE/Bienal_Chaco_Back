@@ -11,6 +11,8 @@ using Servicios;
 using Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using static System.Net.WebRequestMethods;
+using Microsoft.AspNetCore.Authorization;
+using Models;
 
 namespace APIBienal.Controllers
 {
@@ -19,51 +21,98 @@ namespace APIBienal.Controllers
     public class EsculturasController : ControllerBase
     {
         private readonly ICRUDEsculturaService esculturaService;
-
+        private readonly TokenService _tokenService;
+        private string objUrl = "https://bienalobjectstorage.blob.core.windows.net/imagenes/";
         public EsculturasController(ICRUDEsculturaService esculturasService)
         {
+            this._tokenService = new TokenService();
             this.esculturaService = esculturasService;
         }
 
+       
+
+
         // Crear Escultura (CRUD para esculturas)
+         [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPost]
-        public async Task<IActionResult> CrearEscultura([FromForm] EsculturaPostPut request)
+        public async Task<IActionResult> CrearEsculturaConImagenes([FromForm] EsculturaPostRequest request)
         {
-            Esculturas esculturaCreate = await this.esculturaService.CreateAsync(request);
-            if (esculturaCreate == null)
+            try
             {
-                return BadRequest("Ya existe una escultura con nombre asignado");
+                var nuevaEscultura = await esculturaService.CreateAsync(request);
+                return CreatedAtAction(nameof(ObtenerEscultura), new { id = nuevaEscultura.EsculturaId }, nuevaEscultura);
             }
-            return CreatedAtAction(nameof(ObtenerEscultura), new { id = esculturaCreate.EsculturaId }, esculturaCreate);
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("{esculturaId}/imagenes")]
+        public async Task<IActionResult> GetImagenesByEscultura(int esculturaId)
+        {
+            var imagenes = await this.esculturaService.GetImagenesByEsculturaAsync(esculturaId);
+
+            if (imagenes == null || !imagenes.Any())
+            {
+                return NotFound("No se encontraron imágenes para esta escultura.");
+            }
+
+            // Regresamos las imágenes con la URL completa
+            foreach(var img in imagenes)
+            {
+                img.Url = objUrl + img.Url;
+            }
+            return Ok(imagenes);
         }
 
         // Obtener escultura por ID
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerEscultura(int id)
-    {
-        var escultura = await this.esculturaService.GetByAsync(id);
-        if (escultura == null)
         {
-            return NotFound("No se encontro una escultura con el id proporcionado");
+            var escultura = await this.esculturaService.GetByAsync(id);
+            if (escultura == null)
+            {
+                return NotFound("No se encontró una escultura con el id proporcionado");
+            }
+
+            var imagenes = await this.esculturaService.GetImagenesByEsculturaAsync(id);
+
+            if (imagenes == null || !imagenes.Any())
+            {
+                return NotFound("No se encontraron imágenes para esta escultura.");
+            }
+
+            // Regresamos las imágenes con la URL completa
+            foreach(Imagen img in imagenes)
+            {
+                img.Url = this.objUrl + img.Url;
+            }
+            escultura.Imagenes = imagenes;
+
+            return Ok(escultura);
         }
 
-            //devolver link de imagen hardcodeo url de azure
-        escultura.Imagenes = "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + escultura.Imagenes;
 
-        return Ok(escultura);
-    }
-
+        // NO FUNCIONAAAAA
         [HttpGet("GetDetail/{id}")]
         public async Task<IActionResult> ObtenerDetalleEscultura(int id)
         {
             var esculturaDetail = await this.esculturaService.GetDetail(id);
+           
             if (esculturaDetail == null)
             {
                 return NotFound("No se encontro una escultura con el id proporcionado");
             }
-
+            List<Imagen> imagenes = await this.esculturaService.GetImagenesByEsculturaAsync(id);
+            foreach (Imagen img in imagenes)
+            {
+                img.Url = this.objUrl + img.Url;
+            }
+            esculturaDetail.Imagenes = imagenes;
             return Ok(esculturaDetail);
         }
+
         // Este usa el front
         [HttpGet("GetAll")]
         public async Task<IActionResult> ObtenerListaEsculturas( int pageNumber = 1, int pageSize = 10, int? AnioEdicion = null, string? busqueda = null)
@@ -73,15 +122,21 @@ namespace APIBienal.Controllers
             {
                 return NotFound("No se encontro ninguna escultura");
             }
-
-            
-
+            foreach(EsculturasListLiteDTO esculturas in esculturaDetail)
+            {
+                List<Imagen> imagenes = await this.esculturaService.GetImagenesByEsculturaAsync(esculturas.EsculturaId);
+                foreach (Imagen img in imagenes)
+                {
+                    img.Url = this.objUrl + img.Url;
+                }
+                esculturas.Imagenes = imagenes;
+            }
             return Ok(esculturaDetail);
         }
 
-        // Actualizar escultura
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPut("{id}")]
-    public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPostPut request)
+        public async Task<IActionResult> ActualizarTodaEscultura(int id, [FromForm] EsculturaPutRequest request)
     {
         Esculturas? esculturaUpdate = await this.esculturaService.UpdatePutEsculturaAsync(id, request);
             if (esculturaUpdate == null)
@@ -90,7 +145,7 @@ namespace APIBienal.Controllers
             }   
          return Ok(esculturaUpdate);
     }
-
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> ActualizarPropiedadEscultura(int id, [FromForm] EsculturaPatch request)
         {
@@ -113,10 +168,10 @@ namespace APIBienal.Controllers
             return Ok(esculturaUpdate);
         }
 
-
         //implementar patch con imagen para escultura
 
         // Eliminar escultura
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarEscultura(int id)
         {
@@ -127,6 +182,30 @@ namespace APIBienal.Controllers
             }
             return Ok("Se elimino exitosamente la escultura");
         }
+
+        // Generar token
+        [HttpGet("GetToken")]
+        public IActionResult GenerarToken(int esculturaId)
+        {
+            var token = _tokenService.GenerateToken(esculturaId);
+            return Ok(new { token });
+        }
+
+        [HttpHead("Token")]
+        public IActionResult ValidarToken([FromHeader] string token, [FromHeader] int idEscultura)
+        {
+            var isValid = _tokenService.ValidateToken(token, idEscultura);
+
+            if (!isValid)
+            {
+
+                return Unauthorized(new { isValid = false, message = "Token inválido o no coincide con la escultura." });
+            }
+
+            return Ok(new { isValid = true, message = "Token válido." });
+
+        }
+
 
     }
 }

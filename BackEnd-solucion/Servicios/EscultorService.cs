@@ -164,16 +164,18 @@ namespace Servicios
         //get esculturas por id de escultor
         public async Task<IEnumerable<EsculturasEscultorDTO>> getEsculturas(int id)
         {
-            var esc= await _context.Esculturas
-                .Select(e=> new EsculturasEscultorDTO
+            var esc = await _context.Esculturas
+                .Where(e => e.EscultoresID == id)  // Filtramos por escultor ID
+                .Select(e => new EsculturasEscultorDTO
                 {
-                    id=e.EsculturaId,
-                    escultorid=e.EscultoresID,
+                    id = e.EsculturaId,
+                    escultorid = e.EscultoresID,
                     nombre = e.Nombre,
-                    descripcion=e.Descripcion,
-                    imagenes = e.Imagenes,
+                    descripcion = e.Descripcion,
+                    // Concatenamos las URLs de las imágenes en un solo string
+                    imagenes = string.Join(", ", e.Imagenes.Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo))
                 })
-                .Where(e => e.escultorid == id).ToListAsync();
+                .ToListAsync();
             return esc;
         }
 
@@ -189,7 +191,6 @@ namespace Servicios
             }).ToListAsync();
             return escultores;
         }
-        //
         
     }
     // Interfaz genérica para las operaciones CRUD.

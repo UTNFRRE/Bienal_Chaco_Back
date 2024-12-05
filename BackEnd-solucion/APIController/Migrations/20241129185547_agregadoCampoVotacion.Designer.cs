@@ -4,6 +4,7 @@ using Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIController.Migrations
 {
     [DbContext(typeof(BienalDbContext))]
-    partial class BienalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241129185547_agregadoCampoVotacion")]
+    partial class agregadoCampoVotacion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,6 +114,10 @@ namespace APIController.Migrations
                     b.Property<DateOnly>("FechaCreacion")
                         .HasColumnType("date");
 
+                    b.Property<string>("Imagenes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -175,35 +182,6 @@ namespace APIController.Migrations
                     b.HasIndex("EdicionAño");
 
                     b.ToTable("Eventos");
-                });
-
-            modelBuilder.Entity("Entidades.Imagen", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EsculturaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NombreArchivo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EsculturaId");
-
-                    b.ToTable("Imagenes");
                 });
 
             modelBuilder.Entity("Entidades.MyUser", b =>
@@ -346,17 +324,6 @@ namespace APIController.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Entidades.Imagen", b =>
-                {
-                    b.HasOne("Entidades.Esculturas", "Escultura")
-                        .WithMany("Imagenes")
-                        .HasForeignKey("EsculturaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Escultura");
-                });
-
             modelBuilder.Entity("Entidades.Votos", b =>
                 {
                     b.HasOne("Entidades.Esculturas", "Esculturas")
@@ -383,7 +350,7 @@ namespace APIController.Migrations
 
             modelBuilder.Entity("Entidades.Esculturas", b =>
                 {
-                    b.Navigation("Imagenes");
+                    b.Navigation("Votos");
                 });
 
             modelBuilder.Entity("Models.Edicion", b =>

@@ -12,8 +12,7 @@ namespace Entidades
 {
     public class MyRol : IdentityRole
     {
-        public string rolName { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
     }
 
