@@ -62,6 +62,7 @@ namespace APIBienal.Controllers
             }
         }
 
+
         // Eliminar un Usuario
         [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpDelete("{id}")]
