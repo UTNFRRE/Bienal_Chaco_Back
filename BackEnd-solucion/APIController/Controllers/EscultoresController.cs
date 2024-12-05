@@ -95,10 +95,6 @@ namespace APIController.Controllers
             {
                 return NoContent();
             }
-            foreach(var escultura in esc)
-            {
-                escultura.imagenes = this.url + escultura.imagenes;
-            }
             return Ok(esc);
         }
         //get public escultores
