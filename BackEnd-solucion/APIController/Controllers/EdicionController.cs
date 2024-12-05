@@ -48,11 +48,12 @@ namespace APIBienal.Controllers
 
 
         // Obtener una edicion por ID
+
         [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
-        [HttpGet("{año}")]
-        public async Task<IActionResult> GetEdicionByAño(int año)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetEdicionByAÃ±o(int id)
         {
-            var edicionObtenida = await this.EdicionServices.GetEdicionByAño(año);
+            var edicionObtenida = await this.EdicionServices.GetEdicionByAÃ±o(id);
 
             if (edicionObtenida == null)
             {

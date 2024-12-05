@@ -21,11 +21,15 @@ namespace Models
 
         public DateOnly? FechaFin { get; set; }
 
+        public bool VotacionHabilitada { get; set; }
+
         public ICollection<Eventos>? Eventos { get; set; }
 
         public ICollection<Escultores>? Escultores { get; set; }
 
         public ICollection<Esculturas>? Esculturas { get; set; }
+
+
 
     }
 }
