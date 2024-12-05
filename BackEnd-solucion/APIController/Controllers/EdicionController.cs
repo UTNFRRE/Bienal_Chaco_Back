@@ -12,6 +12,7 @@ using Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using static Servicios.Ediciones;
 using Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIBienal.Controllers
 {
@@ -29,6 +30,7 @@ namespace APIBienal.Controllers
         }
 
         // Crear una nueva edicion
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> CreateEdicion([FromForm] EdicionPostRequests request)
         {
@@ -46,6 +48,7 @@ namespace APIBienal.Controllers
 
 
         // Obtener una edicion por ID
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpGet("{año}")]
         public async Task<IActionResult> GetEdicionByAño(int año)
         {
@@ -63,6 +66,7 @@ namespace APIBienal.Controllers
         }
 
         // Actualizar una edicion existente
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEdicion(int id, [FromForm] EdicionUpdateRequest request)
         {
@@ -71,6 +75,8 @@ namespace APIBienal.Controllers
         }
 
         // Actualizar una edicion existente
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
+
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdatePatchEdicion(int id, [FromForm] EdicionPatchEdicion request)
         {
@@ -80,6 +86,7 @@ namespace APIBienal.Controllers
 
 
         // Eliminar una edicion
+        [Authorize(AuthenticationSchemes = "Identity.Bearer", Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEdicion(int id)
         {
