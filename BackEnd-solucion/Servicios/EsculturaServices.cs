@@ -27,7 +27,7 @@ namespace Servicios
     {
         private BienalDbContext _context;
         private IAzureStorageService _azureStorageService;
-
+        
         public EsculturasServices(BienalDbContext context, IAzureStorageService azureStorageService)
         {
             this._context = context;
@@ -235,7 +235,7 @@ namespace Servicios
                     var nuevaImagen = new Imagen
                     {
                         NombreArchivo = file.FileName,
-                        Url = url,
+                        Url =  url,
                         EsculturaId = id
                     };
 

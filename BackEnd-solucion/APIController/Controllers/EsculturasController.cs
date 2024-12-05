@@ -20,7 +20,7 @@ namespace APIBienal.Controllers
     {
         private readonly ICRUDEsculturaService esculturaService;
         private readonly TokenService _tokenService;
-
+        private string objUrl = "https://bienalobjectstorage.blob.core.windows.net/imagenes/";
         public EsculturasController(ICRUDEsculturaService esculturasService)
         {
             this._tokenService = new TokenService();
@@ -54,9 +54,11 @@ namespace APIBienal.Controllers
             }
 
             // Regresamos las imágenes con la URL completa
-            var imagenesConUrl = imagenes.Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo).ToList();
-                
-            return Ok(imagenesConUrl);
+            foreach(var img in imagenes)
+            {
+                img.Url = objUrl + img.Url;
+            }
+            return Ok(imagenes);
         }
 
         // Obtener escultura por ID
@@ -77,8 +79,11 @@ namespace APIBienal.Controllers
             }
 
             // Regresamos las imágenes con la URL completa
-            var imagenesConUrl = imagenes.Select(img => "https://bienalobjectstorage.blob.core.windows.net/imagenes/" + img.NombreArchivo).ToList();
-            escultura.ImagenesUrls = imagenesConUrl;
+            foreach(Imagen img in imagenes)
+            {
+                img.Url = this.objUrl + img.Url;
+            }
+            escultura.Imagenes = imagenes;
 
             return Ok(escultura);
         }
@@ -89,11 +94,17 @@ namespace APIBienal.Controllers
         public async Task<IActionResult> ObtenerDetalleEscultura(int id)
         {
             var esculturaDetail = await this.esculturaService.GetDetail(id);
+           
             if (esculturaDetail == null)
             {
                 return NotFound("No se encontro una escultura con el id proporcionado");
             }
-
+            List<Imagen> imagenes = await this.esculturaService.GetImagenesByEsculturaAsync(id);
+            foreach (Imagen img in imagenes)
+            {
+                img.Url = this.objUrl + img.Url;
+            }
+            esculturaDetail.Imagenes = imagenes;
             return Ok(esculturaDetail);
         }
 
@@ -106,7 +117,7 @@ namespace APIBienal.Controllers
             {
                 return NotFound("No se encontro ninguna escultura");
             }
-
+            
             return Ok(esculturaDetail);
         }
 
